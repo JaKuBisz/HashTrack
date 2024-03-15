@@ -18,6 +18,7 @@ namespace HashTrack
         private Microsoft.Office.Tools.CustomTaskPane myCustomTaskPane;
         private AdvancedSearchCompleteHandler _advancedSearchCompleteHandler;
         private ArtifactSearchService _artifactSearchService;
+        private HashTrackSearchWpfControl _hashTrackSearchWpfControl;
 
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
@@ -28,13 +29,14 @@ namespace HashTrack
             {
                 _advancedSearchCompleteHandler = scope.Resolve<AdvancedSearchCompleteHandler>();
                 _artifactSearchService = scope.Resolve<ArtifactSearchService>();
+                this._hashTrackSearchWpfControl = scope.Resolve<HashTrackSearchWpfControl>();
             }
             Application.AdvancedSearchComplete += _advancedSearchCompleteHandler.OnAdvancedSearchComplete;
 
-            var wpfControl = new HashTrackSearchWpfControl();
-            wpfControl.SearchInitiated += _artifactSearchService.Search;
+            //var _hashTrackSearchWpfControl = new HashTrackSearchWpfControl();
+            _hashTrackSearchWpfControl.SearchInitiated += _artifactSearchService.Search;
 
-            var myUserControl1 = new UserControl1(wpfControl);
+            var myUserControl1 = new UserControl1(_hashTrackSearchWpfControl);
             myCustomTaskPane = this.CustomTaskPanes.Add(myUserControl1, "HashTrack - Hash search");
             myCustomTaskPane.Visible = true;
             myCustomTaskPane.Width = 350;

@@ -1,4 +1,5 @@
-﻿using HashTrack.Helpers;
+﻿using HashTrack.DTOs;
+using HashTrack.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,13 @@ namespace HashTrack.Services
 {
     public class AdvancedSearchCompleteHandler
     {
+        private readonly HashTrackSearchWpfControl _hashTrackSearchWpfControl;
+        public AdvancedSearchCompleteHandler(HashTrackSearchWpfControl hashTrackSearchWpfControl)
+        {
+
+            _hashTrackSearchWpfControl = hashTrackSearchWpfControl;
+
+        }
         public void OnAdvancedSearchComplete(Outlook.Search SearchObject)
         {
             // Handle the event here
@@ -18,6 +26,12 @@ namespace HashTrack.Services
             {
                 //blnSearchComp = true;
                 Outlook.Results results = SearchObject.Results;
+                var transformedResults = TransformResultForView(results);
+
+
+                _hashTrackSearchWpfControl.AddSearchResults(transformedResults);
+
+                /*
                 for (int i = 1; i <= results.Count; i++)
                 {
                     Outlook._MailItem mailItem = results[i] as Outlook._MailItem;
@@ -43,8 +57,72 @@ namespace HashTrack.Services
                     {
                         taskItem.Display(false);
                         System.Diagnostics.Debug.WriteLine(taskItem.Body);
-                    }
+                    }*/
+            }
+        }
+
+        private List<SearchResultViewItem> TransformResultForView(Outlook.Results results)
+        {
+          
+            var searchResults = new List<SearchResultViewItem>();
+            for (int i = 1; i <= results.Count; i++)
+            {
+                searchResults.Add(MapSingleResult(results[i]));
+            }
+            return searchResults;
+
+            SearchResultViewItem MapSingleResult(object result)
+            {
+                if(result is Outlook._MailItem mailItem)
+                {
+                    return new SearchResultViewItem
+                    {
+                        Title = mailItem.Subject,
+                        Sender = mailItem.SenderName,
+                        Date = mailItem.ReceivedTime,
+                        Type = "Email",
+                        OriginalItem = mailItem
+                    };
                 }
+                else if(result is Outlook._ContactItem contactItem)
+                {
+                    return new SearchResultViewItem
+                    {
+                        Title = contactItem.FullName,
+                        Sender = contactItem.Email1Address,
+                        Date = DateTime.Now,
+                        Type = "Contact",
+                        OriginalItem = contactItem
+                    };
+                }
+                else if(result is Outlook._AppointmentItem appointmentItem)
+                {
+                    return new SearchResultViewItem
+                    {
+                        Title = appointmentItem.Subject,
+                        Sender = appointmentItem.Organizer,
+                        Date = appointmentItem.Start,
+                        Type = "Appointment",
+                        OriginalItem = appointmentItem
+                    };
+                }
+                else if(result is Outlook._TaskItem taskItem)
+                {
+                    return new SearchResultViewItem
+                    {
+                        Title = taskItem.Subject,
+                        Sender = taskItem.Owner,
+                        Date = taskItem.CreationTime,
+                        Type = "Task",
+                        OriginalItem = taskItem
+                    };
+                }
+                else
+                {
+                    throw new ArgumentException("The result is not of any known type");
+                }
+
+
             }
         }
     }

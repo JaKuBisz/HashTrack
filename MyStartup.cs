@@ -25,6 +25,7 @@ namespace HashTrack
 
             // Register your services here, for example:
             builder.RegisterType<AdvancedSearchCompleteHandler>().As<AdvancedSearchCompleteHandler>().SingleInstance();
+            builder.RegisterType<HashTrackSearchWpfControl>().SingleInstance();
             builder.RegisterType<ArtifactSearchService>().As<ArtifactSearchService>();
 
             Container = builder.Build();

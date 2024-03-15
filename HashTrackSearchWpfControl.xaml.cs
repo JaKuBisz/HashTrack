@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack
 {
@@ -29,6 +30,28 @@ namespace HashTrack
         public HashTrackSearchWpfControl()
         {
             InitializeComponent();
+            /*
+            _searchResults.Add(new SearchResultViewItem
+            {
+                Title = "Title",
+                Sender = "Sender",
+                Date = DateTime.Now
+            });
+
+            _searchResults.Add(new SearchResultViewItem
+            {
+                Title = "Title2",
+                Sender = "Sender2",
+                Date = DateTime.Now
+            });*/
+            list_searchResults.ItemsSource = _searchResults;
+        }
+
+        public void AddSearchResults(List<SearchResultViewItem> searchResults)
+        {
+            _searchResults.Clear();
+            _searchResults.AddRange(searchResults);
+            list_searchResults.Items.Refresh();
         }
 
         private void btn_search_Click(object sender, RoutedEventArgs e)
@@ -37,13 +60,6 @@ namespace HashTrack
             {
                 var searchQuery = GetSearchQuery();
                 OnSearch(searchQuery);
-                _searchResults.Add(new SearchResultViewItem
-                {
-                    Title = "Test",
-                    Sender = "Test",
-                    Date = DateTime.Now
-                });
-                list_searchResults.ItemsSource = _searchResults;
             }
             catch (SearchQueryException ex)
             {
@@ -110,6 +126,30 @@ namespace HashTrack
             }
 
             return artefacts;
+        }
+
+        private void list_searchResults_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var listView = sender as System.Windows.Controls.ListView;
+            var selectedItem = listView.SelectedItem as SearchResultViewItem;
+
+            if (selectedItem.OriginalItem is Outlook.MailItem mailItem)
+            {
+                mailItem.Display(false);
+            }
+            else if (selectedItem.OriginalItem is Outlook.AppointmentItem appointmentItem)
+            {
+                appointmentItem.Display(false);
+            }
+            else if (selectedItem.OriginalItem is Outlook.ContactItem contactItem)
+            {
+                contactItem.Display(false);
+            }
+            else if (selectedItem.OriginalItem is Outlook.TaskItem taskItem)
+            {
+                taskItem.Display(false);
+            }
+
         }
     }
 }

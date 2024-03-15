@@ -21,9 +21,9 @@
 
         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
             <CheckBox x:Name="ch_email" Content="Email" Margin="8" IsChecked="True"/>
-            <CheckBox x:Name="ch_appointment" Content="Appointments" Margin="8"/>
-            <CheckBox x:Name="ch_task" Content="Tasks" Margin="8"/>
-            <CheckBox x:Name="ch_contact" Content="Contacts" Margin="8"/>
+            <CheckBox x:Name="ch_appointment" Content="Appointments" Margin="8" IsChecked="True"/>
+            <CheckBox x:Name="ch_task" Content="Tasks" Margin="8" IsChecked="True"/>
+            <CheckBox x:Name="ch_contact" Content="Contacts" Margin="8" IsChecked="True"/>
         </StackPanel>
 
         <TextBox x:Name="tb_searchbar" Grid.Row="3" Margin="10" HorizontalAlignment="Stretch" FontSize="16"/>
@@ -36,14 +36,29 @@
             <TextBlock Text="To:" VerticalAlignment="Center" Margin="10,0,0,0"/>
             <DatePicker x:Name="date_to" Margin="8"/>
         </StackPanel>
-        <ListView x:Name="list_searchResults" Grid.Row="5" >
+        <ListView x:Name="list_searchResults" Grid.Row="5" HorizontalAlignment="Stretch" Width="Auto" SelectionChanged="list_searchResults_SelectionChanged">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Subject}" Margin="10"/>
-                        <TextBlock Text="{Binding Sender}" Margin="10"/>
-                        <TextBlock Text="{Binding Date}" Margin="10"/>
-                    </StackPanel>
+                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{Binding Title}" Grid.Row="0"/>
+                            <TextBlock Text="{Binding Sender}" Grid.Row="1"/>
+                            <TextBlock Text="{Binding Date}" Grid.Row="2"/>
+                            <TextBlock Text="{Binding Type}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="3" Margin="0,5,5,5" FontStyle="Italic"/>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
