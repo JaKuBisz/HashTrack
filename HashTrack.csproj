@@ -191,6 +191,7 @@
   -->
   <ItemGroup>
     <Compile Include="DTOs\AdvancedSearchQueryDto.cs" />
+    <Compile Include="DTOs\SearchResultViewItem.cs" />
     <Compile Include="Enums\ArtifactTypes.cs" />
     <Compile Include="Exception\SearchQueryException.cs" />
     <Compile Include="HashTrackSearchWpfControl.xaml.cs">

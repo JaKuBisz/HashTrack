@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using HashTrack.Services;
 using Autofac;
+using HashTrack.DTOs;
 
 namespace HashTrack
 {

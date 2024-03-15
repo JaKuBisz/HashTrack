@@ -1,9 +1,10 @@
-﻿<UserControl x:Class="HashTrack.HashTrackSearchWpfControl"
+﻿<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HashTrack"
+             xmlns:Collections="clr-namespace:System.Collections;assembly=mscorlib" x:Class="HashTrack.HashTrackSearchWpfControl"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="400">
     <Grid>
@@ -35,6 +36,16 @@
             <TextBlock Text="To:" VerticalAlignment="Center" Margin="10,0,0,0"/>
             <DatePicker x:Name="date_to" Margin="8"/>
         </StackPanel>
-        <ScrollViewer Grid.Row="5" />
+        <ListView x:Name="list_searchResults" Grid.Row="5" >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Subject}" Margin="10"/>
+                        <TextBlock Text="{Binding Sender}" Margin="10"/>
+                        <TextBlock Text="{Binding Date}" Margin="10"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </UserControl>

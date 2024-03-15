@@ -24,6 +24,8 @@ namespace HashTrack
     /// </summary>
     public partial class HashTrackSearchWpfControl : System.Windows.Controls.UserControl
     {
+        private List<SearchResultViewItem> _searchResults = new List<SearchResultViewItem>();
+
         public HashTrackSearchWpfControl()
         {
             InitializeComponent();
@@ -35,6 +37,13 @@ namespace HashTrack
             {
                 var searchQuery = GetSearchQuery();
                 OnSearch(searchQuery);
+                _searchResults.Add(new SearchResultViewItem
+                {
+                    Title = "Test",
+                    Sender = "Test",
+                    Date = DateTime.Now
+                });
+                list_searchResults.ItemsSource = _searchResults;
             }
             catch (SearchQueryException ex)
             {
