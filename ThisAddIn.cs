@@ -7,15 +7,38 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 using Office = Microsoft.Office.Core;
 using System.Windows.Forms;
 using System.Diagnostics;
+using HashTrack.Services;
+using Autofac;
 
 namespace HashTrack
 {
     public partial class ThisAddIn
     {
         private Microsoft.Office.Tools.CustomTaskPane myCustomTaskPane;
+        private AdvancedSearchCompleteHandler _advancedSearchCompleteHandler;
+        private ArtifactSearchService _artifactSearchService;
+
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
+            MyStartup.ConfigureContainer();
+
+            using (var scope = MyStartup.Container.BeginLifetimeScope())
+            {
+                _advancedSearchCompleteHandler = scope.Resolve<AdvancedSearchCompleteHandler>();
+                _artifactSearchService = scope.Resolve<ArtifactSearchService>();
+            }
+            Application.AdvancedSearchComplete += _advancedSearchCompleteHandler.OnAdvancedSearchComplete;
+
+            var wpfControl = new HashTrackSearchWpfControl();
+            wpfControl.SearchInitiated += _artifactSearchService.Search;
+
+            var myUserControl1 = new UserControl1(wpfControl);
+            myCustomTaskPane = this.CustomTaskPanes.Add(myUserControl1, "HashTrack - Hash search");
+            myCustomTaskPane.Visible = true;
+            myCustomTaskPane.Width = 350;
+            //myUserControl1.SearchInitiated += _artifactSearchService.Search;
+            /*
             try
             {
                 var myUserControl1 = new UserControl1();
@@ -32,46 +55,10 @@ namespace HashTrack
                 // Log or handle exception
                 Debug.WriteLine(ex.Message);
             }
-
+            */
         }
 
         public bool blnSearchComp = false;
-
-        private void Application_AdvancedSearchComplete(Outlook.Search SearchObject)
-        {
-            if (SearchObject.Tag == "Test")
-            {
-                blnSearchComp = true;
-                Outlook.Results results = SearchObject.Results;
-                for (int i = 1; i <= results.Count; i++)
-                {
-                    Outlook._MailItem mailItem = results[i] as Outlook._MailItem;
-                    if (mailItem != null)
-                    {
-                        mailItem.Display(false);
-                        System.Diagnostics.Debug.WriteLine(mailItem.SenderName);
-                    }
-                    var contactItem = results[i] as Outlook._ContactItem;
-                    if (contactItem != null)
-                    {
-                        contactItem.Display(false);
-                        System.Diagnostics.Debug.WriteLine(contactItem.FullName);
-                    }
-                    var appointmentItem = results[i] as Outlook._AppointmentItem;
-                    if (appointmentItem != null)
-                    {
-                        appointmentItem.Display(false);
-                        System.Diagnostics.Debug.WriteLine(appointmentItem.Body);
-                    }
-                    var taskItem = results[i] as Outlook._TaskItem;
-                    if (taskItem != null)
-                    {
-                        taskItem.Display(false);
-                        System.Diagnostics.Debug.WriteLine(taskItem.Body);
-                    }
-                }
-            }
-        }
 
         public void TestAdvancedSearchComplete(string keyword)
         {
@@ -122,7 +109,7 @@ namespace HashTrack
         private void MyUserControl1_SearchInitiated(string keyword)
         {
             // Execute search logic here
-            try
+            /*try
             {
                 TestAdvancedSearchComplete(keyword); // Update this method to accept a keyword
             }
@@ -130,7 +117,7 @@ namespace HashTrack
             {
                 // Log or handle exception
                 Debug.WriteLine(ex.Message);
-            }
+            }*/
         }
 
         private enum ArtifactType
@@ -138,7 +125,6 @@ namespace HashTrack
             Emails = 0,
             Appointments = 1,
             Tasks = 2,
-
         }
 
         /*

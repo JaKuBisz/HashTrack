@@ -13,9 +13,10 @@ namespace HashTrack
 {
     public partial class UserControl1 : UserControl
     {
-        public UserControl1()
+        public UserControl1(HashTrackSearchWpfControl child)
         {
             InitializeComponent();
+            elementHost1.Child = child;
         }
 
 
@@ -55,8 +56,8 @@ namespace HashTrack
         }
         private void button2_Click_1(object sender, EventArgs e)
         {
-            string keyword = tb_search.Text;
-            OnSearch(keyword);
+            //string keyword = tb_search.Text;
+            //OnSearch(keyword);
         }
 
         private void tb_search_TextChanged(object sender, EventArgs e)
