@@ -10,6 +10,8 @@ using System.Diagnostics;
 using HashTrack.Services;
 using Autofac;
 using HashTrack.DTOs;
+using HashTrack.Enums;
+using HashTrack.Helpers;
 
 namespace HashTrack
 {
@@ -20,17 +22,14 @@ namespace HashTrack
         private ArtifactSearchService _artifactSearchService;
         private HashTrackSearchWpfControl _hashTrackSearchWpfControl;
 
-
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
             MyStartup.ConfigureContainer();
 
-            using (var scope = MyStartup.Container.BeginLifetimeScope())
-            {
-                _advancedSearchCompleteHandler = scope.Resolve<AdvancedSearchCompleteHandler>();
-                _artifactSearchService = scope.Resolve<ArtifactSearchService>();
-                this._hashTrackSearchWpfControl = scope.Resolve<HashTrackSearchWpfControl>();
-            }
+            _advancedSearchCompleteHandler = MyStartup.ServiceLocator.Resolve<AdvancedSearchCompleteHandler>();
+            _artifactSearchService = MyStartup.ServiceLocator.Resolve<ArtifactSearchService>();
+            _hashTrackSearchWpfControl = MyStartup.ServiceLocator.Resolve<HashTrackSearchWpfControl>();
+
             Application.AdvancedSearchComplete += _advancedSearchCompleteHandler.OnAdvancedSearchComplete;
 
             //var _hashTrackSearchWpfControl = new HashTrackSearchWpfControl();

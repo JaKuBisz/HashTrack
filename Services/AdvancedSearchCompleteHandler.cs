@@ -1,4 +1,5 @@
 ﻿using HashTrack.DTOs;
+using HashTrack.Enums;
 using HashTrack.Helpers;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack.Services
 {
+    [RegisterService(typeof(AdvancedSearchCompleteHandler), LifeCycle.Singleton)]
     public class AdvancedSearchCompleteHandler
     {
         private readonly HashTrackSearchWpfControl _hashTrackSearchWpfControl;

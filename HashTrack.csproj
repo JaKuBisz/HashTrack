@@ -193,17 +193,20 @@
     <Compile Include="DTOs\AdvancedSearchQueryDto.cs" />
     <Compile Include="DTOs\SearchResultViewItem.cs" />
     <Compile Include="Enums\ArtifactTypes.cs" />
+    <Compile Include="Enums\LifeCycle.cs" />
     <Compile Include="Exception\SearchQueryException.cs" />
     <Compile Include="HashTrackSearchWpfControl.xaml.cs">
       <DependentUpon>HashTrackSearchWpfControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Constants.cs" />
+    <Compile Include="Helpers\RegisterServiceAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MyStartup.cs" />
     <Compile Include="Services\AdvancedSearchCompleteHandler.cs" />
     <Compile Include="Services\ArtifactSearchService.cs" />
+    <Compile Include="Services\ServiceLocator.cs" />
     <Compile Include="UserControl1.cs">
       <SubType>UserControl</SubType>
     </Compile>

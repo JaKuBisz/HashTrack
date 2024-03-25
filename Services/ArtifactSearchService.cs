@@ -12,6 +12,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack.Services
 {
+    [RegisterService(typeof(ArtifactSearchService), LifeCycle.Singleton)]
     internal class ArtifactSearchService
     {
         private readonly Application _application;

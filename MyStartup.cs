@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac;
+using HashTrack.Enums;
+using HashTrack.Helpers;
 using HashTrack.Services;
 using Microsoft.Office.Interop.Outlook;
 
@@ -12,6 +15,7 @@ namespace HashTrack
     public static class MyStartup
     {
         public static IContainer Container { get; private set; }
+        public static ServiceLocator ServiceLocator { get; private set; }
 
         public static void ConfigureContainer()
         {
@@ -23,12 +27,50 @@ namespace HashTrack
             builder.Register(c => Globals.ThisAddIn.Application).As<Application>();
             builder.RegisterType<ThisAddIn>().PropertiesAutowired();
 
+            RegisterDecoratedServices(builder);
             // Register your services here, for example:
-            builder.RegisterType<AdvancedSearchCompleteHandler>().As<AdvancedSearchCompleteHandler>().SingleInstance();
-            builder.RegisterType<HashTrackSearchWpfControl>().SingleInstance();
+            //builder.RegisterType<AdvancedSearchCompleteHandler>().As<AdvancedSearchCompleteHandler>().SingleInstance();
+            //builder.RegisterType<HashTrackSearchWpfControl>().SingleInstance();
             builder.RegisterType<ArtifactSearchService>().As<ArtifactSearchService>();
 
             Container = builder.Build();
+
+            var scope = Container.BeginLifetimeScope();
+            ServiceLocator = new ServiceLocator(scope);
+        }
+
+        private static void RegisterDecoratedServices(ContainerBuilder builder)
+        {
+            // Get all types from the current assembly
+            var types = Assembly.GetExecutingAssembly().GetTypes();
+
+            foreach (var type in types)
+            {
+                // Get the RegisterServiceAttribute on this type, if it exists
+                var registerServiceAttribute = type.GetCustomAttribute<RegisterServiceAttribute>();
+
+                if (registerServiceAttribute != null)
+                {
+                    // Register the type with Autofac
+                    var registrationBuilder = builder.RegisterType(type).As(registerServiceAttribute.ServiceType);
+
+                    // Set the lifecycle
+                    switch (registerServiceAttribute.LifeCycle)
+                    {
+                        case LifeCycle.Singleton:
+                            registrationBuilder.SingleInstance();
+                            break;
+                        case LifeCycle.Scoped:
+                            registrationBuilder.InstancePerLifetimeScope();
+                            break;
+                        case LifeCycle.Transient:
+                            registrationBuilder.InstancePerDependency();
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+            }
         }
     }
 

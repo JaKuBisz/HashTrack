@@ -1,6 +1,7 @@
 ﻿using HashTrack.DTOs;
 using HashTrack.Enums;
 using HashTrack.Exception;
+using HashTrack.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +22,9 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 namespace HashTrack
 {
     /// <summary>
-    /// Interaction logic for HashTrackSearchWpfControl.xaml
+    /// Interaction logic for HashTrackSearchWpfControl.xaml haha
     /// </summary>
+    [RegisterService(typeof(HashTrackSearchWpfControl), LifeCycle.Singleton)]
     public partial class HashTrackSearchWpfControl : System.Windows.Controls.UserControl
     {
         private List<SearchResultViewItem> _searchResults = new List<SearchResultViewItem>();
@@ -132,6 +134,10 @@ namespace HashTrack
         {
             var listView = sender as System.Windows.Controls.ListView;
             var selectedItem = listView.SelectedItem as SearchResultViewItem;
+            if (selectedItem == null)
+            {
+                return;
+            }
 
             if (selectedItem.OriginalItem is Outlook.MailItem mailItem)
             {
