@@ -16,22 +16,19 @@ namespace HashTrack.Services
         private readonly HashTrackSearchWpfControl _hashTrackSearchWpfControl;
         public AdvancedSearchCompleteHandler(HashTrackSearchWpfControl hashTrackSearchWpfControl)
         {
-
             _hashTrackSearchWpfControl = hashTrackSearchWpfControl;
-
         }
+
         public void OnAdvancedSearchComplete(Outlook.Search SearchObject)
         {
             // Handle the event here
-            // This is just an example, replace with your own logic
             if (SearchObject.Tag == Constants.DefaultSearchTag)
             {
-                //blnSearchComp = true;
                 Outlook.Results results = SearchObject.Results;
                 var transformedResults = TransformResultForView(results);
 
 
-                _hashTrackSearchWpfControl.AddSearchResults(transformedResults);
+                _hashTrackSearchWpfControl.UpdateSearchResults(transformedResults);
 
                 /*
                 for (int i = 1; i <= results.Count; i++)
@@ -123,8 +120,6 @@ namespace HashTrack.Services
                 {
                     throw new ArgumentException("The result is not of any known type");
                 }
-
-
             }
         }
     }

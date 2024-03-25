@@ -32,24 +32,10 @@ namespace HashTrack
         public HashTrackSearchWpfControl()
         {
             InitializeComponent();
-            /*
-            _searchResults.Add(new SearchResultViewItem
-            {
-                Title = "Title",
-                Sender = "Sender",
-                Date = DateTime.Now
-            });
-
-            _searchResults.Add(new SearchResultViewItem
-            {
-                Title = "Title2",
-                Sender = "Sender2",
-                Date = DateTime.Now
-            });*/
             list_searchResults.ItemsSource = _searchResults;
         }
 
-        public void AddSearchResults(List<SearchResultViewItem> searchResults)
+        public void UpdateSearchResults(List<SearchResultViewItem> searchResults)
         {
             _searchResults.Clear();
             _searchResults.AddRange(searchResults);
