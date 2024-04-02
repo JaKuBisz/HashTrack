@@ -4,6 +4,7 @@ using HashTrack.Exception;
 using HashTrack.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,19 +28,28 @@ namespace HashTrack
     [RegisterService(typeof(HashTrackSearchWpfControl), LifeCycle.Singleton)]
     public partial class HashTrackSearchWpfControl : System.Windows.Controls.UserControl
     {
-        private List<SearchResultViewItem> _searchResults = new List<SearchResultViewItem>();
+        private ObservableCollection<SearchResultViewItem> _searchResults = new ObservableCollection<SearchResultViewItem>();
+        private ObservableCollection<IndexingResultsViewItem> _indexingHashtags = new ObservableCollection<IndexingResultsViewItem>();
 
         public HashTrackSearchWpfControl()
         {
             InitializeComponent();
             list_searchResults.ItemsSource = _searchResults;
+            list_Hashtags.ItemsSource = _indexingHashtags;
         }
 
-        public void UpdateSearchResults(List<SearchResultViewItem> searchResults)
+        public void SetSearchResults(List<SearchResultViewItem> searchResults)
         {
             _searchResults.Clear();
-            _searchResults.AddRange(searchResults);
+            searchResults.ForEach(_searchResults.Add);
             list_searchResults.Items.Refresh();
+        }
+
+        public void SetIndexingResult(List<IndexingResultsViewItem> result)
+        {
+            _indexingHashtags.Clear();
+            result.ForEach(_indexingHashtags.Add);
+            list_Hashtags.Items.Refresh();
         }
 
         private void btn_search_Click(object sender, RoutedEventArgs e)
@@ -61,12 +71,12 @@ namespace HashTrack
         }
 
         // Define a delegate for search event
-        public delegate void SearchEventHandler(AdvancedSearchQueryDto searchQuery);
+        public delegate void SearchEventHandler(AdvancedSearchQueryOptions searchQuery);
         // Define an event based on the delegate
         public event SearchEventHandler SearchInitiated;
 
         // Method to call when search is initiated (e.g., button click)
-        protected void OnSearch(AdvancedSearchQueryDto searchQuery)
+        protected void OnSearch(AdvancedSearchQueryOptions searchQuery)
         {
             SearchInitiated?.Invoke(searchQuery);
         }
@@ -76,14 +86,16 @@ namespace HashTrack
 
         }
 
-        private AdvancedSearchQueryDto GetSearchQuery()
+        private AdvancedSearchQueryOptions GetSearchQuery()
         {
-            return new AdvancedSearchQueryDto
+            return new AdvancedSearchQueryOptions
             {
                 Keyword = tb_searchbar.Text,
                 Artefacts = EvaluateArtefactsSelection(),
                 From = date_from.SelectedDate,
-                To = date_to.SelectedDate
+                To = date_to.SelectedDate,
+                Tag = Constants.DefaultSearchTag,
+                ExactMatch = true
             };
         }
 
@@ -141,6 +153,26 @@ namespace HashTrack
             {
                 taskItem.Display(false);
             }
+
+        }
+
+        private void list_Hashtags_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var listView = sender as System.Windows.Controls.ListView;
+            var selectedItem = listView.SelectedItem as IndexingResultsViewItem;
+            if (selectedItem == null)
+            {
+                return;
+            }
+            
+            var searchResults = selectedItem.SearchResults;
+            tb_searchbar.Text = selectedItem.HashTag;
+            SetSearchResults(searchResults.ToList());
+            mainTabControl.SelectedIndex = 0;
+        }
+
+        private void StartIndexing_Click(object sender, RoutedEventArgs e)
+        {
 
         }
     }

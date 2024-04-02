@@ -5,15 +5,12 @@ using Microsoft.Office.Interop.Outlook;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Outlook = Microsoft.Office.Interop.Outlook;
+using Filter = HashTrack.Helpers.Constants.DaslFilter.HttpMail;
 
 namespace HashTrack.Services
 {
     [RegisterService(typeof(ArtifactSearchService), LifeCycle.Singleton)]
-    internal class ArtifactSearchService
+    public class ArtifactSearchService
     {
         private readonly Application _application;
         public ArtifactSearchService(Application application) 
@@ -22,33 +19,26 @@ namespace HashTrack.Services
 
         }
 
-        public void Search(AdvancedSearchQueryDto searchQuery)//, ArtifactTypes artifactTypes)
+        public void SearchExactMatch(AdvancedSearchQueryOptions searchQuery)//, ArtifactTypes artifactTypes)
         {
             string scope = GetScope(searchQuery.Artefacts);
-            string filter = GetFilter(searchQuery.Keyword, searchQuery.From, searchQuery.To);
+            string filter = GetFilter(searchQuery.Keyword, searchQuery.From, searchQuery.To, searchQuery.ExactMatch);
 
-            var search = _application.AdvancedSearch(scope, filter, true, Constants.DefaultSearchTag);
-
-
-            /*
-            Outlook.MAPIFolder inboxFolder = _application.Session.GetDefaultFolder(Outlook.OlDefaultFolders.olFolderInbox);
-            var inboxDefault = inboxFolder.Name;
-
-            string scope = "'" + inboxFolder.FolderPath + "'";
-            Outlook.Search search = Globals.ThisAddIn.Application.AdvancedSearch($"'{inboxDefault}','Contacts','Calendar', 'Tasks'", filter, true, "Test");
-*/
-         
+            _application.AdvancedSearch(scope, filter, true, searchQuery.Tag);
         }
 
-        private string GetFilter(string keyword, DateTime? from, DateTime? to)
+        private string GetFilter(string keyword, DateTime? from, DateTime? to, bool exactMatch = false)
         {
-            DateTime startDate = from ?? DateTime.MinValue;
-            DateTime endDate = to ?? DateTime.MaxValue;
-            //DateTime expirationDate = DateTime.Now.AddDays(30);
-            //string expiresFilter = String.Format("urn:schemas:mailheader:expires>'{0}' AND urn:schemas:mailheader:expires<'{0}'", DateTime.Now, expirationDate);
-            return String.Format("urn:schemas:httpmail:textdescription ci_phrasematch '{0}' AND urn:schemas:httpmail:date >= '{1}' AND urn:schemas:httpmail:date <= '{2}'", keyword, startDate.ToString("yyyy-MM-dd"), endDate.ToString("yyyy-MM-dd"));
-
-            //return String.Format("urn:schemas:httpmail:textdescription ci_phrasematch '{0}'", keyword);
+            var startDate = (from ?? DateTime.MinValue).ToString("yyyy-MM-dd");
+            var endDate = (to ?? DateTime.MaxValue).ToString("yyyy-MM-dd");
+            
+            var wordFilter = exactMatch 
+                ? Constants.DaslFilter.ExactMatch(keyword) 
+                : Constants.DaslFilter.SubString(keyword);
+            //var res = String.Format("urn:schemas:httpmail:textdescription {0} AND urn:schemas:httpmail:date >= '{1}' AND urn:schemas:httpmail:date <= '{2}'", wordFilter, startDate.ToString("yyyy-MM-dd"), endDate.ToString("yyyy-MM-dd"));
+            var filter = $"{Filter.Body} {wordFilter} AND {Filter.Date} >= '{startDate}' AND {Filter.Date} <= '{endDate}'";
+            return filter;
+            
         }
 
         private string GetScope(ArtifactTypes artifactTypes)

@@ -5,8 +5,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac;
+using Autofac.Builder;
+using HashTrack.Attributes;
 using HashTrack.Enums;
 using HashTrack.Helpers;
+using HashTrack.Interfaces;
 using HashTrack.Services;
 using Microsoft.Office.Interop.Outlook;
 
@@ -50,9 +53,20 @@ namespace HashTrack
                 var registerServiceAttribute = type.GetCustomAttribute<RegisterServiceAttribute>();
 
                 if (registerServiceAttribute != null)
-                {
-                    // Register the type with Autofac
-                    var registrationBuilder = builder.RegisterType(type).As(registerServiceAttribute.ServiceType);
+                {               
+                    IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> registrationBuilder;
+
+                    var handlerAttribute = type.GetCustomAttribute<RegisterHandlerAttribute>();
+                    if (handlerAttribute != null)
+                    {
+                        // Register handler with Autofac
+                        registrationBuilder = builder.RegisterType(type).Keyed(handlerAttribute.Tag, handlerAttribute.ServiceType);
+                    }
+                    else
+                    {
+                        // Register service with Autofac
+                        registrationBuilder = builder.RegisterType(type).As(registerServiceAttribute.ServiceType);
+                    }
 
                     // Set the lifecycle
                     switch (registerServiceAttribute.LifeCycle)

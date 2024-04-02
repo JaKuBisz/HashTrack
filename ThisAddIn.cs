@@ -18,7 +18,7 @@ namespace HashTrack
     public partial class ThisAddIn
     {
         private Microsoft.Office.Tools.CustomTaskPane myCustomTaskPane;
-        private AdvancedSearchCompleteHandler _advancedSearchCompleteHandler;
+        private SearchCompleteHandlerFactory _searchCompleteHandlerFactory;
         private ArtifactSearchService _artifactSearchService;
         private HashTrackSearchWpfControl _hashTrackSearchWpfControl;
 
@@ -28,14 +28,16 @@ namespace HashTrack
             MyStartup.ConfigureContainer();
 
             // Resolve services (can not be done in the constructor of the class)
-            _advancedSearchCompleteHandler = MyStartup.ServiceLocator.Resolve<AdvancedSearchCompleteHandler>();
+            _searchCompleteHandlerFactory = MyStartup.ServiceLocator.Resolve<SearchCompleteHandlerFactory>();
             _artifactSearchService = MyStartup.ServiceLocator.Resolve<ArtifactSearchService>();
             _hashTrackSearchWpfControl = MyStartup.ServiceLocator.Resolve<HashTrackSearchWpfControl>();
+            var indexingService = MyStartup.ServiceLocator.Resolve<IndexingService>();
 
             // Register event handlers
-            Application.AdvancedSearchComplete += _advancedSearchCompleteHandler.OnAdvancedSearchComplete;
-            _hashTrackSearchWpfControl.SearchInitiated += _artifactSearchService.Search;
+            Application.AdvancedSearchComplete += _searchCompleteHandlerFactory.HandleSearchCompleted;
+            _hashTrackSearchWpfControl.SearchInitiated += _artifactSearchService.SearchExactMatch;
             //var _hashTrackSearchWpfControl = new HashTrackSearchWpfControl();
+            indexingService.IndexAllArtifacts();
 
             // Create and initiate the custom task pane
             var myUserControl1 = new UserControl1(_hashTrackSearchWpfControl);

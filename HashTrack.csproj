@@ -190,22 +190,30 @@
     can be found.
   -->
   <ItemGroup>
-    <Compile Include="DTOs\AdvancedSearchQueryDto.cs" />
+    <Compile Include="Attributes\RegisterHandlerAttribute.cs" />
+    <Compile Include="Attributes\RegisterServiceAttribute.cs" />
+    <Compile Include="DTOs\AdvancedSearchQueryOptions.cs" />
+    <Compile Include="DTOs\IndexingResultsViewItem.cs" />
     <Compile Include="DTOs\SearchResultViewItem.cs" />
     <Compile Include="Enums\ArtifactTypes.cs" />
     <Compile Include="Enums\LifeCycle.cs" />
     <Compile Include="Exception\SearchQueryException.cs" />
+    <Compile Include="Handlers\AdvancedSearchCompleteHandler.cs" />
+    <Compile Include="Handlers\IndexingSearchCompleteHandler.cs" />
     <Compile Include="HashTrackSearchWpfControl.xaml.cs">
       <DependentUpon>HashTrackSearchWpfControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ArtefactItemHelper.cs" />
     <Compile Include="Helpers\Constants.cs" />
-    <Compile Include="Helpers\RegisterServiceAttribute.cs" />
+    <Compile Include="Interfaces\ISearchCompleteHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MyStartup.cs" />
-    <Compile Include="Services\AdvancedSearchCompleteHandler.cs" />
+    <Compile Include="Services\PersistanceService.cs" />
+    <Compile Include="Services\SearchCompleteHandlerFactory.cs" />
     <Compile Include="Services\ArtifactSearchService.cs" />
+    <Compile Include="Services\IndexingService.cs" />
     <Compile Include="Services\ServiceLocator.cs" />
     <Compile Include="UserControl1.cs">
       <SubType>UserControl</SubType>
