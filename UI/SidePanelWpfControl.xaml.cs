@@ -42,6 +42,7 @@ namespace HashTrack
         {
             _searchResults.Clear();
             searchResults.ForEach(_searchResults.Add);
+            IndexingOrderBy(index_cb_order_by.SelectedIndex);
             list_searchResults.Items.Refresh();
         }
 
@@ -52,6 +53,13 @@ namespace HashTrack
             list_Hashtags.Items.Refresh();
         }
 
+
+        public enum OrderBy
+        {
+            DateDesc,
+            OccurencesDesc,
+            OccurencesAsc
+        }
         private void btn_search_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -128,6 +136,37 @@ namespace HashTrack
             return artefacts;
         }
 
+        private void IndexingOrderBy(int orderBy)
+        {
+            //TODO: Implement sorting
+            switch (orderBy)
+            {
+                case (int)OrderBy.DateDesc:
+                    //_indexingHashtags = new ObservableCollection<IndexingResultsViewItem>(_indexingHashtags.OrderByDescending(x => x.));
+                    break;
+                case (int)OrderBy.OccurencesDesc:
+                    _indexingHashtags = new ObservableCollection<IndexingResultsViewItem>(_indexingHashtags.OrderByDescending(x => x.NumOfOccurences));
+                    break;
+                case (int)OrderBy.OccurencesAsc:
+                    _indexingHashtags = new ObservableCollection<IndexingResultsViewItem>(_indexingHashtags.OrderBy(x => x.NumOfOccurences));
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        //TODO: FIx this - currently will delete cached need to implement a caching service
+        private void IndexingFilrerByNumOfOccurencesMin(int minOccurences)
+        {
+            _indexingHashtags = new ObservableCollection<IndexingResultsViewItem>(_indexingHashtags.Where(x => x.NumOfOccurences >= minOccurences));
+        }
+
+        private void IndexingFilrerByNumOfOccurencesMax(int maxOccurences)
+        {
+            _indexingHashtags = new ObservableCollection<IndexingResultsViewItem>(_indexingHashtags.Where(x => x.NumOfOccurences <= maxOccurences));
+        }
+
         private void list_searchResults_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var listView = sender as System.Windows.Controls.ListView;
@@ -156,17 +195,45 @@ namespace HashTrack
 
         }
 
-        private void list_Hashtags_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void list_searchResults_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var listView = sender as System.Windows.Controls.ListView;
-            var selectedItem = listView.SelectedItem as IndexingResultsViewItem;
-            if (selectedItem == null)
+            var item = sender as System.Windows.Controls.ListViewItem;
+            var content = item.Content as SearchResultViewItem;
+            if (content == null)
             {
                 return;
             }
-            
-            var searchResults = selectedItem.SearchResults;
-            tb_searchbar.Text = selectedItem.HashTag;
+
+            if (content.OriginalItem is Outlook.MailItem mailItem)
+            {
+                mailItem.Display(false);
+            }
+            else if (content.OriginalItem is Outlook.AppointmentItem appointmentItem)
+            {
+                appointmentItem.Display(false);
+            }
+            else if (content.OriginalItem is Outlook.ContactItem contactItem)
+            {
+                contactItem.Display(false);
+            }
+            else if (content.OriginalItem is Outlook.TaskItem taskItem)
+            {
+                taskItem.Display(false);
+            }
+
+        }
+
+        private void list_Hashtags_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var item = sender as System.Windows.Controls.ListViewItem;
+            var content = item.Content as IndexingResultsViewItem;
+            if (content == null)
+            {
+                return;
+            }
+
+            var searchResults = content.SearchResults;
+            tb_searchbar.Text = content.HashTag;
             SetSearchResults(searchResults.ToList());
             mainTabControl.SelectedIndex = 0;
         }
@@ -174,6 +241,11 @@ namespace HashTrack
         private void StartIndexing_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void index_cb_order_by_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            IndexingOrderBy(index_cb_order_by.SelectedIndex);
         }
     }
 }

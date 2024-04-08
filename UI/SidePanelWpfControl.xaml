@@ -21,26 +21,35 @@
 
         <TextBlock Text="Artifact Filters" Grid.Row="0" FontSize="14" FontWeight="Bold" Margin="10" HorizontalAlignment="Center"/>
 
-        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0">
             <CheckBox x:Name="ch_email" Content="Email" Margin="8" IsChecked="True"/>
             <CheckBox x:Name="ch_appointment" Content="Appointments" Margin="8" IsChecked="True"/>
             <CheckBox x:Name="ch_task" Content="Tasks" Margin="8" IsChecked="True"/>
             <CheckBox x:Name="ch_contact" Content="Contacts" Margin="8" IsChecked="True"/>
         </StackPanel>
-
-        <TextBox x:Name="tb_searchbar" Grid.Row="3" Margin="10" HorizontalAlignment="Stretch" FontSize="16"/>
-
-        <Button x:Name="btn_search" Content="Search" Grid.Row="3" Width="80" Margin="10" HorizontalAlignment="Right" Click="btn_search_Click"/>
-
-        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="10" HorizontalAlignment="Center">
+                
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0" HorizontalAlignment="Center">
             <TextBlock Text="From:" VerticalAlignment="Center"/>
             <DatePicker x:Name="date_from" Margin="8"/>
             <TextBlock Text="To:" VerticalAlignment="Center" Margin="10,0,0,0"/>
             <DatePicker x:Name="date_to" Margin="8"/>
         </StackPanel>
-        <ListView x:Name="list_searchResults" Grid.Row="5" HorizontalAlignment="Stretch" Width="Auto" SelectionChanged="list_searchResults_SelectionChanged">
+                
+        <TextBox x:Name="tb_searchbar" Grid.Row="3" Margin="5,3" HorizontalAlignment="Stretch" FontSize="16"/>
+        <Button x:Name="btn_search" Content="Search" Grid.Row="3" Width="80" Margin="5,3"  HorizontalAlignment="Right" Click="btn_search_Click"/>
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="10, 5" HorizontalAlignment="Right">
+            <TextBlock Text="Order by:" VerticalAlignment="Center"/>
+                <ComboBox x:Name="cb_order_by" Margin="8,0,0,0">
+                    <ComboBoxItem Content="Date" IsSelected="True"/>
+                    <ComboBoxItem Content="Title"/>
+                    <ComboBoxItem Content="Sender"/>
+                </ComboBox>
+        </StackPanel>
+        <ListView x:Name="list_searchResults" Grid.Row="5" HorizontalAlignment="Stretch" Width="Auto">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
+                    <EventSetter Event="MouseDoubleClick" Handler="list_searchResults_MouseDoubleClick"/>
                     <Setter Property="HorizontalAlignment" Value="Stretch"/>
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 </Style>
@@ -72,11 +81,45 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Button Content="Start Indexing" HorizontalAlignment="Center" Margin="10" VerticalAlignment="Top" Click="StartIndexing_Click"/>
-                <ListView x:Name="list_Hashtags" Grid.Row="1" Margin="10" SelectionMode="Single" SelectionChanged="list_Hashtags_SelectionChanged">
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10, 5" HorizontalAlignment="Center">
+                    <TextBlock Text="From:" VerticalAlignment="Center"/>
+                    <DatePicker x:Name="index_date_from" VerticalAlignment="Center" Margin="3, 10"/>
+                    <TextBlock Text="To:" VerticalAlignment="Center" Margin="3, 0, 0, 0"/>
+                    <DatePicker x:Name="index_date_to" Margin="3, 10"/>
+                    <Button Content="Re-index" Grid.Row="3" HorizontalAlignment="Center" Margin="10" VerticalAlignment="Top" Click="StartIndexing_Click"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5, 5" HorizontalAlignment="Center">
+                    <TextBlock Text="Num usages From:" VerticalAlignment="Center"/>
+                    <TextBox x:Name="index_tb_num_from" Width="50" VerticalAlignment="Center" Margin="3, 10"/>
+                    <TextBlock Text="To:" VerticalAlignment="Center" Margin="3, 0, 0, 0"/>
+                    <TextBox x:Name="index_tb_num_to" Width="50" Margin="3, 10"/>
+                    <TextBlock Text="Order by:" VerticalAlignment="Center" Margin="5,10,0,10"/>
+                    <ComboBox x:Name="index_cb_order_by" Margin="5,10,0,10" SelectionChanged="index_cb_order_by_SelectionChanged">
+                        <ComboBoxItem Content="Most used" IsSelected="True"/>
+                        <ComboBoxItem Content="Most recent"/>
+                        <ComboBoxItem Content="Least used"/>
+                    </ComboBox>
+
+                </StackPanel>
+
+                <TextBox x:Name="index_tb_searchbar" Grid.Row="3" Margin="5,3" HorizontalAlignment="Stretch" FontSize="16"/>
+                <!-- <Button x:Name="index_btn_search" Content="Search" Grid.Row="3" Width="80" Margin="5,3"  HorizontalAlignment="Right" Click="btn_search_Click"/> -->
+                
+                <ListView x:Name="list_Hashtags" Grid.Row="5" Margin="10" SelectionMode="Single">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <EventSetter Event="MouseDoubleClick" Handler="list_Hashtags_MouseDoubleClick"/>
+                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="2">

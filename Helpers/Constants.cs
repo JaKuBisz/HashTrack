@@ -25,5 +25,12 @@ namespace HashTrack.Helpers
                 public const string Date = HttpMailSchema+":date";
             }
         }
+
+        public class Storage
+        {
+            public const string IndexedHashTags = "IndexedHashTags";
+            public const string ClusteredHashTags = "ClusteredHashTags";
+            public const string HashtagClusteringSettings = "HashtagClusteringSettings";
+        }
     }
 }

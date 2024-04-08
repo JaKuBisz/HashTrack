@@ -106,8 +106,14 @@
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="SimMetrics.Net, Version=1.0.5.0, Culture=neutral, PublicKeyToken=c58dc06d59f3391b, processorArchitecture=MSIL">
+      <HintPath>packages\SimMetrics.Net.1.0.5\lib\net45\SimMetrics.Net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -190,17 +196,22 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="Clustering\DTOs\ClusteringSettingDto.cs" />
+    <Compile Include="Clustering\Services\ClusteringClassifier.cs" />
     <Compile Include="Helpers\ArtefactItemHelper.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="IoC\Attributes\RegisterHandlerAttribute.cs" />
     <Compile Include="IoC\Attributes\RegisterServiceAttribute.cs" />
     <Compile Include="IoC\Enums\LifeCycle.cs" />
     <Compile Include="IoC\Services\ServiceLocator.cs" />
-    <Compile Include="Persistance\Services\PersistanceService.cs" />
+    <Compile Include="Persistance\Interfaces\IStorage.cs" />
+    <Compile Include="Persistance\Services\CachedPersistanceStorage.cs" />
+    <Compile Include="Persistance\Services\PersistantStorage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Search\DTOs\AdvancedSearchQueryOptions.cs" />
+    <Compile Include="Search\DTOs\IndexingResultDto.cs" />
     <Compile Include="Search\DTOs\IndexingResultsViewItem.cs" />
     <Compile Include="Search\DTOs\SearchResultViewItem.cs" />
     <Compile Include="Search\Enums\ArtifactTypes.cs" />
@@ -262,9 +273,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Clustering\Interfaces\" />
     <Folder Include="ExampleStructure\Interfaces\" />
     <Folder Include="ExampleStructure\Services\" />
-    <Folder Include="Persistance\Interfaces\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
