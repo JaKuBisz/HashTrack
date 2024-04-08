@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HashTrack"
-             xmlns:Collections="clr-namespace:System.Collections;assembly=mscorlib" x:Class="HashTrack.HashTrackSearchWpfControl"
+             xmlns:Collections="clr-namespace:System.Collections;assembly=mscorlib" x:Class="HashTrack.SidePanelWpfControl"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="400">
     <TabControl x:Name="mainTabControl">

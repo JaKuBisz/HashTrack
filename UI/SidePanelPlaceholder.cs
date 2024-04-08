@@ -11,9 +11,9 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack
 {
-    public partial class UserControl1 : UserControl
+    public partial class SidePanelPlaceholder : UserControl
     {
-        public UserControl1(HashTrackSearchWpfControl child)
+        public SidePanelPlaceholder(SidePanelWpfControl child)
         {
             InitializeComponent();
             elementHost1.Child = child;

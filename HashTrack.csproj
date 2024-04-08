@@ -190,36 +190,42 @@
     can be found.
   -->
   <ItemGroup>
-    <Compile Include="Attributes\RegisterHandlerAttribute.cs" />
-    <Compile Include="Attributes\RegisterServiceAttribute.cs" />
-    <Compile Include="DTOs\AdvancedSearchQueryOptions.cs" />
-    <Compile Include="DTOs\IndexingResultsViewItem.cs" />
-    <Compile Include="DTOs\SearchResultViewItem.cs" />
-    <Compile Include="Enums\ArtifactTypes.cs" />
-    <Compile Include="Enums\LifeCycle.cs" />
-    <Compile Include="Exception\SearchQueryException.cs" />
-    <Compile Include="Handlers\AdvancedSearchCompleteHandler.cs" />
-    <Compile Include="Handlers\IndexingSearchCompleteHandler.cs" />
-    <Compile Include="HashTrackSearchWpfControl.xaml.cs">
-      <DependentUpon>HashTrackSearchWpfControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Helpers\ArtefactItemHelper.cs" />
     <Compile Include="Helpers\Constants.cs" />
-    <Compile Include="Interfaces\ISearchCompleteHandler.cs" />
+    <Compile Include="IoC\Attributes\RegisterHandlerAttribute.cs" />
+    <Compile Include="IoC\Attributes\RegisterServiceAttribute.cs" />
+    <Compile Include="IoC\Enums\LifeCycle.cs" />
+    <Compile Include="IoC\Services\ServiceLocator.cs" />
+    <Compile Include="Persistance\Services\PersistanceService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MyStartup.cs" />
-    <Compile Include="Services\PersistanceService.cs" />
-    <Compile Include="Services\SearchCompleteHandlerFactory.cs" />
-    <Compile Include="Services\ArtifactSearchService.cs" />
-    <Compile Include="Services\IndexingService.cs" />
-    <Compile Include="Services\ServiceLocator.cs" />
-    <Compile Include="UserControl1.cs">
+    <Compile Include="Search\DTOs\AdvancedSearchQueryOptions.cs" />
+    <Compile Include="Search\DTOs\IndexingResultsViewItem.cs" />
+    <Compile Include="Search\DTOs\SearchResultViewItem.cs" />
+    <Compile Include="Search\Enums\ArtifactTypes.cs" />
+    <Compile Include="Search\Exceptions\SearchQueryException.cs" />
+    <Compile Include="Search\Interfaces\ISearchCompleteHandler.cs" />
+    <Compile Include="Search\Services\ArtifactSearchService.cs" />
+    <Compile Include="Search\Services\Handlers\AdvancedSearchCompleteHandler.cs" />
+    <Compile Include="Search\Services\Handlers\IndexingSearchCompleteHandler.cs" />
+    <Compile Include="Search\Services\IndexingService.cs" />
+    <Compile Include="Search\Services\SearchCompleteHandlerFactory.cs" />
+    <Compile Include="Startup\MyStartup.cs" />
+    <Compile Include="ThisAddIn.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ThisAddIn.Designer.cs">
+      <DependentUpon>ThisAddIn.Designer.xml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SidePanelPlaceholder.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UserControl1.Designer.cs">
-      <DependentUpon>UserControl1.cs</DependentUpon>
+    <Compile Include="UI\SidePanelPlaceholder.Designer.cs">
+      <DependentUpon>SidePanelPlaceholder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\SidePanelWpfControl.xaml.cs">
+      <DependentUpon>SidePanelWpfControl.xaml</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -230,8 +236,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="UserControl1.resx">
-      <DependentUpon>UserControl1.cs</DependentUpon>
+    <EmbeddedResource Include="UI\SidePanelPlaceholder.resx">
+      <DependentUpon>SidePanelPlaceholder.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="HashTrack_TemporaryKey.pfx" />
@@ -244,22 +250,21 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="ThisAddIn.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <AppDesigner Include="Properties\" />
     <None Include="ThisAddIn.Designer.xml">
       <DependentUpon>ThisAddIn.cs</DependentUpon>
     </None>
-    <Compile Include="ThisAddIn.Designer.cs">
-      <DependentUpon>ThisAddIn.Designer.xml</DependentUpon>
-    </Compile>
-    <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="HashTrackSearchWpfControl.xaml">
+    <Page Include="UI\SidePanelWpfControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ExampleStructure\Interfaces\" />
+    <Folder Include="ExampleStructure\Services\" />
+    <Folder Include="Persistance\Interfaces\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

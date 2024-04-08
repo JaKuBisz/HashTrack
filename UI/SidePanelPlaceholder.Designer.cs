@@ -1,6 +1,6 @@
 ﻿namespace HashTrack
 {
-    partial class UserControl1
+    partial class SidePanelPlaceholder
     {
         /// <summary> 
         /// Required designer variable.
@@ -30,7 +30,7 @@
         {
             this.button1 = new System.Windows.Forms.Button();
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.hashTrackSearchWpfControl1 = new HashTrack.HashTrackSearchWpfControl();
+            this.hashTrackSearchWpfControl1 = new HashTrack.SidePanelWpfControl();
             this.SuspendLayout();
             // 
             // button1
@@ -52,13 +52,13 @@
             this.elementHost1.Text = "elementHost2";
             this.elementHost1.Child = this.hashTrackSearchWpfControl1;
             // 
-            // UserControl1
+            // SidePanelPlaceholder
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.Controls.Add(this.elementHost1);
             this.Location = new System.Drawing.Point(15, 15);
-            this.Name = "UserControl1";
+            this.Name = "SidePanelPlaceholder";
             this.Size = new System.Drawing.Size(361, 675);
             this.Load += new System.EventHandler(this.UserControl1_Load);
             this.ResumeLayout(false);
@@ -71,6 +71,6 @@
 
         #endregion
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private HashTrackSearchWpfControl hashTrackSearchWpfControl1;
+        private SidePanelWpfControl hashTrackSearchWpfControl1;
     }
 }

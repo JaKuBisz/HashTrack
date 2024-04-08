@@ -12,9 +12,9 @@ namespace HashTrack.Handlers
     [RegisterHandler(typeof(ISearchCompleteHandler), Constants.IndexingSearchTag)]
     public class IndexingSearchCompleteHandler : ISearchCompleteHandler
     {
-        private readonly HashTrackSearchWpfControl _hashTrackSearchWpfControl;
+        private readonly SidePanelWpfControl _hashTrackSearchWpfControl;
 
-        public IndexingSearchCompleteHandler(HashTrackSearchWpfControl hashTrackSearchWpfControl)
+        public IndexingSearchCompleteHandler(SidePanelWpfControl hashTrackSearchWpfControl)
         {   
             _hashTrackSearchWpfControl = hashTrackSearchWpfControl;
         }

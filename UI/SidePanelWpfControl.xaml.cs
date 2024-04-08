@@ -23,15 +23,15 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 namespace HashTrack
 {
     /// <summary>
-    /// Interaction logic for HashTrackSearchWpfControl.xaml haha
+    /// Interaction logic for SidePanelWpfControl.xaml haha
     /// </summary>
-    [RegisterService(typeof(HashTrackSearchWpfControl), LifeCycle.Singleton)]
-    public partial class HashTrackSearchWpfControl : System.Windows.Controls.UserControl
+    [RegisterService(typeof(SidePanelWpfControl), LifeCycle.Singleton)]
+    public partial class SidePanelWpfControl : System.Windows.Controls.UserControl
     {
         private ObservableCollection<SearchResultViewItem> _searchResults = new ObservableCollection<SearchResultViewItem>();
         private ObservableCollection<IndexingResultsViewItem> _indexingHashtags = new ObservableCollection<IndexingResultsViewItem>();
 
-        public HashTrackSearchWpfControl()
+        public SidePanelWpfControl()
         {
             InitializeComponent();
             list_searchResults.ItemsSource = _searchResults;
