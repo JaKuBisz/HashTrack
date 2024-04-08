@@ -30,7 +30,7 @@ namespace HashTrack
             builder.Register(c => Globals.ThisAddIn.Application).As<Application>();
             builder.RegisterType<ThisAddIn>().PropertiesAutowired();
 
-            RegisterDecoratedServices(builder);
+            RegisterServices(builder);
             // Register your services here, for example:
             //builder.RegisterType<AdvancedSearchCompleteHandler>().As<AdvancedSearchCompleteHandler>().SingleInstance();
             //builder.RegisterType<HashTrackSearchWpfControl>().SingleInstance();
@@ -42,10 +42,25 @@ namespace HashTrack
             ServiceLocator = new ServiceLocator(scope);
         }
 
-        private static void RegisterDecoratedServices(ContainerBuilder builder)
+        private static void RegisterServices(ContainerBuilder builder)
+        {
+            var executingAssembly = Assembly.GetExecutingAssembly();
+            // Start with the executing assembly
+            var assembliesToScan = new List<Assembly> { executingAssembly };
+
+            // Add referenced assemblies
+            assembliesToScan.AddRange(GetReferencedAssemblies(executingAssembly));
+
+            foreach (var assembly in assembliesToScan)
+            {
+                RegisterDecoratedServicesForAssembly(builder, assembly);
+            }
+        }
+
+        private static void RegisterDecoratedServicesForAssembly(ContainerBuilder builder, Assembly assembly)
         {
             // Get all types from the current assembly
-            var types = Assembly.GetExecutingAssembly().GetTypes();
+            var types = assembly.GetTypes();
 
             foreach (var type in types)
             {
@@ -84,6 +99,17 @@ namespace HashTrack
                             throw new ArgumentOutOfRangeException();
                     }
                 }
+            }
+        }
+
+        // Helper method to get referenced assemblies
+        private static IEnumerable<Assembly> GetReferencedAssemblies(Assembly assembly)
+        {
+            var referencedAssembliesNames = assembly.GetReferencedAssemblies();
+            foreach (var assemblyName in referencedAssembliesNames)
+            {
+                // Load and yield each referenced assembly
+                yield return Assembly.Load(assemblyName);
             }
         }
     }
