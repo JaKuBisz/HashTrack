@@ -43,10 +43,10 @@ namespace HashTrack.Handlers
             _hashTrackSearchWpfControl.SetIndexingResult(result);
         }
         
-        private Dictionary<string, IndexingResultDto> GroupAndIndexResults(Search searchResult)
+        private Dictionary<string, HashTagDto> GroupAndIndexResults(Search searchResult)
         {
             // Group and index the search results here
-            var result = new Dictionary<string, IndexingResultDto>();
+            var result = new Dictionary<string, HashTagDto>();
 
             for (int i = 1; i <= searchResult.Results.Count; i++)
             {
@@ -69,7 +69,7 @@ namespace HashTrack.Handlers
                     }
                     else
                     {
-                        result.Add(hashTag, new IndexingResultDto(1, new HashSet<SearchResultViewItem> { searchResultViewItem }));
+                        result.Add(hashTag, new HashTagDto(1, new HashSet<SearchResultViewItem> { searchResultViewItem }));
                     }
                 }
             }
@@ -77,7 +77,7 @@ namespace HashTrack.Handlers
             return result;
         }
 
-        private Dictionary<string, IndexingResultDto> ClusterResults(Dictionary<string, IndexingResultDto> hashtags)
+        private Dictionary<string, HashTagDto> ClusterResults(Dictionary<string, HashTagDto> hashtags)
         {
             Dictionary<string, ClusteringSettingDto> clusteringSettings;
             _storage.TryGet(Constants.Storage.HashtagClusteringSettings, out clusteringSettings);
@@ -145,7 +145,7 @@ namespace HashTrack.Handlers
             return hashtags;
         }
 
-        private IndexingResultDto CombineHashTags(IndexingResultDto primary, IndexingResultDto secondary)
+        private HashTagDto CombineHashTags(HashTagDto primary, HashTagDto secondary)
         {
             primary.NumOfOccurences += secondary.NumOfOccurences;
             foreach (var result in secondary.SearchResults)

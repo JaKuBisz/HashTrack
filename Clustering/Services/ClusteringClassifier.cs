@@ -9,7 +9,7 @@ namespace HashTrack.Clustering.Services
 {
     public static class ClusteringClassifier
     {
-        private const double SimilarityThreshold = 0.8;
+        private const double SimilarityThreshold = 0.75;
         
         public static bool Classify(string text1, string text2)
         {
@@ -24,7 +24,7 @@ namespace HashTrack.Clustering.Services
             return numbersEqual && textualSimilarity > SimilarityThreshold;
         }
         
-        public static bool Classify(KeyValuePair<string, IndexingResultDto> tag1, KeyValuePair<string, IndexingResultDto> tag2)
+        public static bool Classify(KeyValuePair<string, HashTagDto> tag1, KeyValuePair<string, HashTagDto> tag2)
         {
             if (tag1.Value.NumOfOccurences <= tag2.Value.NumOfOccurences)
             {

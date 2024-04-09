@@ -16,7 +16,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <TextBlock Text="Artifact Filters" Grid.Row="0" FontSize="14" FontWeight="Bold" Margin="10" HorizontalAlignment="Center"/>
@@ -84,7 +84,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10, 5" HorizontalAlignment="Center">
@@ -112,7 +112,7 @@
                 <TextBox x:Name="index_tb_searchbar" Grid.Row="3" Margin="5,3" HorizontalAlignment="Stretch" FontSize="16"/>
                 <!-- <Button x:Name="index_btn_search" Content="Search" Grid.Row="3" Width="80" Margin="5,3"  HorizontalAlignment="Right" Click="btn_search_Click"/> -->
                 
-                <ListView x:Name="list_Hashtags" Grid.Row="5" Margin="10" SelectionMode="Single">
+                <ListView x:Name="list_Hashtags" Grid.Row="4" Margin="10" SelectionMode="Extended">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <EventSetter Event="MouseDoubleClick" Handler="list_Hashtags_MouseDoubleClick"/>
@@ -120,9 +120,25 @@
                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                         </Style>
                     </ListView.ItemContainerStyle>
-                    <ListView.ItemTemplate>
+                    <ListView.ItemTemplate>                      
                         <DataTemplate>
-                            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="2">
+                            
+                            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="2" HorizontalAlignment="Stretch">
+                                <Border.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Merge selected tags under '#HashTag'" Click="MenuItem_Merge_Click"/>
+                                        <MenuItem Header="See details" Click="MenuItem_Details_Click"/>
+                                    </ContextMenu>
+                                </Border.ContextMenu>
+                                <Border.ToolTip>
+                                    <ToolTip>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding HashTag}" FontWeight="Bold" FontSize="14"/>
+                                            <TextBlock Text="{Binding NumOfOccurences}" FontStyle="Italic"/>
+                                            <!-- Add more details here -->
+                                        </StackPanel>
+                                    </ToolTip>
+                                </Border.ToolTip>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding HashTag}" FontWeight="Bold"/>
                                     <TextBlock Text=" - "/>
@@ -134,5 +150,94 @@
                 </ListView>
             </Grid>
         </TabItem>
+        <TabItem Header="Hashtag detail">
+            <Grid>
+                <!-- Grid Row Definitions -->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="#HashTagName" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2" Margin="8"/>
+
+                    <TextBlock Text="Number of usages:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Margin="5"/>
+                    <TextBlock Text="{Binding SelectedHashtag.NumOfUsages}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
+
+                    <TextBlock Text="Last Used:" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" Margin="5"/>
+                    <TextBlock Text="{Binding SelectedHashtag.LastlyUsed}" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
+
+                    <TextBlock Text="First Use:" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" Margin="5"/>
+                    <TextBlock Text="{Binding SelectedHashtag.FirstUse}" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
+                </Grid>
+                <!-- Merged Tags Section -->
+                <DockPanel Grid.Row="1" LastChildFill="False" Margin="5, 20, 5, 5">
+                        <TextBlock Text="Merged Tags" FontWeight="Bold" DockPanel.Dock="Left"/>
+                        <Button Content="+" Click="AddMergedTag_Click" Width="25" Height="25" DockPanel.Dock="Right"/>
+                 </DockPanel>
+
+                <ListBox Grid.Row="2" ItemsSource="{Binding SelectedHashtag.MergedTags}" Margin="0,0">
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Un-merge" Command="{Binding UnmergeCommand}" CommandParameter="{Binding Path=PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" Margin="5"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                <!-- Excluded Tags Section -->
+                <DockPanel Grid.Row="3" LastChildFill="False" Margin="5, 20, 5, 5">
+                    <TextBlock Text="Excluded Tags" FontWeight="Bold" DockPanel.Dock="Left"/>                    
+                    <Button Content="+" Click="AddExcludedTag_Click" Width="25" Height="25" DockPanel.Dock="Right"/>
+                </DockPanel>
+                <ListBox Grid.Row="4" ItemsSource="{Binding SelectedHashtag.ExcludedTags}" Margin="0,0">
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Remove Exception" Command="{Binding RemoveExceptionCommand}" CommandParameter="{Binding Path=PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                            <MenuItem Header="Merge" Command="{Binding MergeCommand}" CommandParameter="{Binding Path=PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Margin="5"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <!-- Placeholder for Popup Window to Add Tags -->
+                <Popup x:Name="AddTagPopup" Placement="Center" StaysOpen="False" Width="300" IsOpen="{Binding IsPopupOpen}">
+                    <Border Background="White" Padding="10" BorderBrush="Black" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="Add Tag" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                            <TextBox x:Name="SearchTagTextBox" Margin="0,0,0,10"/>
+                            <ListBox x:Name="HashtagsListBox" DisplayMemberPath="TagName" Margin="0,0,0,10" ToolTip="Select a tag from the list and click 'Add' to confirm." />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Content="Close" Click="ClosePopup_Click" Margin="5"/>
+                                <Button Content="Add" Click="AddTag_Click" Margin="5"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+
+            </Grid>
+        </TabItem>
+
+
     </TabControl>
 </UserControl>

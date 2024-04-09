@@ -197,7 +197,9 @@
   -->
   <ItemGroup>
     <Compile Include="Clustering\DTOs\ClusteringSettingDto.cs" />
+    <Compile Include="Clustering\Interfaces\IClusteringService.cs" />
     <Compile Include="Clustering\Services\ClusteringClassifier.cs" />
+    <Compile Include="Clustering\Services\ClusteringService.cs" />
     <Compile Include="Helpers\ArtefactItemHelper.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="IoC\Attributes\RegisterHandlerAttribute.cs" />
@@ -211,7 +213,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Search\DTOs\AdvancedSearchQueryOptions.cs" />
-    <Compile Include="Search\DTOs\IndexingResultDto.cs" />
+    <Compile Include="Search\DTOs\HashTagDto.cs" />
     <Compile Include="Search\DTOs\IndexingResultsViewItem.cs" />
     <Compile Include="Search\DTOs\SearchResultViewItem.cs" />
     <Compile Include="Search\Enums\ArtifactTypes.cs" />
@@ -273,9 +275,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Clustering\Interfaces\" />
     <Folder Include="ExampleStructure\Interfaces\" />
     <Folder Include="ExampleStructure\Services\" />
+    <Folder Include="UI\ViewModels\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

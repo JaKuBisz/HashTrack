@@ -30,7 +30,7 @@
         {
             this.button1 = new System.Windows.Forms.Button();
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.hashTrackSearchWpfControl1 = new HashTrack.SidePanelWpfControl();
+            this.hashTrackSearchWpfControl1 = MyStartup.ServiceLocator.Resolve<SidePanelWpfControl>(); // new HashTrack.SidePanelWpfControl();
             this.SuspendLayout();
             // 
             // button1

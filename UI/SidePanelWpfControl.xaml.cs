@@ -18,6 +18,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using HashTrack.Clustering.DTOs;
+using HashTrack.Persistance.Interfaces;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack
@@ -30,12 +32,14 @@ namespace HashTrack
     {
         private ObservableCollection<SearchResultViewItem> _searchResults = new ObservableCollection<SearchResultViewItem>();
         private ObservableCollection<IndexingResultsViewItem> _indexingHashtags = new ObservableCollection<IndexingResultsViewItem>();
+        private readonly IStorage _storageService;
 
-        public SidePanelWpfControl()
+        public SidePanelWpfControl(IStorage storageService)
         {
             InitializeComponent();
             list_searchResults.ItemsSource = _searchResults;
             list_Hashtags.ItemsSource = _indexingHashtags;
+            _storageService = storageService;
         }
 
         public void SetSearchResults(List<SearchResultViewItem> searchResults)
@@ -197,6 +201,11 @@ namespace HashTrack
 
         private void list_searchResults_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            if (e.ChangedButton != MouseButton.Left)
+            {
+                return;
+            }
+
             var item = sender as System.Windows.Controls.ListViewItem;
             var content = item.Content as SearchResultViewItem;
             if (content == null)
@@ -225,6 +234,11 @@ namespace HashTrack
 
         private void list_Hashtags_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            if (e.ChangedButton != MouseButton.Left)
+            {
+                return;
+            }
+
             var item = sender as System.Windows.Controls.ListViewItem;
             var content = item.Content as IndexingResultsViewItem;
             if (content == null)
@@ -246,6 +260,41 @@ namespace HashTrack
         private void index_cb_order_by_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             IndexingOrderBy(index_cb_order_by.SelectedIndex);
+        }
+
+        private void MenuItem_Merge_Click(object sender, RoutedEventArgs e)
+        {
+            Dictionary<string, ClusteringSettingDto> clusteringSettings;
+            var primaryTag = (IndexingResultsViewItem)sender;
+            var secondaryTags = list_Hashtags.SelectedItems.Cast<IndexingResultsViewItem>().ToList();
+            //Merge the tags
+
+
+        }
+
+        private void MenuItem_Details_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AddMergedTag_Click(object sender, RoutedEventArgs e)
+        {
+            AddTagPopup.IsOpen = true;
+        }
+
+        private void AddExcludedTag_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ClosePopup_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void AddTag_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
