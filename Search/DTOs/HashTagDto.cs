@@ -1,14 +1,18 @@
 using System.Collections.Generic;
+using HashTrack.Core;
 
 namespace HashTrack.DTOs
 {
-    public class HashTagDto
+    public class HashTagDto : UniqueEntity
     {
-        public string Id { get; set; }
         public int NumOfOccurences { get; set; }
         public HashSet<SearchResultViewItem> SearchResults { get; set; }
+        
+        public HashSet<string> MergedHashTags { get; set; }
+        
+        public HashSet<string> ExcludedHashTags { get; set; }
             
-        public HashTagDto(int numOfOccurences, HashSet<SearchResultViewItem> searchResults)
+        public HashTagDto(string id,HashSet<SearchResultViewItem> searchResults, int numOfOccurences = 1) : base(id)
         {
             NumOfOccurences = numOfOccurences;
             SearchResults = searchResults; 

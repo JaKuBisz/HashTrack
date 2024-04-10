@@ -24,14 +24,14 @@ namespace HashTrack.Clustering.Services
             return numbersEqual && textualSimilarity > SimilarityThreshold;
         }
         
-        public static bool Classify(KeyValuePair<string, HashTagDto> tag1, KeyValuePair<string, HashTagDto> tag2)
+        public static bool Classify(HashTagDto tag1, HashTagDto tag2)
         {
-            if (tag1.Value.NumOfOccurences <= tag2.Value.NumOfOccurences)
+            if (tag1.NumOfOccurences <= tag2.NumOfOccurences)
             {
                 return false;
             }
             
-            return Classify(tag1.Key, tag2.Key);
+            return Classify(tag1.Id, tag2.Id);
         }
         
         private static (string TextPart, string NumberPart) SplitTag(string tag)

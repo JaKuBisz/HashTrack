@@ -5,10 +5,12 @@ using System.Text.RegularExpressions;
 using HashTrack.Attributes;
 using HashTrack.Clustering.DTOs;
 using HashTrack.Clustering.Services;
+using HashTrack.Core.Extension;
 using HashTrack.DTOs;
 using HashTrack.Helpers;
 using HashTrack.Interfaces;
 using HashTrack.Persistance.Interfaces;
+using HashTrack.Search.Extensions;
 using Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack.Handlers
@@ -30,7 +32,7 @@ namespace HashTrack.Handlers
             {
                 return;
             }
-            
+            //TODO: Clustering saving issue how to preserve tags before they are merged
             var groupedResults = 
                 GroupAndIndexResults(searchResult);
             _storage.Set(Constants.Storage.IndexedHashTags, groupedResults);
@@ -43,10 +45,12 @@ namespace HashTrack.Handlers
             _hashTrackSearchWpfControl.SetIndexingResult(result);
         }
         
-        private Dictionary<string, HashTagDto> GroupAndIndexResults(Search searchResult)
+        private List<HashTagDto> GroupAndIndexResults(Search searchResult)
         {
             // Group and index the search results here
-            var result = new Dictionary<string, HashTagDto>();
+            //TODO: First load indexed hashtags from storage
+            _storage.TryGet(Constants.Storage.IndexedHashTags, out List<HashTagDto> indexedHashTags);
+            indexedHashTags = indexedHashTags ?? new List<HashTagDto>();
 
             for (int i = 1; i <= searchResult.Results.Count; i++)
             {
@@ -61,83 +65,45 @@ namespace HashTrack.Handlers
                 foreach (var hashTag in hashTags)
                 {
                     var searchResultViewItem = ArtefactItemHelper.MapSearchResultViewItem(item);
-                    if (result.ContainsKey(hashTag))
+                    if (indexedHashTags.TryGetByKey(hashTag, out var resultItem))
                     {
-                        var resultItem = result[hashTag];
-                        resultItem.NumOfOccurences += 1;
-                        resultItem.SearchResults.Add(searchResultViewItem);
+                        resultItem.AddNewSearchResult(searchResultViewItem);
                     }
                     else
                     {
-                        result.Add(hashTag, new HashTagDto(1, new HashSet<SearchResultViewItem> { searchResultViewItem }));
+                        indexedHashTags.Add(new HashTagDto(hashTag, new HashSet<SearchResultViewItem> { searchResultViewItem }));
                     }
                 }
             }
 
-            return result;
+            return indexedHashTags;
         }
 
-        private Dictionary<string, HashTagDto> ClusterResults(Dictionary<string, HashTagDto> hashtags)
+        private List<HashTagDto> ClusterResults(List<HashTagDto> hashtags)
         {
-            Dictionary<string, ClusteringSettingDto> clusteringSettings;
-            _storage.TryGet(Constants.Storage.HashtagClusteringSettings, out clusteringSettings);
-            clusteringSettings = clusteringSettings ?? new Dictionary<string, ClusteringSettingDto>();
-
-            foreach (var clusterSetting in clusteringSettings)
-            {
-                var mainKey = clusterSetting.Key;
-                if(!hashtags.ContainsKey(mainKey)) continue;
-                var mainTag = hashtags[mainKey];
-                
-                foreach (var key in clusterSetting.Value.MergedTags)
-                {
-                    if(!hashtags.ContainsKey(key)) continue;
-                    mainTag = CombineHashTags(mainTag, hashtags[key]);
-                    hashtags.Remove(key);
-                }
-            }
-
-            //We order hastags so we dont have to check which one has more occurences and automatically know its the mam hashtag
-            var orderedHashtags = hashtags.OrderByDescending(x => x.Value.NumOfOccurences);
-            foreach (var mainHashtag in orderedHashtags)
+            //We order hastags so we dont have to check which one has more occurrences and automatically know its the main hashtag
+            var orderedHashtags = hashtags.OrderByDescending(x => x.NumOfOccurences).ToList();
+            //TODO: Improve O(n^2) complexity, see notes
+            foreach (var primaryHashtag in orderedHashtags)
             {
                 foreach (var secondaryHashtag in orderedHashtags)
                 {
-                    if (mainHashtag.Equals(secondaryHashtag))
+                    if (primaryHashtag.Equals(secondaryHashtag))
                     {
                         continue;
                     }
-
-                    var primaryKey = mainHashtag.Key;
-                    var secondaryKey = secondaryHashtag.Key;
-
-                    var mainExceptionTags =
-                        clusteringSettings.TryGetValue(primaryKey, out var setting) ? setting.ExceptionTags : new List<string>();
-
-                    var secondaryExceptionTags =
-                        clusteringSettings.TryGetValue(secondaryKey, out setting) ? setting.ExceptionTags : new List<string>();
                     
-                    if (mainExceptionTags.Contains(secondaryKey) || secondaryExceptionTags.Contains(primaryKey))
-                    {// Ensure mutal exlusion from exception tags;
+                    if (primaryHashtag.ExcludedTagsContain(secondaryHashtag.Id) || secondaryHashtag.ExcludedTagsContain(primaryHashtag.Id))
+                    {// Ensure mutual exclusion from exception tags;
                         continue;
                     }
                     
                     //Prevents tag with less usages to be absorbed by tag with more usages automatically
-                    if (ClusteringClassifier.Classify(mainHashtag, secondaryHashtag))
+                    if (primaryHashtag.MergedTagsContain(secondaryHashtag.Id) // Merge if in merge list
+                        || (!secondaryHashtag.MergedTagsContain(primaryHashtag.Id) // Prevent merge if in secondary merge list
+                            && ClusteringClassifier.Classify(primaryHashtag, secondaryHashtag))) // Classify
                     {
-                        hashtags[primaryKey] = CombineHashTags(mainHashtag.Value, secondaryHashtag.Value);
-                        if (clusteringSettings.ContainsKey(primaryKey))
-                        {
-                            clusteringSettings[primaryKey].MergedTags.Add(secondaryKey);
-                        }
-                        else
-                        {
-                            clusteringSettings[primaryKey] = new ClusteringSettingDto()
-                            {
-                                MergedTags = new List<string>() { secondaryKey },
-                                ExceptionTags = new List<string>()
-                            };
-                        }
+                        primaryHashtag.MergeHashTag(secondaryHashtag);
                     }
                 }
             }

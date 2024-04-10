@@ -200,6 +200,8 @@
     <Compile Include="Clustering\Interfaces\IClusteringService.cs" />
     <Compile Include="Clustering\Services\ClusteringClassifier.cs" />
     <Compile Include="Clustering\Services\ClusteringService.cs" />
+    <Compile Include="Core\Extension\UniqueEntityExtensions.cs" />
+    <Compile Include="Core\UniqueEntity.cs" />
     <Compile Include="Helpers\ArtefactItemHelper.cs" />
     <Compile Include="Helpers\Constants.cs" />
     <Compile Include="IoC\Attributes\RegisterHandlerAttribute.cs" />
@@ -218,6 +220,7 @@
     <Compile Include="Search\DTOs\SearchResultViewItem.cs" />
     <Compile Include="Search\Enums\ArtifactTypes.cs" />
     <Compile Include="Search\Exceptions\SearchQueryException.cs" />
+    <Compile Include="Search\Extensions\HashTagDtoExtensions.cs" />
     <Compile Include="Search\Interfaces\ISearchCompleteHandler.cs" />
     <Compile Include="Search\Services\ArtifactSearchService.cs" />
     <Compile Include="Search\Services\Handlers\AdvancedSearchCompleteHandler.cs" />
