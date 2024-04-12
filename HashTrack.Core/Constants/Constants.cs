@@ -1,0 +1,30 @@
+﻿namespace HashTrack.Core
+{
+    public static class Constants
+    {
+        public const string DefaultSearchTag = "DefaultSearchTag";
+        public const string IndexingSearchTag = "IndexingSearchTag";
+
+        public class DaslFilter
+        {
+            public const string HttpMailSchema = "urn:schemas:httpmail";
+            public static string ExactMatch(string keyword) => $"ci_phrasematch '{keyword}'";
+            public static string SubString(string keyword) => $"like '%{keyword}%'";
+            public const string And = " AND ";
+            public const string Or = " OR ";
+            
+            public class HttpMail
+            {
+                public const string Body = HttpMailSchema+":textdescription";
+                public const string Date = HttpMailSchema+":date";
+            }
+        }
+
+        public class Storage
+        {
+            public const string IndexedHashTags = "IndexedHashTags";
+            public const string ClusteredHashTags = "ClusteredHashTags";
+            public const string HashtagClusteringSettings = "HashtagClusteringSettings";
+        }
+    }
+}

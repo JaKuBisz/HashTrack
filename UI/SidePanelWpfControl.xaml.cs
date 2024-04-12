@@ -1,5 +1,4 @@
 ﻿using HashTrack.DTOs;
-using HashTrack.Enums;
 using HashTrack.Exception;
 using HashTrack.Helpers;
 using System;
@@ -19,7 +18,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using HashTrack.Clustering.DTOs;
-using HashTrack.Persistance.Interfaces;
+using HashTrack.Core;
+using HashTrack.Core.Attributes;
+using HashTrack.Core.Enums;
+using HashTrack.Core.Interfaces.Persistence;
+using HashTrack.Core.Models.Search;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack
@@ -27,7 +30,7 @@ namespace HashTrack
     /// <summary>
     /// Interaction logic for SidePanelWpfControl.xaml haha
     /// </summary>
-    [RegisterService(typeof(SidePanelWpfControl), LifeCycle.Singleton)]
+    [RegisterService(LifeCycle.Singleton, typeof(SidePanelWpfControl))]
     public partial class SidePanelWpfControl : System.Windows.Controls.UserControl
     {
         private ObservableCollection<SearchResultViewItem> _searchResults = new ObservableCollection<SearchResultViewItem>();
@@ -113,26 +116,26 @@ namespace HashTrack
 
         private ArtifactTypes EvaluateArtefactsSelection()
         {
-            var artefacts = Enums.ArtifactTypes.None;
+            var artefacts = ArtifactTypes.None;
 
             if (ch_email.IsChecked == true)
             {
-                artefacts |= Enums.ArtifactTypes.Email;
+                artefacts |= ArtifactTypes.Email;
             }
             if (ch_appointment.IsChecked == true)
             {
-                artefacts |= Enums.ArtifactTypes.Appointment;
+                artefacts |= ArtifactTypes.Appointment;
             }
             if (ch_contact.IsChecked == true)
             {
-                artefacts |= Enums.ArtifactTypes.Contact;
+                artefacts |= ArtifactTypes.Contact;
             }
             if (ch_task.IsChecked == true)
             {
-                artefacts |= Enums.ArtifactTypes.Task;
+                artefacts |= ArtifactTypes.Task;
             }
 
-            if (artefacts == Enums.ArtifactTypes.None)
+            if (artefacts == ArtifactTypes.None)
             {
                 throw new SearchQueryException("Please select at least one artefact type to search for.");
             }

@@ -1,25 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
-using Outlook = Microsoft.Office.Interop.Outlook;
-using Office = Microsoft.Office.Core;
-using System.Windows.Forms;
-using System.Diagnostics;
-using HashTrack.Services;
-using Autofac;
-using HashTrack.DTOs;
-using HashTrack.Enums;
-using HashTrack.Helpers;
+﻿using Autofac;
+using HashTrack.Core.Interfaces.Handlers;
+using HashTrack.Core.Interfaces.Search;
+using HashTrack.Interfaces.Indexing;
 
 namespace HashTrack
 {
     public partial class ThisAddIn
     {
         private Microsoft.Office.Tools.CustomTaskPane myCustomTaskPane;
-        private SearchCompleteHandlerFactory _searchCompleteHandlerFactory;
-        private ArtifactSearchService _artifactSearchService;
+        private ISearchCompleteHandlerFactory _searchCompleteHandlerFactory;
+        private IArtifactSearchService _artifactSearchService;
         private SidePanelWpfControl _hashTrackSearchWpfControl;
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
@@ -28,10 +18,14 @@ namespace HashTrack
             MyStartup.ConfigureContainer();
 
             // Resolve services (can not be done in the constructor of the class)
-            _searchCompleteHandlerFactory = MyStartup.ServiceLocator.Resolve<SearchCompleteHandlerFactory>();
-            _artifactSearchService = MyStartup.ServiceLocator.Resolve<ArtifactSearchService>();
-            _hashTrackSearchWpfControl = MyStartup.ServiceLocator.Resolve<SidePanelWpfControl>();
-            var indexingService = MyStartup.ServiceLocator.Resolve<IndexingService>();
+
+            var resolver = IoC.Startup.ServiceLocator.Resolve<IComponentContext>();
+            var test  = resolver.Resolve<Microsoft.Office.Interop.Outlook.Application>();
+            _searchCompleteHandlerFactory = resolver.Resolve<ISearchCompleteHandlerFactory>();
+            _artifactSearchService = resolver.Resolve<IArtifactSearchService>();
+            var indexingService = resolver.Resolve<IIndexingService>();
+
+            _hashTrackSearchWpfControl = resolver.Resolve<SidePanelWpfControl>();
 
             // Register event handlers
             Application.AdvancedSearchComplete += _searchCompleteHandlerFactory.HandleSearchCompleted;

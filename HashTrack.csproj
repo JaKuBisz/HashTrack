@@ -106,18 +106,13 @@
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="SimMetrics.Net, Version=1.0.5.0, Culture=neutral, PublicKeyToken=c58dc06d59f3391b, processorArchitecture=MSIL">
-      <HintPath>packages\SimMetrics.Net.1.0.5\lib\net45\SimMetrics.Net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=7.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\System.Diagnostics.DiagnosticSource.7.0.2\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
@@ -196,37 +191,9 @@
     can be found.
   -->
   <ItemGroup>
-    <Compile Include="Clustering\DTOs\ClusteringSettingDto.cs" />
-    <Compile Include="Clustering\Interfaces\IClusteringService.cs" />
-    <Compile Include="Clustering\Services\ClusteringClassifier.cs" />
-    <Compile Include="Clustering\Services\ClusteringService.cs" />
-    <Compile Include="Core\Extension\UniqueEntityExtensions.cs" />
-    <Compile Include="Core\UniqueEntity.cs" />
-    <Compile Include="Helpers\ArtefactItemHelper.cs" />
-    <Compile Include="Helpers\Constants.cs" />
-    <Compile Include="IoC\Attributes\RegisterHandlerAttribute.cs" />
-    <Compile Include="IoC\Attributes\RegisterServiceAttribute.cs" />
-    <Compile Include="IoC\Enums\LifeCycle.cs" />
-    <Compile Include="IoC\Services\ServiceLocator.cs" />
-    <Compile Include="Persistance\Interfaces\IStorage.cs" />
-    <Compile Include="Persistance\Services\CachedPersistanceStorage.cs" />
-    <Compile Include="Persistance\Services\PersistantStorage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Search\DTOs\AdvancedSearchQueryOptions.cs" />
-    <Compile Include="Search\DTOs\HashTagDto.cs" />
-    <Compile Include="Search\DTOs\IndexingResultsViewItem.cs" />
-    <Compile Include="Search\DTOs\SearchResultViewItem.cs" />
-    <Compile Include="Search\Enums\ArtifactTypes.cs" />
-    <Compile Include="Search\Exceptions\SearchQueryException.cs" />
-    <Compile Include="Search\Extensions\HashTagDtoExtensions.cs" />
-    <Compile Include="Search\Interfaces\ISearchCompleteHandler.cs" />
-    <Compile Include="Search\Services\ArtifactSearchService.cs" />
-    <Compile Include="Search\Services\Handlers\AdvancedSearchCompleteHandler.cs" />
-    <Compile Include="Search\Services\Handlers\IndexingSearchCompleteHandler.cs" />
-    <Compile Include="Search\Services\IndexingService.cs" />
-    <Compile Include="Search\Services\SearchCompleteHandlerFactory.cs" />
     <Compile Include="Startup\MyStartup.cs" />
     <Compile Include="ThisAddIn.cs">
       <SubType>Code</SubType>
@@ -278,9 +245,25 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ExampleStructure\Interfaces\" />
-    <Folder Include="ExampleStructure\Services\" />
     <Folder Include="UI\ViewModels\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="HashTrack.BusinessLogic\HashTrack.BusinessLogic.csproj">
+      <Project>{f44e8ed8-b1ed-4da8-88da-be7ccde31442}</Project>
+      <Name>HashTrack.BusinessLogic</Name>
+    </ProjectReference>
+    <ProjectReference Include="HashTrack.Core\HashTrack.Core.csproj">
+      <Project>{20e0901f-466d-4ebd-a5ad-9e83a6ed22d4}</Project>
+      <Name>HashTrack.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="HashTrack.IoC\HashTrack.IoC.csproj">
+      <Project>{c7fc5c54-a1ed-4f95-9264-c975587e79c5}</Project>
+      <Name>HashTrack.IoC</Name>
+    </ProjectReference>
+    <ProjectReference Include="HashTrack.Persistence\HashTrack.Persistence.csproj">
+      <Project>{2c3b4c84-f07e-4d4e-bdb0-0fd3ed50de86}</Project>
+      <Name>HashTrack.Persistence</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
