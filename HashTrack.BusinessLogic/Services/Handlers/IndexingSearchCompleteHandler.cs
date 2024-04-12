@@ -6,6 +6,7 @@ using HashTrack.Clustering.Services;
 using HashTrack.Core;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Extensions;
+using HashTrack.Core.Interfaces.Handlers;
 using HashTrack.Core.Interfaces.Persistence;
 using HashTrack.Core.Models.Search;
 using HashTrack.DTOs;

@@ -6,6 +6,7 @@ using Autofac;
 using Autofac.Builder;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
+using HashTrack.Core.Interfaces.Handlers;
 
 namespace HashTrack.IoC
 {
@@ -67,15 +68,8 @@ namespace HashTrack.IoC
 
             // Register keyed services
             builder.RegisterAssemblyTypes(assemblies)
-                .Where(t => t.GetCustomAttribute<RegisterKeyedAttribute>() != null)
-                .As(t =>
-                {
-                    var attribute = t.GetCustomAttribute<RegisterKeyedAttribute>();
-                    return attribute.ServiceType != null
-                        ? attribute.ServiceType
-                        : t.GetInterfaces().FirstOrDefault(i => i.Name == $"I{t.Name}");
-                })
-                .Keyed<object>(t => t.GetCustomAttribute<RegisterKeyedAttribute>().Key)
+                .Where(t => t.GetCustomAttribute<RegisterHandlerAttribute>() != null)
+                .Keyed<ISearchCompleteHandler>(t => t.GetCustomAttribute<RegisterHandlerAttribute>().Key)
                 .PropertiesAutowired()
                 .ConfigureLifecycle();
         }

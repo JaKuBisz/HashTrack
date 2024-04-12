@@ -9,9 +9,9 @@ namespace HashTrack.Persistence.Services
     public class CachedPersistenceStorage : IStorage
     {
         private ConcurrentDictionary<string, object> _cache = new ConcurrentDictionary<string, object>();
-        private IStorage _persistentStorage;
+        private PersistantStorage _persistentStorage;
 
-        public CachedPersistenceStorage(IStorage persistentStorage)
+        public CachedPersistenceStorage(PersistantStorage persistentStorage)
         {
             _persistentStorage = persistentStorage;
         }
@@ -24,7 +24,7 @@ namespace HashTrack.Persistence.Services
             var key = GetKey<T>(id);
             _cache[key] = value;
             
-            _persistentStorage.Set(id, value);
+            //_persistentStorage.Set(id, value);
         }
 
         // Try to get an object from the cache
@@ -37,11 +37,11 @@ namespace HashTrack.Persistence.Services
                 return true;
             }
             
-            if (_persistentStorage.TryGet(id, out value))
+            /*if (_persistentStorage.TryGet(id, out value))
             {
                 Set(id, value);
                 return true;
-            }
+            }*/
 
             value = default;
             return false;
@@ -52,7 +52,7 @@ namespace HashTrack.Persistence.Services
         {
             var key = GetKey<T>(id);
             _cache.TryRemove(key, out _);
-            _persistentStorage.Remove<T>(id);
+            //_persistentStorage.Remove<T>(id);
         }
     }
 }

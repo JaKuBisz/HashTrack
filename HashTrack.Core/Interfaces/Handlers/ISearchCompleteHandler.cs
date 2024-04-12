@@ -1,6 +1,6 @@
 using Outlook = Microsoft.Office.Interop.Outlook;
 
-namespace HashTrack.Interfaces
+namespace HashTrack.Core.Interfaces.Handlers
 {
     public interface ISearchCompleteHandler
     {

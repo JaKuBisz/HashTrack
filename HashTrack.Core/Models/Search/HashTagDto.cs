@@ -10,7 +10,7 @@ namespace HashTrack.Core.Models.Search
         
         public HashSet<string> MergedHashTags { get; set; }
         
-        public HashSet<string> ExcludedHashTags { get; set; }
+        public HashSet<string> ExcludedHashTags { get; set; } //TODO: is null
             
         public HashTagDto(string id,HashSet<SearchResultViewItem> searchResults, int numOfOccurences = 1) : base(id)
         {

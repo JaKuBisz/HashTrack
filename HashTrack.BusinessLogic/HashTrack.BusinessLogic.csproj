@@ -40,6 +40,9 @@
           <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
         </Reference>
         <Reference Include="Microsoft.CSharp" />
+        <Reference Include="Microsoft.Office.Interop.Outlook">
+          <HintPath>..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\Shared\Visual Studio Tools for Office\PIA\Office15\Microsoft.Office.Interop.Outlook.dll</HintPath>
+        </Reference>
         <Reference Include="mscorlib" />
         <Reference Include="SimMetrics.Net, Version=1.0.5.0, Culture=neutral, PublicKeyToken=c58dc06d59f3391b, processorArchitecture=MSIL">
           <HintPath>..\packages\SimMetrics.Net.1.0.5\lib\net45\SimMetrics.Net.dll</HintPath>
@@ -92,17 +95,6 @@
         <Project>{c7fc5c54-a1ed-4f95-9264-c975587e79c5}</Project>
         <Name>HashTrack.IoC</Name>
       </ProjectReference>
-    </ItemGroup>
-    <ItemGroup>
-      <COMReference Include="Outlook">
-        <Guid>{00062FFF-0000-0000-C000-000000000046}</Guid>
-        <VersionMajor>9</VersionMajor>
-        <VersionMinor>6</VersionMinor>
-        <Lcid>0</Lcid>
-        <WrapperTool>tlbimp</WrapperTool>
-        <Isolated>False</Isolated>
-        <EmbedInteropTypes>True</EmbedInteropTypes>
-      </COMReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

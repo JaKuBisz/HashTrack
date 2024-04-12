@@ -2,6 +2,7 @@ using System;
 using HashTrack.Core;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
+using HashTrack.Core.Interfaces.Search;
 using HashTrack.Core.Models.Search;
 using HashTrack.Interfaces.Indexing;
 
@@ -13,8 +14,8 @@ namespace HashTrack.BusinessLogic.Services
     [RegisterService(LifeCycle.Transient, typeof(IIndexingService))]
     public class IndexingService : IIndexingService
     {
-        private readonly ArtifactSearchService _artifactSearchService;
-        public IndexingService(ArtifactSearchService artifactSearchService)
+        private readonly IArtifactSearchService _artifactSearchService;
+        public IndexingService(IArtifactSearchService artifactSearchService)
         {
             _artifactSearchService = artifactSearchService;
         }

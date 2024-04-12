@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HashTrack.Core;
 using HashTrack.Core.Attributes;
+using HashTrack.Core.Interfaces.Handlers;
 using HashTrack.Core.Models.Search;
 using HashTrack.Helpers;
 using HashTrack.Interfaces;

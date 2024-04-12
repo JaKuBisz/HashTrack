@@ -1,6 +1,8 @@
 ﻿using Autofac;
+using HashTrack.Core;
 using HashTrack.Core.Interfaces.Handlers;
 using HashTrack.Core.Interfaces.Search;
+using HashTrack.Interfaces;
 using HashTrack.Interfaces.Indexing;
 
 namespace HashTrack
@@ -20,7 +22,7 @@ namespace HashTrack
             // Resolve services (can not be done in the constructor of the class)
 
             var resolver = IoC.Startup.ServiceLocator.Resolve<IComponentContext>();
-            var test  = resolver.Resolve<Microsoft.Office.Interop.Outlook.Application>();
+            var service = resolver.ResolveKeyed<ISearchCompleteHandler>(Constants.DefaultSearchTag);
             _searchCompleteHandlerFactory = resolver.Resolve<ISearchCompleteHandlerFactory>();
             _artifactSearchService = resolver.Resolve<IArtifactSearchService>();
             var indexingService = resolver.Resolve<IIndexingService>();
