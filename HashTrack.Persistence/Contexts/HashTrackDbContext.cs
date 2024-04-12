@@ -1,15 +1,52 @@
 using System.Data.Entity;
-using System.Linq;
-using System.Reflection;
+using HashTrack.Persistence.Entities;
 
 namespace HashTrack.Persistence.Contexts
 {
     public class HashTrackDbContext : DbContext
     {
-        public HashTrackDbContext() : base("name=DefaultConnection") {}
-
-        public class YourDbContext : DbContext
+        public DbSet<HashTagEntity> HashTags { get; set; }
+        public DbSet<ArtefactEntity> Artefacts { get; set; }
+        
+        public HashTrackDbContext() : base("name=DefaultHashTrackSqlLiteConnection")
         {
+            Database.SetInitializer(new CreateDatabaseIfNotExists<HashTrackDbContext>());
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            var ax = nameof(HashTagEntity.MergedHashTags);
+            modelBuilder.Entity<HashTagEntity>()
+                .HasMany(h => h.MergedHashTags)
+                .WithMany()
+                .Map(m =>
+                {
+                    m.ToTable("HashTagMerges");
+                    m.MapLeftKey("HashTagId");
+                    m.MapRightKey("MergedHashTagId");
+                });
+
+            modelBuilder.Entity<HashTagEntity>()
+                .HasMany(h => h.ExcludedHashTags)
+                .WithMany()
+                .Map(m =>
+                {
+                    m.ToTable("HashTagExclusions");
+                    m.MapLeftKey("HashTagId");
+                    m.MapRightKey("ExcludedHashTagId");
+                });
+
+            modelBuilder.Entity<HashTagEntity>()
+                .HasMany(h => h.Items)
+                .WithMany(a => a.HashTags)
+                .Map(m =>
+                {
+                    m.ToTable("HashTagArtefacts");
+                    m.MapLeftKey("HashTagId");
+                    m.MapRightKey("ArtefactId");
+                });
+        }
+            /*
             protected override void OnModelCreating(DbModelBuilder modelBuilder)
             {
                 base.OnModelCreating(modelBuilder);
@@ -29,8 +66,8 @@ namespace HashTrack.Persistence.Contexts
                 {
                     modelBuilder.Model.AddEntityType(type);
                 }
-            }*/
-        }
+            }
+        }*/
 
     }
 }

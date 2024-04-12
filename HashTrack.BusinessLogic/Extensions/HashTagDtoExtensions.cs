@@ -55,7 +55,7 @@ namespace HashTrack.BusinessLogic.Extensions
         }
 
         public static bool ExcludedTagsContain(this HashTagDto hashTag, string tag)
-        {
+        {//TODO: ExludedTags null
             return hashTag.ExcludedHashTags.Contains(tag);
         }
     }
