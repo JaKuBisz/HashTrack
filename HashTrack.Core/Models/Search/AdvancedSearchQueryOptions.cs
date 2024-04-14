@@ -9,7 +9,7 @@ namespace HashTrack.Core.Models.Search
         public ArtifactTypes Artefacts { get; set; }
         public DateTime? From { get; set; }
         public DateTime? To { get; set; }
-        public string Tag { get; set; } = Constants.DefaultSearchTag;
+        public string Tag { get; set; } = Events.DefaultSearchCompleted;
         public bool ExactMatch { get; set; } = false;
 
     }

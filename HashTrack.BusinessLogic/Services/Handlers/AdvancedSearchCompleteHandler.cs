@@ -10,7 +10,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack.BusinessLogic.Services.Handlers
 {
-    [RegisterHandler(Constants.DefaultSearchTag, typeof(ISearchCompleteHandler))]
+    [RegisterHandler(Events.DefaultSearchCompleted, typeof(ISearchCompleteHandler))]
     public class AdvancedSearchCompleteHandler : ISearchCompleteHandler
     {//TODO: Use events instead of direct call to UI
         //private readonly SidePanelWpfControl _hashTrackSearchWpfControl;
@@ -22,7 +22,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
 
         public void HandleSearchComplete(Outlook.Search searchResult)
         {
-            if (searchResult.Tag != Constants.DefaultSearchTag)
+            if (searchResult.Tag != Events.DefaultSearchCompleted)
             {
                 return;
             }
@@ -38,10 +38,10 @@ namespace HashTrack.BusinessLogic.Services.Handlers
             //_hashTrackSearchWpfControl.SetSearchResults(transformedResults);
         }
 
-        private List<SearchResultViewItem> TransformResultForView(Outlook.Results results)
+        private List<ArtefactModel> TransformResultForView(Outlook.Results results)
         {
           
-            var searchResults = new List<SearchResultViewItem>();
+            var searchResults = new List<ArtefactModel>();
             for (int i = 1; i <= results.Count; i++)
             {
                 searchResults.Add(ArtefactItemHelper.MapSearchResultViewItem(results[i]));

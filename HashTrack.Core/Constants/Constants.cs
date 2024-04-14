@@ -2,9 +2,7 @@
 {
     public static class Constants
     {
-        public const string DefaultSearchTag = "DefaultSearchTag";
-        public const string IndexingSearchTag = "IndexingSearchTag";
-
+        
         public class DaslFilter
         {
             public const string HttpMailSchema = "urn:schemas:httpmail";
@@ -22,6 +20,8 @@
 
         public class Storage
         {
+            public const string Artefacts = "Artefacts";
+            public const string LastSearch = "LastSearch";
             public const string IndexedHashTags = "IndexedHashTags";
             public const string ClusteredHashTags = "ClusteredHashTags";
             public const string HashtagClusteringSettings = "HashtagClusteringSettings";

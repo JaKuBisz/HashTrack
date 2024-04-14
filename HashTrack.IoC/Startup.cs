@@ -7,6 +7,7 @@ using Autofac.Builder;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
 using HashTrack.Core.Interfaces.Handlers;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace HashTrack.IoC
 {
@@ -24,7 +25,16 @@ namespace HashTrack.IoC
             // Register services here, for example:
             //builder.RegisterType<AdvancedSearchCompleteHandler>().As<AdvancedSearchCompleteHandler>().SingleInstance();
             additionalConfigurations?.Invoke(builder);
-
+            builder.Register(c => 
+            {
+                var options = new MemoryCacheOptions()
+                {
+                    SizeLimit = 1024,
+                    CompactionPercentage = 0.2,
+                    ExpirationScanFrequency = TimeSpan.FromMinutes(5)
+                }; // You can configure options here
+                return new MemoryCache(options);
+            }).As<IMemoryCache>().SingleInstance();
 
             Container = builder.Build();
 

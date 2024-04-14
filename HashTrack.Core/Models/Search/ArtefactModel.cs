@@ -2,8 +2,10 @@
 
 namespace HashTrack.Core.Models.Search
 {
-    public class SearchResultViewItem
+    public class ArtefactModel
     {
+        public string EntryId { get; set; }
+        public string StoreId { get; set; }
         public string Title { get; set; }
         public string Sender { get; set; }
         //public string Description { get; set; }

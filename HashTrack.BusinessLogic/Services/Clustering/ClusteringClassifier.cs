@@ -24,7 +24,7 @@ namespace HashTrack.Clustering.Services
             return numbersEqual && textualSimilarity > SimilarityThreshold;
         }
         
-        public bool Classify(HashTagDto tag1, HashTagDto tag2)
+        public bool Classify(HashTagModel tag1, HashTagModel tag2)
         {
             if (tag1.NumOfOccurences <= tag2.NumOfOccurences)
             {

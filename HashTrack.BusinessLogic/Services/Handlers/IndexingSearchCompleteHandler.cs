@@ -6,6 +6,7 @@ using HashTrack.Clustering.Services;
 using HashTrack.Core;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Extensions;
+using HashTrack.Core.Interfaces;
 using HashTrack.Core.Interfaces.Handlers;
 using HashTrack.Core.Interfaces.Persistence;
 using HashTrack.Core.Models.Search;
@@ -16,20 +17,22 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack.BusinessLogic.Services.Handlers
 {
-    [RegisterHandler(Constants.IndexingSearchTag, typeof(ISearchCompleteHandler))]
+    [RegisterHandler(Events.IndexingSearchCompleted, typeof(ISearchCompleteHandler))]
     public class IndexingSearchCompleteHandler : ISearchCompleteHandler
     {//TODO: Use events instead of direct call to UI
         //private readonly SidePanelWpfControl _hashTrackSearchWpfControl;
         private readonly IStorage _storage;
+        private readonly IEventPublisher _eventPublisher;
 
-        public IndexingSearchCompleteHandler(IStorage storage)//SidePanelWpfControl hashTrackSearchWpfControl, IStorage storage)
+        public IndexingSearchCompleteHandler(IStorage storage, IEventPublisher eventPublisher)//SidePanelWpfControl hashTrackSearchWpfControl, IStorage storage)
         {   
             //_hashTrackSearchWpfControl = hashTrackSearchWpfControl;
             _storage = storage;
+            _eventPublisher = eventPublisher;
         }
         public void HandleSearchComplete(Outlook.Search searchResult)
         {
-            if (searchResult.Tag != Constants.IndexingSearchTag)
+            if (searchResult.Tag != Events.IndexingSearchCompleted)
             {
                 return;
             }
@@ -43,15 +46,16 @@ namespace HashTrack.BusinessLogic.Services.Handlers
                     new IndexingResultsViewItem(x.Id, x.NumOfOccurences, x.SearchResults)).ToList();
             
             
+            _eventPublisher.FireEvent(Events.IndexingSearchProcessed);
             //_hashTrackSearchWpfControl.SetIndexingResult(result);
         }
         
-        private List<HashTagDto> GroupAndIndexResults(Outlook.Search searchResult)
+        private List<HashTagModel> GroupAndIndexResults(Outlook.Search searchResult)
         {
             // Group and index the search results here
             //TODO: First load indexed hashtags from storage
-            _storage.TryGet(Constants.Storage.IndexedHashTags, out List<HashTagDto> indexedHashTags);
-            indexedHashTags = indexedHashTags ?? new List<HashTagDto>();
+            _storage.TryGet(Constants.Storage.IndexedHashTags, out List<HashTagModel> indexedHashTags);
+            indexedHashTags = indexedHashTags ?? new List<HashTagModel>();
 
             for (int i = 1; i <= searchResult.Results.Count; i++)
             {
@@ -73,7 +77,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
                     }
                     else
                     {
-                        indexedHashTags.Add(new HashTagDto(hashTag, new HashSet<SearchResultViewItem> { searchResultViewItem }));
+                        indexedHashTags.Add(new HashTagModel(hashTag, new HashSet<ArtefactModel> { searchResultViewItem }));
                     }
                 }
             }
@@ -81,7 +85,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
             return indexedHashTags;
         }
 
-        private List<HashTagDto> ClusterResults(List<HashTagDto> hashtags)
+        private List<HashTagModel> ClusterResults(List<HashTagModel> hashtags)
         {
             //We order hastags so we dont have to check which one has more occurrences and automatically know its the main hashtag
             var orderedHashtags = hashtags.OrderByDescending(x => x.NumOfOccurences).ToList();
@@ -95,14 +99,14 @@ namespace HashTrack.BusinessLogic.Services.Handlers
                         continue;
                     }
                     
-                    if (primaryHashtag.ExcludedTagsContain(secondaryHashtag.Id) || secondaryHashtag.ExcludedTagsContain(primaryHashtag.Id))
+                    if (primaryHashtag.ExcludedTagsContain(secondaryHashtag) || secondaryHashtag.ExcludedTagsContain(primaryHashtag))
                     {// Ensure mutual exclusion from exception tags;
                         continue;
                     }
                     
                     //Prevents tag with less usages to be absorbed by tag with more usages automatically
-                    if (primaryHashtag.MergedTagsContain(secondaryHashtag.Id) // Merge if in merge list
-                        || (!secondaryHashtag.MergedTagsContain(primaryHashtag.Id))) // Prevent merge if in secondary merge list
+                    if (primaryHashtag.MergedTagsContain(secondaryHashtag) // Merge if in merge list
+                        || (!secondaryHashtag.MergedTagsContain(primaryHashtag))) // Prevent merge if in secondary merge list
                             //&& ClusteringClassifier.Classify(primaryHashtag, secondaryHashtag))) // Classify
                     {//TODO: Implement ClusteringClassifier
                         primaryHashtag.MergeHashTag(secondaryHashtag);
@@ -113,7 +117,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
             return hashtags;
         }
 
-        private HashTagDto CombineHashTags(HashTagDto primary, HashTagDto secondary)
+        private HashTagModel CombineHashTags(HashTagModel primary, HashTagModel secondary)
         {
             primary.NumOfOccurences += secondary.NumOfOccurences;
             foreach (var result in secondary.SearchResults)

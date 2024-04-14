@@ -1,6 +1,7 @@
 using System;
 using HashTrack.Core.Models.Search;
 using HashTrack.DTOs;
+using HashTrack.Exception;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Microsoft.Office.Interop.Outlook;
 
@@ -8,56 +9,61 @@ namespace HashTrack.Helpers
 {
     public static class ArtefactItemHelper
     { 
-        public static SearchResultViewItem MapSearchResultViewItem(object result)
+        public static ArtefactModel MapSearchResultViewItem(object result)
         {
             if(result is Outlook._MailItem mailItem)
             {
-                return new SearchResultViewItem
+                return new ArtefactModel
                 {
                     Title = mailItem.Subject,
                     Sender = mailItem.SenderName,
                     Date = mailItem.ReceivedTime,
                     Type = "Email",
-                    OriginalItem = mailItem
+                    OriginalItem = mailItem,
+                    EntryId = mailItem.EntryID,
                 };
             }
-            else if(result is Outlook._ContactItem contactItem)
+            
+            if(result is Outlook._ContactItem contactItem)
             {
-                return new SearchResultViewItem
+                return new ArtefactModel
                 {
                     Title = contactItem.FullName,
                     Sender = contactItem.Email1Address,
                     Date = DateTime.Now,
                     Type = "Contact",
-                    OriginalItem = contactItem
+                    OriginalItem = contactItem,
+                    EntryId = contactItem.EntryID,
                 };
             }
-            else if(result is Outlook._AppointmentItem appointmentItem)
+            
+            if(result is Outlook._AppointmentItem appointmentItem)
             {
-                return new SearchResultViewItem
+                return new ArtefactModel
                 {
                     Title = appointmentItem.Subject,
                     Sender = appointmentItem.Organizer,
                     Date = appointmentItem.Start,
                     Type = "Appointment",
-                    OriginalItem = appointmentItem
+                    OriginalItem = appointmentItem,
+                    EntryId = appointmentItem.EntryID,
                 };
             }
-            else if(result is Outlook._TaskItem taskItem)
+            
+            if(result is Outlook._TaskItem taskItem)
             {
-                return new SearchResultViewItem
+                return new ArtefactModel
                 {
                     Title = taskItem.Subject,
                     Sender = taskItem.Owner,
                     Date = taskItem.CreationTime,
                     Type = "Task",
-                    OriginalItem = taskItem
+                    OriginalItem = taskItem,
+                    EntryId = taskItem.EntryID,
                 };
             }
-            else
-            {
-                throw new ArgumentException("The result is not of any known type");
-            }
+            
+            throw new UnknownResultItemTypeException($"The result is not of any known type for result: '{result}'");
         }
         
         public static string GetBody(object item)

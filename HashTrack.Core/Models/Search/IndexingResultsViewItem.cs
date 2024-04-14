@@ -7,9 +7,9 @@ namespace HashTrack.DTOs
     {
         public string HashTag { get; set; }
         public int NumOfOccurences { get; set; }
-        public HashSet<SearchResultViewItem> SearchResults { get; set; }
+        public HashSet<ArtefactModel> SearchResults { get; set; }
             
-        public IndexingResultsViewItem(string hashTag, int numOfOccurences, HashSet<SearchResultViewItem> searchResults)
+        public IndexingResultsViewItem(string hashTag, int numOfOccurences, HashSet<ArtefactModel> searchResults)
         {
             HashTag = hashTag;
             NumOfOccurences = numOfOccurences;

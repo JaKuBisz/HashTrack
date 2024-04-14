@@ -4,6 +4,7 @@ using HashTrack.Core.Interfaces.Handlers;
 using HashTrack.Core.Interfaces.Search;
 using HashTrack.Interfaces;
 using HashTrack.Interfaces.Indexing;
+using Microsoft.Office.Tools.Ribbon;
 
 namespace HashTrack
 {
@@ -22,7 +23,7 @@ namespace HashTrack
             // Resolve services (can not be done in the constructor of the class)
 
             var resolver = IoC.Startup.ServiceLocator.Resolve<IComponentContext>();
-            var service = resolver.ResolveKeyed<ISearchCompleteHandler>(Constants.DefaultSearchTag);
+            var service = resolver.ResolveKeyed<ISearchCompleteHandler>(Events.DefaultSearchCompleted);
             _searchCompleteHandlerFactory = resolver.Resolve<ISearchCompleteHandlerFactory>();
             _artifactSearchService = resolver.Resolve<IArtifactSearchService>();
             var indexingService = resolver.Resolve<IIndexingService>();
@@ -30,6 +31,7 @@ namespace HashTrack
             _hashTrackSearchWpfControl = resolver.Resolve<SidePanelWpfControl>();
 
             // Register event handlers
+            //TODO: Use IEventPublisher instead of directly this and add Task.Run to make it asynchronous as these event are only synchronous
             Application.AdvancedSearchComplete += _searchCompleteHandlerFactory.HandleSearchCompleted;
             _hashTrackSearchWpfControl.SearchInitiated += _artifactSearchService.SearchExactMatch;
             //var _hashTrackSearchWpfControl = new SidePanelWpfControl();

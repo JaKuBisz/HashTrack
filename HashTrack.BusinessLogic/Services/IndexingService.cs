@@ -30,7 +30,7 @@ namespace HashTrack.BusinessLogic.Services
                 Artefacts = ArtifactTypes.All,
                 From = from,
                 To = null,
-                Tag = Constants.IndexingSearchTag,
+                Tag = Events.IndexingSearchCompleted,
                 ExactMatch = false
             });
         }

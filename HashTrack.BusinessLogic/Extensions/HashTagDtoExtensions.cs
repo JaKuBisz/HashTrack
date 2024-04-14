@@ -1,17 +1,20 @@
+using System.Linq;
 using HashTrack.Core.Models.Search;
 
 namespace HashTrack.BusinessLogic.Extensions
 {
     public static class HashTagDtoExtensions
     {
-        public static void AddNewSearchResult(this HashTagDto hashTag, SearchResultViewItem searchResult)
+        public static void AddNewSearchResult(this HashTagModel hashTag, ArtefactModel searchResult)
         {
             if (!hashTag.SearchResults.Add(searchResult)) return;
             hashTag.NumOfOccurences++;
         }
 
-        public static void MergeHashTag(this HashTagDto primary, HashTagDto secondary)
+        public static void MergeHashTag(this HashTagModel primary, HashTagModel secondary)
         {
+            primary.MergedHashTags.Add(secondary);
+      /*      
             primary.NumOfOccurences += secondary.NumOfOccurences;
             primary.MergedHashTags.Add(secondary.Id);
             foreach (var result in secondary.SearchResults)
@@ -27,11 +30,13 @@ namespace HashTrack.BusinessLogic.Extensions
             foreach (var result in secondary.ExcludedHashTags)
             {
                 primary.ExcludedHashTags.Add(result);
-            }
+            }*/
         }
 
-        public static void UnMergeHashTag(this HashTagDto primary, HashTagDto secondary)
+        public static void UnMergeHashTag(this HashTagModel primary, HashTagModel secondary)
         {
+            primary.MergedHashTags.Remove(secondary);
+            /*
             primary.NumOfOccurences -= secondary.NumOfOccurences;
             foreach (var result in secondary.SearchResults)
             {
@@ -46,17 +51,17 @@ namespace HashTrack.BusinessLogic.Extensions
             foreach (var result in secondary.ExcludedHashTags)
             {
                 primary.ExcludedHashTags.Remove(result);
-            }
+            }*/
         }
 
-        public static bool MergedTagsContain(this HashTagDto hashTag, string tag)
+        public static bool MergedTagsContain(this HashTagModel hashTag, HashTagModel secondaryHashTag)
         {
-            return hashTag.MergedHashTags.Contains(tag);
+            return hashTag.TotalMergedHashTags().Contains(secondaryHashTag);
         }
 
-        public static bool ExcludedTagsContain(this HashTagDto hashTag, string tag)
-        {//TODO: ExludedTags null
-            return hashTag.ExcludedHashTags.Contains(tag);
+        public static bool ExcludedTagsContain(this HashTagModel hashTag, HashTagModel secondaryHashTag)
+        {
+            return hashTag.TotalExcludedHashTags().Contains(secondaryHashTag);
         }
     }
 

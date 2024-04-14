@@ -1,0 +1,154 @@
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using HashTrack.Core.Attributes;
+using HashTrack.Core.Enums;
+using HashTrack.Core.Interfaces;
+using HashTrack.Core.Models.Search;
+using HashTrack.Persistence.Entities;
+using HashTrack.Persistence.Interfaces;
+using HashTrack.Persistence.Mappers;
+
+namespace HashTrack.Persistence.Services
+{
+    [RegisterService(LifeCycle.Transient, typeof(IPersistenceHashTagService))]
+    public class PersistenceHashTagService : IPersistenceHashTagService
+    {
+        private readonly IHashTagRepository _repository;
+
+        public PersistenceHashTagService(IHashTagRepository repository)
+        {
+            _repository = repository;
+        }
+
+        public HashSet<HashTagModel> GetAllHashTags()
+        {
+            var hashTagEntities = _repository.GetAll();
+            return GetHashTagsModels(hashTagEntities);
+        }
+
+        public HashTagModel GetHashTag(string tag)
+        {
+            throw new NotImplementedException();
+            var hashtagEntity = _repository.GetByTag(tag);
+            var hashTagEntities = _repository.Get(x => hashtagEntity.MergedHashTags.Contains(x.Tag, StringComparer.OrdinalIgnoreCase) || hashtagEntity.ExcludedHashTags.Contains(x.Tag, StringComparer.OrdinalIgnoreCase));
+        }
+
+        public void SaveHashTag(HashTagModel hashTag)
+        {
+            _repository.Update(hashTag.Map());
+        }
+
+        public void SaveHashTags(HashSet<HashTagModel> hashTags)
+        {
+            foreach (var hashTag in hashTags)
+            {
+                var entity = hashTag.Map();
+                _repository.Upsert(entity, x => x.Tag == entity.Tag);
+            }
+        }
+
+        private HashSet<HashTagModel> GetHashTagsModels(IEnumerable<HashTagEntity> hashTagEntities)
+        {
+            // HashTagModels need to ahve references to each other so we need to map each object and then enrich with the references
+            var hashTags = hashTagEntities
+                .Select(hashTagEntity => (model: hashTagEntity.MapToHashTagDto(), entity: hashTagEntity));
+
+            foreach (var (model, entity) in hashTags)
+            {
+                var tag = entity.Tag;
+
+                if (entity.MergedHashTags.Any())
+                {
+                    var mergedTags = hashTags
+                        .Where(x => entity.MergedHashTags
+                            .Contains(x.entity.Tag, StringComparer.OrdinalIgnoreCase))
+                        .Select(x => x.model)
+                        .ToHashSet();
+                    model.MergedHashTags = mergedTags;
+                }
+
+                if (entity.ExcludedHashTags.Any())
+                {
+                    var excludedTags = hashTags
+                        .Where(x => entity.ExcludedHashTags
+                            .Contains(x.entity.Tag, StringComparer.OrdinalIgnoreCase))
+                        .Select(x => x.model)
+                        .ToHashSet();
+                    model.ExcludedHashTags = excludedTags;
+                }
+            }
+
+            return hashTags.Select(x => x.model).ToHashSet();
+        }
+/*
+        private HashSet<HashTagModel> GetHashTagsModel(HashTagModel model, IEnumerable<HashTagEntity> mergedHashTagEntities, IEnumerable<HashTagEntity> excludedHashTagEntities)
+        {
+            var mergedHashTags = mergedHashTagEntities.Select(x => x.MapToHashTagDto()).ToHashSet();
+            var excludedHashTags = excludedHashTagEntities.Select(x => x.MapToHashTagDto()).ToHashSet();
+
+            model.MergedHashTags = mergedHashTags;
+            model.ExcludedHashTags = excludedHashTags;
+
+            return model;
+        }
+        {
+            // HashTagModels need to ahve references to each other so we need to map each object and then enrich with the references
+            var hashTags = hashTagEntities
+                .Select(hashTagEntity => (model: hashTagEntity.MapToHashTagDto(), entity: hashTagEntity));
+
+            foreach (var (model, entity) in hashTags)
+            {
+                var tag = entity.Tag;
+
+                if (entity.MergedHashTags.Any())
+                {
+                    var mergedTags = hashTags
+                        .Where(x => entity.MergedHashTags
+                            .Contains(x.entity.Tag, StringComparer.OrdinalIgnoreCase))
+                        .Select(x => x.model)
+                        .ToHashSet();
+                    model.MergedHashTags = mergedTags;
+                }
+
+                if (entity.ExcludedHashTags.Any())
+                {
+                    var excludedTags = hashTags
+                        .Where(x => entity.ExcludedHashTags
+                            .Contains(x.entity.Tag, StringComparer.OrdinalIgnoreCase))
+                        .Select(x => x.model)
+                        .ToHashSet();
+                    model.ExcludedHashTags = excludedTags;
+                }
+            }
+
+            return hashTags.Select(x => x.model).ToHashSet();
+        }
+        
+        private             foreach (var (model, entity) in hashTags)
+        {
+            var tag = entity.Tag;
+
+            if (entity.MergedHashTags.Any())
+            {
+                var mergedTags = hashTags
+                    .Where(x => entity.MergedHashTags
+                        .Contains(x.entity.Tag, StringComparer.OrdinalIgnoreCase))
+                    .Select(x => x.model)
+                    .ToHashSet();
+                model.MergedHashTags = mergedTags;
+            }
+
+            if (entity.ExcludedHashTags.Any())
+            {
+                var excludedTags = hashTags
+                    .Where(x => entity.ExcludedHashTags
+                        .Contains(x.entity.Tag, StringComparer.OrdinalIgnoreCase))
+                    .Select(x => x.model)
+                    .ToHashSet();
+                model.ExcludedHashTags = excludedTags;
+            }
+        }*/
+    }
+}

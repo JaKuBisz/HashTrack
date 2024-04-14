@@ -4,7 +4,10 @@ namespace HashTrack.Core.Models
     {
         public string Id { get; set; }
 
-        public UniqueEntity(string id)
+        protected UniqueEntity()
+        { }
+
+        protected UniqueEntity(string id)
         {
             Id = id;
         }

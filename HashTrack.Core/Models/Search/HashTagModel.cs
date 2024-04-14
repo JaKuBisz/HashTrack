@@ -1,0 +1,45 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace HashTrack.Core.Models.Search
+{
+    public class HashTagModel : UniqueEntity
+    {//TODO Implement invalidating cache to not recalculate tge Totals each request
+        public int NumOfOccurences { get; set; }
+        public HashSet<ArtefactModel> SearchResults { get; set; }
+        public DateTime LastUpdated { get; set; } 
+        public HashSet<HashTagModel> MergedHashTags { get; set; }
+        public HashSet<HashTagModel> ExcludedHashTags { get; set; } //TODO: is null
+        public bool IsMerged => MergedHashTags.Any();
+
+        public HashTagModel()
+        { }
+  
+        public HashTagModel(string id,HashSet<ArtefactModel> searchResults, int numOfOccurences = 1) : base(id)
+        {
+            NumOfOccurences = numOfOccurences;
+            SearchResults = searchResults; 
+        }
+
+        public int TotalNumOfOccurences()
+        {
+            return NumOfOccurences + MergedHashTags.Sum(x => x.TotalNumOfOccurences());
+        }
+
+        public HashSet<ArtefactModel> TotalSearchResults()
+        {
+            return SearchResults.Concat(MergedHashTags.SelectMany(x => x.TotalSearchResults())).ToHashSet();
+        }
+        
+        public HashSet<HashTagModel> TotalMergedHashTags()
+        {
+            return MergedHashTags.Concat(MergedHashTags.SelectMany(x => x.TotalMergedHashTags())).ToHashSet();
+        }
+        
+        public HashSet<HashTagModel> TotalExcludedHashTags()
+        {
+            return ExcludedHashTags.Concat(ExcludedHashTags.SelectMany(x => x.TotalExcludedHashTags())).ToHashSet();
+        }
+    }
+}

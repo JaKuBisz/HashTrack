@@ -21,6 +21,7 @@ using HashTrack.Clustering.DTOs;
 using HashTrack.Core;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
+using HashTrack.Core.Interfaces;
 using HashTrack.Core.Interfaces.Persistence;
 using HashTrack.Core.Models.Search;
 using Outlook = Microsoft.Office.Interop.Outlook;
@@ -33,19 +34,26 @@ namespace HashTrack
     [RegisterService(LifeCycle.Singleton, typeof(SidePanelWpfControl))]
     public partial class SidePanelWpfControl : System.Windows.Controls.UserControl
     {
-        private ObservableCollection<SearchResultViewItem> _searchResults = new ObservableCollection<SearchResultViewItem>();
-        private ObservableCollection<IndexingResultsViewItem> _indexingHashtags = new ObservableCollection<IndexingResultsViewItem>();
-        private readonly IStorage _storageService;
+        private ObservableCollection<ArtefactModel> _searchResults = new ObservableCollection<ArtefactModel>();
+        private ObservableCollection<HashTagModel> _indexingHashtags = new ObservableCollection<HashTagModel>();
+        private readonly IPersistenceHashTagService _hashTagsStorageService;
+        private readonly ICache<List<ArtefactModel>> _artefactCache;
+        private readonly IEventPublisher _eventPublisher;
 
-        public SidePanelWpfControl(IStorage storageService)
+        public SidePanelWpfControl(IEventPublisher eventPublisher, IPersistenceHashTagService hashTagsStorageService, ICache<List<ArtefactModel>> artefactCache)
         {
             InitializeComponent();
             list_searchResults.ItemsSource = _searchResults;
             list_Hashtags.ItemsSource = _indexingHashtags;
-            _storageService = storageService;
+            _eventPublisher = eventPublisher;
+            _hashTagsStorageService = hashTagsStorageService;
+            _artefactCache = artefactCache;
+            //TODO: Use Async
+            eventPublisher.Subscribe(Events.IndexingSearchProcessed, UpdateIndexingResults);
+            eventPublisher.Subscribe(Events.DefaultSearchCompleted, UpdateSearchResults);
         }
 
-        public void SetSearchResults(List<SearchResultViewItem> searchResults)
+        public void SetSearchResults(List<ArtefactModel> searchResults)
         {
             _searchResults.Clear();
             searchResults.ForEach(_searchResults.Add);
@@ -53,7 +61,7 @@ namespace HashTrack
             list_searchResults.Items.Refresh();
         }
 
-        public void SetIndexingResult(List<IndexingResultsViewItem> result)
+        private void SetIndexingResult(List<HashTagModel> result)
         {
             _indexingHashtags.Clear();
             result.ForEach(_indexingHashtags.Add);
@@ -67,6 +75,22 @@ namespace HashTrack
             OccurencesDesc,
             OccurencesAsc
         }
+
+        private void UpdateIndexingResults()
+        {
+            var hashTags = _hashTagsStorageService.GetAllHashTags();
+            SetIndexingResult(hashTags.ToList());
+        }
+        
+
+        private void UpdateSearchResults()
+        {
+            //TODO: Replace this by better system to know the order of searches and so on; so they can be set from other services also
+            var hashTag = tb_searchbar.Text;
+            var artefacts = _artefactCache.Get(hashTag);
+            SetSearchResults(artefacts);
+        }
+        
         private void btn_search_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -109,7 +133,7 @@ namespace HashTrack
                 Artefacts = EvaluateArtefactsSelection(),
                 From = date_from.SelectedDate,
                 To = date_to.SelectedDate,
-                Tag = Constants.DefaultSearchTag,
+                Tag = Events.DefaultSearchCompleted,
                 ExactMatch = true
             };
         }
@@ -149,13 +173,13 @@ namespace HashTrack
             switch (orderBy)
             {
                 case (int)OrderBy.DateDesc:
-                    //_indexingHashtags = new ObservableCollection<IndexingResultsViewItem>(_indexingHashtags.OrderByDescending(x => x.));
+                    //_indexingHashtags = new ObservableCollection<HashTagModel>(_indexingHashtags.OrderByDescending(x => x.));
                     break;
                 case (int)OrderBy.OccurencesDesc:
-                    _indexingHashtags = new ObservableCollection<IndexingResultsViewItem>(_indexingHashtags.OrderByDescending(x => x.NumOfOccurences));
+                    _indexingHashtags = new ObservableCollection<HashTagModel>(_indexingHashtags.OrderByDescending(x => x.NumOfOccurences));
                     break;
                 case (int)OrderBy.OccurencesAsc:
-                    _indexingHashtags = new ObservableCollection<IndexingResultsViewItem>(_indexingHashtags.OrderBy(x => x.NumOfOccurences));
+                    _indexingHashtags = new ObservableCollection<HashTagModel>(_indexingHashtags.OrderBy(x => x.NumOfOccurences));
                     break;
                 default:
                     break;
@@ -166,18 +190,18 @@ namespace HashTrack
         //TODO: FIx this - currently will delete cached need to implement a caching service
         private void IndexingFilrerByNumOfOccurencesMin(int minOccurences)
         {
-            _indexingHashtags = new ObservableCollection<IndexingResultsViewItem>(_indexingHashtags.Where(x => x.NumOfOccurences >= minOccurences));
+            _indexingHashtags = new ObservableCollection<HashTagModel>(_indexingHashtags.Where(x => x.NumOfOccurences >= minOccurences));
         }
 
         private void IndexingFilrerByNumOfOccurencesMax(int maxOccurences)
         {
-            _indexingHashtags = new ObservableCollection<IndexingResultsViewItem>(_indexingHashtags.Where(x => x.NumOfOccurences <= maxOccurences));
+            _indexingHashtags = new ObservableCollection<HashTagModel>(_indexingHashtags.Where(x => x.NumOfOccurences <= maxOccurences));
         }
 
         private void list_searchResults_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var listView = sender as System.Windows.Controls.ListView;
-            var selectedItem = listView.SelectedItem as SearchResultViewItem;
+            var selectedItem = listView.SelectedItem as ArtefactModel;
             if (selectedItem == null)
             {
                 return;
@@ -210,7 +234,7 @@ namespace HashTrack
             }
 
             var item = sender as System.Windows.Controls.ListViewItem;
-            var content = item.Content as SearchResultViewItem;
+            var content = item.Content as ArtefactModel;
             if (content == null)
             {
                 return;
@@ -243,14 +267,14 @@ namespace HashTrack
             }
 
             var item = sender as System.Windows.Controls.ListViewItem;
-            var content = item.Content as IndexingResultsViewItem;
+            var content = item.Content as HashTagModel;
             if (content == null)
             {
                 return;
             }
 
             var searchResults = content.SearchResults;
-            tb_searchbar.Text = content.HashTag;
+            tb_searchbar.Text = content.Id;
             SetSearchResults(searchResults.ToList());
             mainTabControl.SelectedIndex = 0;
         }
@@ -268,8 +292,8 @@ namespace HashTrack
         private void MenuItem_Merge_Click(object sender, RoutedEventArgs e)
         {
             Dictionary<string, ClusteringSettingDto> clusteringSettings;
-            var primaryTag = (IndexingResultsViewItem)sender;
-            var secondaryTags = list_Hashtags.SelectedItems.Cast<IndexingResultsViewItem>().ToList();
+            var primaryTag = (HashTagModel)sender;
+            var secondaryTags = list_Hashtags.SelectedItems.Cast<HashTagModel>().ToList();
             //Merge the tags
 
 
