@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -11,15 +12,15 @@ namespace HashTrack.Persistence.Entities
         
         [Required]
         public int NumOfOccurrences { get; set; }
+
+        public DateTime LastUpdated { get; set; } 
         public virtual ICollection<HashTagEntity> MergedHashTags { get; set; }
         public virtual ICollection<HashTagEntity> ExcludedHashTags { get; set; }
-        public virtual ICollection<ArtefactEntity> Items { get; set; }
         
         public HashTagEntity()
         {
             MergedHashTags = new HashSet<HashTagEntity>();
             ExcludedHashTags = new HashSet<HashTagEntity>();
-            Items = new HashSet<ArtefactEntity>();
         }
     }
 }

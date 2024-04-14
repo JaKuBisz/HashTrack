@@ -31,6 +31,7 @@ namespace HashTrack.BusinessLogic.Services
 
         private string GetFilter(string keyword, DateTime? from, DateTime? to, bool exactMatch = false)
         {
+            //TODO: Search by seconds + Add support for multiple keywords
             var startDate = (from ?? DateTime.MinValue).ToString("yyyy-MM-dd");
             var endDate = (to ?? DateTime.MaxValue).ToString("yyyy-MM-dd");
             

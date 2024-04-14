@@ -62,12 +62,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Contexts\HashTrackDbContext.cs" />
-    <Compile Include="Entities\ArtefactEntity.cs" />
     <Compile Include="Entities\BaseEntity.cs" />
     <Compile Include="Entities\HashTagEntity.cs" />
-    <Compile Include="Migrations\202404121959308_InitialCreate.cs" />
-    <Compile Include="Migrations\202404121959308_InitialCreate.Designer.cs">
-      <DependentUpon>202404121959308_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\202404122117108_InitialCreate.cs" />
+    <Compile Include="Migrations\202404122117108_InitialCreate.Designer.cs">
+      <DependentUpon>202404122117108_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -88,8 +87,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202404121959308_InitialCreate.resx">
-      <DependentUpon>202404121959308_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202404122117108_InitialCreate.resx">
+      <DependentUpon>202404122117108_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

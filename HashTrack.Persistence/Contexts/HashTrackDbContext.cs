@@ -6,7 +6,7 @@ namespace HashTrack.Persistence.Contexts
     public class HashTrackDbContext : DbContext
     {
         public DbSet<HashTagEntity> HashTags { get; set; }
-        public DbSet<ArtefactEntity> Artefacts { get; set; }
+        //public DbSet<ArtefactEntity> Artefacts { get; set; }
         
         public HashTrackDbContext() : base("name=DefaultHashTrackSqlLiteConnection")
         {
@@ -36,6 +36,7 @@ namespace HashTrack.Persistence.Contexts
                     m.MapRightKey("ExcludedHashTagId");
                 });
 
+            /*
             modelBuilder.Entity<HashTagEntity>()
                 .HasMany(h => h.Items)
                 .WithMany(a => a.HashTags)
@@ -44,7 +45,7 @@ namespace HashTrack.Persistence.Contexts
                     m.ToTable("HashTagArtefacts");
                     m.MapLeftKey("HashTagId");
                     m.MapRightKey("ArtefactId");
-                });
+                });*/
         }
             /*
             protected override void OnModelCreating(DbModelBuilder modelBuilder)
