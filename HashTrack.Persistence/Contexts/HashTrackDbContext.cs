@@ -1,8 +1,11 @@
 using System.Data.Entity;
+using HashTrack.Core.Attributes;
+using HashTrack.Core.Enums;
 using HashTrack.Persistence.Entities;
 
 namespace HashTrack.Persistence.Contexts
 {
+    [RegisterService(LifeCycle.Singleton, typeof(DbContext))]
     public class HashTrackDbContext : DbContext
     {
         public DbSet<HashTagEntity> HashTags { get; set; }
@@ -15,6 +18,7 @@ namespace HashTrack.Persistence.Contexts
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            /*
             var ax = nameof(HashTagEntity.MergedHashTags);
             modelBuilder.Entity<HashTagEntity>()
                 .HasMany(h => h.MergedHashTags)
@@ -35,7 +39,7 @@ namespace HashTrack.Persistence.Contexts
                     m.MapLeftKey("HashTagId");
                     m.MapRightKey("ExcludedHashTagId");
                 });
-
+            */
             /*
             modelBuilder.Entity<HashTagEntity>()
                 .HasMany(h => h.Items)

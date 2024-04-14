@@ -4,23 +4,24 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HashTrack.Persistence.Entities
 {
-    public class HashTagEntity : BaseEntity
+    public class HashTagEntity //: BaseEntity
     {
+        [Key]
         [Required]
-        [StringLength(255)]
+        [StringLength(512)]
         public string Tag { get; set; }
-        
+
         [Required]
         public int NumOfOccurrences { get; set; }
 
         public DateTime LastUpdated { get; set; } 
-        public virtual ICollection<HashTagEntity> MergedHashTags { get; set; }
-        public virtual ICollection<HashTagEntity> ExcludedHashTags { get; set; }
-        
+        public virtual ICollection<string> MergedHashTags { get; set; }
+        public virtual ICollection<string> ExcludedHashTags { get; set; }
+
         public HashTagEntity()
         {
-            MergedHashTags = new HashSet<HashTagEntity>();
-            ExcludedHashTags = new HashSet<HashTagEntity>();
+            MergedHashTags = new HashSet<string>();
+            ExcludedHashTags = new HashSet<string>();
         }
     }
 }
