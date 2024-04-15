@@ -5,10 +5,10 @@ using HashTrack.Persistence.Entities;
 
 namespace HashTrack.Persistence.Contexts
 {
-    [RegisterService(LifeCycle.Singleton, typeof(DbContext))]
+    [RegisterService(LifeCycle.Transient, typeof(DbContext))]
     public class HashTrackDbContext : DbContext
     {
-        public DbSet<HashTagEntity> HashTags { get; set; }
+        public DbSet<HashTagEntity> HashTagEntities { get; set; }
         //public DbSet<ArtefactEntity> Artefacts { get; set; }
         
         public HashTrackDbContext() : base("name=DefaultHashTrackSqlLiteConnection")
@@ -18,8 +18,6 @@ namespace HashTrack.Persistence.Contexts
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            /*
-            var ax = nameof(HashTagEntity.MergedHashTags);
             modelBuilder.Entity<HashTagEntity>()
                 .HasMany(h => h.MergedHashTags)
                 .WithMany()
@@ -39,12 +37,11 @@ namespace HashTrack.Persistence.Contexts
                     m.MapLeftKey("HashTagId");
                     m.MapRightKey("ExcludedHashTagId");
                 });
-            */
             /*
             modelBuilder.Entity<HashTagEntity>()
                 .HasMany(h => h.Items)
                 .WithMany(a => a.HashTags)
-                .Map(m =>
+                .MapToHashTagEntity(m =>
                 {
                     m.ToTable("HashTagArtefacts");
                     m.MapLeftKey("HashTagId");

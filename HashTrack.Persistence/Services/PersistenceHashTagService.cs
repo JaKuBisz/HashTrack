@@ -30,32 +30,39 @@ namespace HashTrack.Persistence.Services
 
         public HashTagModel GetHashTag(string tag)
         {
-            throw new NotImplementedException();
             var hashtagEntity = _repository.GetByTag(tag);
-            var hashTagEntities = _repository.Get(x => hashtagEntity.MergedHashTags.Contains(x.Tag, StringComparer.OrdinalIgnoreCase) || hashtagEntity.ExcludedHashTags.Contains(x.Tag, StringComparer.OrdinalIgnoreCase));
+            return hashtagEntity.MapToHashTagDto();
         }
 
         public void SaveHashTag(HashTagModel hashTag)
         {
-            _repository.Update(hashTag.Map());
+            _repository.Update(hashTag.MapToHashTagEntity());
+            _repository.Save();
+
         }
 
         public void SaveHashTags(HashSet<HashTagModel> hashTags)
         {
             foreach (var hashTag in hashTags)
             {
-                var entity = hashTag.Map();
+                var entity = hashTag.MapToHashTagEntity();
                 _repository.Upsert(entity, x => x.Tag == entity.Tag);
             }
+            _repository.Save();
         }
 
         private HashSet<HashTagModel> GetHashTagsModels(IEnumerable<HashTagEntity> hashTagEntities)
         {
+            return hashTagEntities.Select(x => x.MapToHashTagDto()).ToHashSet();
+            //TODO: Fix references on HashTags
+            /*
+            //Disabled referencing of entities
             // HashTagModels need to ahve references to each other so we need to map each object and then enrich with the references
             var hashTags = hashTagEntities
                 .Select(hashTagEntity => (model: hashTagEntity.MapToHashTagDto(), entity: hashTagEntity));
 
-            foreach (var (model, entity) in hashTags)
+            //Disabled referencing of entities
+           foreach (var (model, entity) in hashTags)
             {
                 var tag = entity.Tag;
 
@@ -80,7 +87,7 @@ namespace HashTrack.Persistence.Services
                 }
             }
 
-            return hashTags.Select(x => x.model).ToHashSet();
+            return hashTags.Select(x => x.model).ToHashSet();*/
         }
 /*
         private HashSet<HashTagModel> GetHashTagsModel(HashTagModel model, IEnumerable<HashTagEntity> mergedHashTagEntities, IEnumerable<HashTagEntity> excludedHashTagEntities)

@@ -6,15 +6,15 @@ namespace HashTrack.Persistence.Mappers
 {
     public static class HashTagEntityMappers
     {
-        public static HashTagEntity Map (this HashTagModel model)
+        public static HashTagEntity MapToHashTagEntity (this HashTagModel model)
         {
             return new HashTagEntity
             {
                 Tag = model.Id,
                 NumOfOccurrences = model.NumOfOccurences,
                 LastUpdated = model.LastUpdated,
-                MergedHashTags = model.MergedHashTags.Select(x => x.Id).ToHashSet(),
-                ExcludedHashTags = model.ExcludedHashTags.Select(x => x.Id).ToHashSet(),
+                MergedHashTags = model.MergedHashTags.Select(x => x.MapToHashTagEntity()).ToHashSet(),
+                ExcludedHashTags = model.ExcludedHashTags.Select(x => x.MapToHashTagEntity()).ToHashSet(),
             };
         }
     }

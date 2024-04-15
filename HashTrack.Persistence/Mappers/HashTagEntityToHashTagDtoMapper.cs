@@ -20,6 +20,7 @@ namespace HashTrack.Persistence.Mappers
                 ExcludedHashTags = null
             };
         }
+        /*
         public static HashTagModel MapToHashTagDto(this HashTagEntity entity, IDbSet<HashTagEntity> dbSet)
         {
             var mergedHashTagEntities =
@@ -61,6 +62,6 @@ namespace HashTrack.Persistence.Mappers
                 MergedHashTags = mergedHashTags,
                 ExcludedHashTags = excludedHashTags
             };
-        }
+        }*/
     }
 }
