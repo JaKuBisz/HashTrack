@@ -41,7 +41,7 @@ namespace HashTrack
             Application.AdvancedSearchComplete += _searchCompleteHandlerFactory.HandleSearchCompleted;
             _hashTrackSearchWpfControl.SearchInitiated += _artifactSearchService.SearchExactMatch;
             //var _hashTrackSearchWpfControl = new SidePanelWpfControl();
-            //indexingService.IndexAllArtifacts();
+            indexingService.IndexAllArtifacts();
 
             // Create and initiate the custom task pane
             var myUserControl1 = new SidePanelPlaceholder(_hashTrackSearchWpfControl);

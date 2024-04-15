@@ -21,10 +21,10 @@ namespace HashTrack.BusinessLogic.Services.Handlers
     public class IndexingSearchCompleteHandler : ISearchCompleteHandler
     {//TODO: Use events instead of direct call to UI
         //private readonly SidePanelWpfControl _hashTrackSearchWpfControl;
-        private readonly IStorage _storage;
+        private readonly IPersistenceHashTagService _storage;
         private readonly IEventPublisher _eventPublisher;
 
-        public IndexingSearchCompleteHandler(IStorage storage, IEventPublisher eventPublisher)//SidePanelWpfControl hashTrackSearchWpfControl, IStorage storage)
+        public IndexingSearchCompleteHandler(IPersistenceHashTagService storage, IEventPublisher eventPublisher)//SidePanelWpfControl hashTrackSearchWpfControl, IStorage storage)
         {   
             //_hashTrackSearchWpfControl = hashTrackSearchWpfControl;
             _storage = storage;
@@ -39,13 +39,12 @@ namespace HashTrack.BusinessLogic.Services.Handlers
             //TODO: Clustering saving issue how to preserve tags before they are merged
             var groupedResults = 
                 GroupAndIndexResults(searchResult);
-            _storage.Set(Constants.Storage.IndexedHashTags, groupedResults);
+            //_storage.Set(Constants.Storage.IndexedHashTags, groupedResults);
 
-            var clusteredResults = ClusterResults(groupedResults);
-            var result = clusteredResults.Select(x =>
-                    new IndexingResultsViewItem(x.Id, x.NumOfOccurences, x.SearchResults)).ToList();
+            //var clusteredResults = ClusterResults(groupedResults).ToHashSet();
+            //var result = clusteredResults.Select(x =>new IndexingResultsViewItem(x.Id, x.NumOfOccurences, x.SearchResults)).ToList();
             
-            
+            _storage.SaveHashTags(groupedResults.ToHashSet());
             _eventPublisher.FireEvent(Events.IndexingSearchProcessed);
             //_hashTrackSearchWpfControl.SetIndexingResult(result);
         }
@@ -54,8 +53,8 @@ namespace HashTrack.BusinessLogic.Services.Handlers
         {
             // Group and index the search results here
             //TODO: First load indexed hashtags from storage
-            _storage.TryGet(Constants.Storage.IndexedHashTags, out List<HashTagModel> indexedHashTags);
-            indexedHashTags = indexedHashTags ?? new List<HashTagModel>();
+            //_storage.TryGet(Constants.Storage.IndexedHashTags, out List<HashTagModel> indexedHashTags);
+            var indexedHashTags = new List<HashTagModel>(); //indexedHashTags ?? 
 
             for (int i = 1; i <= searchResult.Results.Count; i++)
             {

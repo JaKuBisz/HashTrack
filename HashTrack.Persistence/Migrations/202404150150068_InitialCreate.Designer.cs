@@ -13,7 +13,7 @@ namespace HashTrack.Persistence.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "202404122117108_InitialCreate"; }
+            get { return "202404150150068_InitialCreate"; }
         }
         
         string IMigrationMetadata.Source

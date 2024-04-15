@@ -86,8 +86,8 @@ namespace HashTrack
         private void UpdateSearchResults()
         {
             //TODO: Replace this by better system to know the order of searches and so on; so they can be set from other services also
-            var hashTag = tb_searchbar.Text;
-            var artefacts = _artefactCache.Get(hashTag);
+            //var hashTag = tb_searchbar.Text;
+            var artefacts = _artefactCache.Get(Constants.Storage.Artefacts);
             SetSearchResults(artefacts);
         }
         

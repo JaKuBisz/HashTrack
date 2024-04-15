@@ -30,7 +30,7 @@ namespace HashTrack.IoC
             {
                 var options = new MemoryCacheOptions()
                 {
-                    SizeLimit = 1024,
+                    //SizeLimit = 1024,
                     CompactionPercentage = 0.2,
                     ExpirationScanFrequency = TimeSpan.FromMinutes(5)
                 }; // You can configure options here

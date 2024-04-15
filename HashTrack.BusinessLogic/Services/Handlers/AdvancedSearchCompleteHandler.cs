@@ -16,10 +16,13 @@ namespace HashTrack.BusinessLogic.Services.Handlers
     {//TODO: Use events instead of direct call to UI
         //private readonly SidePanelWpfControl _hashTrackSearchWpfControl;
         private readonly IEventPublisher _eventPublisher;
+        private readonly ICache<List<ArtefactModel>> _artefactCache;
 
-        public AdvancedSearchCompleteHandler(IEventPublisher eventPublisher)//SidePanelWpfControl hashTrackSearchWpfControl)
+
+        public AdvancedSearchCompleteHandler(IEventPublisher eventPublisher, ICache<List<ArtefactModel>> artefactCache)//SidePanelWpfControl hashTrackSearchWpfControl)
         {
             _eventPublisher = eventPublisher;
+            _artefactCache = artefactCache;
             //_hashTrackSearchWpfControl = hashTrackSearchWpfControl;
         }
 
@@ -39,6 +42,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
                     .ToList();
 
             //_hashTrackSearchWpfControl.SetSearchResults(transformedResults);
+            _artefactCache.Set(Constants.Storage.Artefacts, transformedResults);
             _eventPublisher.FireEvent(Events.DefaultSearchProcessed);
         }
 
