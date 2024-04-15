@@ -6,7 +6,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace HashTrack.Persistence.Services
 {
-    [RegisterService(LifeCycle.Singleton, typeof(ICache<>))]
+    [RegisterService(LifeCycle.Singleton, typeof(ICache<>), true)]
     public class BaseCache<T> : ICache<T> where T : class
     {
         private readonly IMemoryCache _memoryCache;

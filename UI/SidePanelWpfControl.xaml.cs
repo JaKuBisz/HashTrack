@@ -50,7 +50,7 @@ namespace HashTrack
             _artefactCache = artefactCache;
             //TODO: Use Async
             eventPublisher.Subscribe(Events.IndexingSearchProcessed, UpdateIndexingResults);
-            eventPublisher.Subscribe(Events.DefaultSearchCompleted, UpdateSearchResults);
+            eventPublisher.Subscribe(Events.DefaultSearchProcessed, UpdateSearchResults);
         }
 
         public void SetSearchResults(List<ArtefactModel> searchResults)

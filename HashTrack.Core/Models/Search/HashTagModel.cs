@@ -9,8 +9,8 @@ namespace HashTrack.Core.Models.Search
         public int NumOfOccurences { get; set; }
         public HashSet<ArtefactModel> SearchResults { get; set; }
         public DateTime LastUpdated { get; set; } 
-        public HashSet<HashTagModel> MergedHashTags { get; set; }
-        public HashSet<HashTagModel> ExcludedHashTags { get; set; } //TODO: is null
+        public HashSet<HashTagModel> MergedHashTags { get; set; } = new HashSet<HashTagModel>(); //TODO: is null
+        public HashSet<HashTagModel> ExcludedHashTags { get; set; } = new HashSet<HashTagModel>();
         public bool IsMerged => MergedHashTags.Any();
 
         public HashTagModel()

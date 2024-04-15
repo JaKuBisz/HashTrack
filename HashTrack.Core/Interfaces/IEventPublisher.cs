@@ -9,6 +9,7 @@ namespace HashTrack.Core.Interfaces
         void Subscribe(string eventTag, Func<Task> callback);
         void Unsubscribe(string eventTag, Action callback);
         void Unsubscribe(string eventTag, Func<Task> callback);
+        //TODO: Could be FireEvent<T> and SUbscribe<T> to pass data
         void FireEvent(string eventTag);
         Task FireEventAsync(string eventTag);
     }

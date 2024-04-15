@@ -1,10 +1,16 @@
 ﻿using Autofac;
 using HashTrack.Core;
+using HashTrack.Core.Interfaces;
 using HashTrack.Core.Interfaces.Handlers;
 using HashTrack.Core.Interfaces.Search;
+using HashTrack.Core.Models.Search;
 using HashTrack.Interfaces;
 using HashTrack.Interfaces.Indexing;
+using HashTrack.Persistence.Entities;
+using HashTrack.Persistence.Interfaces;
 using Microsoft.Office.Tools.Ribbon;
+using System;
+using System.Collections.Generic;
 
 namespace HashTrack
 {
@@ -22,12 +28,12 @@ namespace HashTrack
 
             // Resolve services (can not be done in the constructor of the class)
 
+
             var resolver = IoC.Startup.ServiceLocator.Resolve<IComponentContext>();
             var service = resolver.ResolveKeyed<ISearchCompleteHandler>(Events.DefaultSearchCompleted);
             _searchCompleteHandlerFactory = resolver.Resolve<ISearchCompleteHandlerFactory>();
             _artifactSearchService = resolver.Resolve<IArtifactSearchService>();
             var indexingService = resolver.Resolve<IIndexingService>();
-
             _hashTrackSearchWpfControl = resolver.Resolve<SidePanelWpfControl>();
 
             // Register event handlers
@@ -35,7 +41,7 @@ namespace HashTrack
             Application.AdvancedSearchComplete += _searchCompleteHandlerFactory.HandleSearchCompleted;
             _hashTrackSearchWpfControl.SearchInitiated += _artifactSearchService.SearchExactMatch;
             //var _hashTrackSearchWpfControl = new SidePanelWpfControl();
-            indexingService.IndexAllArtifacts();
+            //indexingService.IndexAllArtifacts();
 
             // Create and initiate the custom task pane
             var myUserControl1 = new SidePanelPlaceholder(_hashTrackSearchWpfControl);

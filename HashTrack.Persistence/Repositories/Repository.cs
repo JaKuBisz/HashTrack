@@ -9,7 +9,7 @@ using HashTrack.Persistence.Interfaces;
 
 namespace HashTrack.Persistence.Repositories
 {
-    [RegisterService(LifeCycle.Transient, typeof(IRepository<>))]
+    [RegisterService(LifeCycle.Transient, typeof(IRepository<>), true)]
     public class Repository<T> : IRepository<T> where T : class
     {
         protected readonly DbContext _context;

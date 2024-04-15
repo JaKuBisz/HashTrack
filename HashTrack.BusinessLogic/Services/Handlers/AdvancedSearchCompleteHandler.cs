@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HashTrack.Core;
 using HashTrack.Core.Attributes;
+using HashTrack.Core.Interfaces;
 using HashTrack.Core.Interfaces.Handlers;
 using HashTrack.Core.Models.Search;
 using HashTrack.Helpers;
@@ -14,9 +15,11 @@ namespace HashTrack.BusinessLogic.Services.Handlers
     public class AdvancedSearchCompleteHandler : ISearchCompleteHandler
     {//TODO: Use events instead of direct call to UI
         //private readonly SidePanelWpfControl _hashTrackSearchWpfControl;
+        private readonly IEventPublisher _eventPublisher;
 
-        public AdvancedSearchCompleteHandler()//SidePanelWpfControl hashTrackSearchWpfControl)
+        public AdvancedSearchCompleteHandler(IEventPublisher eventPublisher)//SidePanelWpfControl hashTrackSearchWpfControl)
         {
+            _eventPublisher = eventPublisher;
             //_hashTrackSearchWpfControl = hashTrackSearchWpfControl;
         }
 
@@ -36,6 +39,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
                     .ToList();
 
             //_hashTrackSearchWpfControl.SetSearchResults(transformedResults);
+            _eventPublisher.FireEvent(Events.DefaultSearchProcessed);
         }
 
         private List<ArtefactModel> TransformResultForView(Outlook.Results results)
