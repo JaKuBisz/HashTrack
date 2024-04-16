@@ -37,17 +37,18 @@ namespace HashTrack
         private ObservableCollection<ArtefactModel> _searchResults = new ObservableCollection<ArtefactModel>();
         private ObservableCollection<HashTagModel> _indexingHashtags = new ObservableCollection<HashTagModel>();
         private readonly IPersistenceHashTagService _hashTagsStorageService;
-        private readonly ICache<List<ArtefactModel>> _artefactCache;
+        private readonly ICache _cache;
         private readonly IEventPublisher _eventPublisher;
+        public HashTagModel SelectedHashTag;
 
-        public SidePanelWpfControl(IEventPublisher eventPublisher, IPersistenceHashTagService hashTagsStorageService, ICache<List<ArtefactModel>> artefactCache)
+        public SidePanelWpfControl(IEventPublisher eventPublisher, IPersistenceHashTagService hashTagsStorageService, ICache cache)
         {
             InitializeComponent();
             list_searchResults.ItemsSource = _searchResults;
             list_Hashtags.ItemsSource = _indexingHashtags;
             _eventPublisher = eventPublisher;
             _hashTagsStorageService = hashTagsStorageService;
-            _artefactCache = artefactCache;
+            _cache = cache;
             //TODO: Use Async
             eventPublisher.Subscribe(Events.IndexingSearchProcessed, UpdateIndexingResults);
             eventPublisher.Subscribe(Events.DefaultSearchProcessed, UpdateSearchResults);
@@ -78,7 +79,7 @@ namespace HashTrack
 
         private void UpdateIndexingResults()
         {
-            var hashTags = _hashTagsStorageService.GetAllHashTags();
+            var hashTags = _cache.Get<List<HashTagModel>>(Constants.Storage.IndexedHashTags);
             SetIndexingResult(hashTags.ToList());
         }
         
@@ -87,7 +88,7 @@ namespace HashTrack
         {
             //TODO: Replace this by better system to know the order of searches and so on; so they can be set from other services also
             //var hashTag = tb_searchbar.Text;
-            var artefacts = _artefactCache.Get(Constants.Storage.Artefacts);
+            var artefacts = _cache.Get<List<ArtefactModel>>(Constants.Storage.Artefacts);
             SetSearchResults(artefacts);
         }
         
@@ -109,6 +110,7 @@ namespace HashTrack
             }
         }
 
+        #region Search
         // Define a delegate for search event
         public delegate void SearchEventHandler(AdvancedSearchQueryOptions searchQuery);
         // Define an event based on the delegate
@@ -166,6 +168,8 @@ namespace HashTrack
 
             return artefacts;
         }
+        #endregion
+
 
         private void IndexingOrderBy(int orderBy)
         {
@@ -274,7 +278,7 @@ namespace HashTrack
             }
 
             var searchResults = content.SearchResults;
-            tb_searchbar.Text = content.Id;
+            tb_searchbar.Text = content.Tag;
             SetSearchResults(searchResults.ToList());
             mainTabControl.SelectedIndex = 0;
         }
@@ -301,14 +305,12 @@ namespace HashTrack
 
         private void MenuItem_Details_Click(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void AddMergedTag_Click(object sender, RoutedEventArgs e)
         {
             AddTagPopup.IsOpen = true;
         }
-
         private void AddExcludedTag_Click(object sender, RoutedEventArgs e)
         {
 
@@ -322,6 +324,14 @@ namespace HashTrack
         private void AddTag_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as System.Windows.Controls.MenuItem;
+            SelectedHashTag = (HashTagModel)menuItem.DataContext;
+            _tabHashTagDetail.DataContext = SelectedHashTag;
+            mainTabControl.SelectedIndex = 2;
         }
     }
 }

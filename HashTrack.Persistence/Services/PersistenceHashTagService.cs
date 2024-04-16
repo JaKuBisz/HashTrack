@@ -36,7 +36,8 @@ namespace HashTrack.Persistence.Services
 
         public void SaveHashTag(HashTagModel hashTag)
         {
-            _repository.Update(hashTag.MapToHashTagEntity());
+            var entity = hashTag.MapToHashTagEntity();
+            _repository.Update(entity, x => x.Tag == entity.Tag);
             _repository.Save();
 
         }

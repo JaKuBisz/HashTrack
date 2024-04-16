@@ -46,21 +46,26 @@ namespace HashTrack.Persistence.Repositories
             _dbSet.Add(entity);
         }
 
-        public void Update(T entity)
+        public void Update(T entity, Func<T, bool> predicate)
         {
-            _dbSet.Attach(entity);
+            if (!_dbSet.Any(predicate))
+            {
+                _dbSet.Attach(entity);
+            }
             _context.Entry(entity).State = EntityState.Modified;
         }
 
         public void Upsert(T entity, Func<T, bool> predicate)
         {
-            if (!_dbSet.Any(predicate))
+            if (!_dbSet.AsNoTracking().Any(predicate))
             {
                 _dbSet.Add(entity);
                 return;
             }
-            
-            Update(entity);
+
+            _dbSet.Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
+            //                _context.Entry(existingEntity).CurrentValues.SetValues(entity);
         }
 
         public void Delete(T entity)

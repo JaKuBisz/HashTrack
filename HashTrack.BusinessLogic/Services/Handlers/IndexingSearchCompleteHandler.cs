@@ -23,11 +23,13 @@ namespace HashTrack.BusinessLogic.Services.Handlers
         //private readonly SidePanelWpfControl _hashTrackSearchWpfControl;
         private readonly IPersistenceHashTagService _storage;
         private readonly IEventPublisher _eventPublisher;
+        private readonly ICache _cache;
 
-        public IndexingSearchCompleteHandler(IPersistenceHashTagService storage, IEventPublisher eventPublisher)//SidePanelWpfControl hashTrackSearchWpfControl, IStorage storage)
+        public IndexingSearchCompleteHandler(IPersistenceHashTagService storage, ICache cache, IEventPublisher eventPublisher)//SidePanelWpfControl hashTrackSearchWpfControl, IStorage storage)
         {   
             //_hashTrackSearchWpfControl = hashTrackSearchWpfControl;
             _storage = storage;
+            _cache = cache;
             _eventPublisher = eventPublisher;
         }
         public void HandleSearchComplete(Outlook.Search searchResult)
@@ -45,6 +47,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
             //var result = clusteredResults.Select(x =>new IndexingResultsViewItem(x.Id, x.NumOfOccurences, x.SearchResults)).ToList();
             
             _storage.SaveHashTags(groupedResults.ToHashSet());
+            _cache.Set(Constants.Storage.IndexedHashTags, groupedResults);
             _eventPublisher.FireEvent(Events.IndexingSearchProcessed);
             //_hashTrackSearchWpfControl.SetIndexingResult(result);
         }

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace HashTrack.Core.Models.Search
 {
-    public class HashTagModel : UniqueEntity
+    public class HashTagModel : UniqueTag
     {//TODO Implement invalidating cache to not recalculate tge Totals each request
         public int NumOfOccurences { get; set; }
         public HashSet<ArtefactModel> SearchResults { get; set; }
@@ -16,7 +16,7 @@ namespace HashTrack.Core.Models.Search
         public HashTagModel()
         { }
   
-        public HashTagModel(string id,HashSet<ArtefactModel> searchResults, int numOfOccurences = 1) : base(id)
+        public HashTagModel(string tag,HashSet<ArtefactModel> searchResults, int numOfOccurences = 1) : base(tag)
         {
             NumOfOccurences = numOfOccurences;
             SearchResults = searchResults; 

@@ -10,7 +10,7 @@ namespace HashTrack.Persistence.Mappers
         {
             return new HashTagEntity
             {
-                Tag = model.Id,
+                Tag = model.Tag,
                 NumOfOccurrences = model.NumOfOccurences,
                 LastUpdated = model.LastUpdated,
                 MergedHashTags = model.MergedHashTags.Select(x => x.MapToHashTagEntity()).ToHashSet(),

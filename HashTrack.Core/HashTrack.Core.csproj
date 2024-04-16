@@ -68,7 +68,7 @@
         <Compile Include="Models\Search\HashTagModel.cs" />
         <Compile Include="Models\Search\IndexingResultsViewItem.cs" />
         <Compile Include="Models\Search\ArtefactModel.cs" />
-        <Compile Include="Models\UniqueEntity.cs" />
+        <Compile Include="Models\UniqueTag.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>

@@ -13,11 +13,11 @@ namespace HashTrack.Persistence.Mappers
         { 
             return new HashTagModel
             {
-                Id = entity.Tag,
+                Tag = entity.Tag,
                 NumOfOccurences = entity.NumOfOccurrences,
                 LastUpdated = entity.LastUpdated,
-                MergedHashTags = null,
-                ExcludedHashTags = null
+                MergedHashTags = entity.MergedHashTags.Select(x => x.MapToHashTagDto()).ToHashSet(),
+                ExcludedHashTags = entity.ExcludedHashTags.Select(x => x.MapToHashTagDto()).ToHashSet()
             };
         }
         /*

@@ -115,15 +115,15 @@
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Mappers\HashTagEntityMappers.cs" />
     <Compile Include="Mappers\HashTagEntityToHashTagDtoMapper.cs" />
-    <Compile Include="Migrations\202404150219050_InitialCreate.cs" />
-    <Compile Include="Migrations\202404150219050_InitialCreate.Designer.cs">
-      <DependentUpon>202404150219050_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\202404151804547_InitialCreate.cs" />
+    <Compile Include="Migrations\202404151804547_InitialCreate.Designer.cs">
+      <DependentUpon>202404151804547_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\HashTagRepository.cs" />
     <Compile Include="Repositories\Repository.cs" />
-    <Compile Include="Services\BaseCache.cs" />
+    <Compile Include="Services\Cache.cs" />
     <Compile Include="Services\CachedPersistenceStorage.cs" />
     <Compile Include="Services\PersistenceHashTagService.cs" />
     <Compile Include="Services\PersistantStorage.cs" />
@@ -139,8 +139,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202404150219050_InitialCreate.resx">
-      <DependentUpon>202404150219050_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202404151804547_InitialCreate.resx">
+      <DependentUpon>202404151804547_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
