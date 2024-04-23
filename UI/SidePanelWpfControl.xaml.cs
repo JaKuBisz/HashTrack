@@ -44,7 +44,7 @@ namespace HashTrack
 
             InitializeComponent();
             
-            _tabHashTagDetail.DataContext = MainViewModel;
+            this.DataContext = MainViewModel;
         }
 
         #region SearchTab

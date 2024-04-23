@@ -28,6 +28,7 @@ namespace HashTrack.UI.ViewModels
             HashTagOverviewVM = hashTagOverviewVM;
 
             eventAggregator.Subscribe(Events.UI.ChangeSelectedTab, ExecuteTabChange);
+            TabChange = new RelayCommand<object>(ExecuteTabChange);
         }
         
         public int SelectedTabIndex
