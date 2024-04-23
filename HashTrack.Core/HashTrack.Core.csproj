@@ -59,7 +59,7 @@
         <Compile Include="Interfaces\Handlers\ISearchCompleteHandlerFactory.cs" />
         <Compile Include="Interfaces\ICache.cs" />
         <Compile Include="Interfaces\Indexing\IIndexingService.cs" />
-        <Compile Include="Interfaces\IEventPublisher.cs" />
+        <Compile Include="Interfaces\IEventAggregator.cs" />
         <Compile Include="Interfaces\IPersistenceHashTagService.cs" />
         <Compile Include="Interfaces\Persistence\IStorage.cs" />
         <Compile Include="Interfaces\Search\IArtifactSearchService.cs" />

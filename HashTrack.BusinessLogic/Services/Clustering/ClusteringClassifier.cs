@@ -30,7 +30,7 @@ namespace HashTrack.Clustering.Services
         
         public bool Classify(HashTagModel tag1, HashTagModel tag2)
         {
-            if (tag1.NumOfOccurences <= tag2.NumOfOccurences)
+            if (tag1.NumOfOccurrences <= tag2.NumOfOccurrences)
             {
                 return false;
             }

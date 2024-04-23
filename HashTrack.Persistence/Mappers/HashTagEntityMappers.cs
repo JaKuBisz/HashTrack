@@ -11,7 +11,7 @@ namespace HashTrack.Persistence.Mappers
             return new HashTagEntity
             {
                 Tag = model.Tag,
-                NumOfOccurrences = model.NumOfOccurences,
+                NumOfOccurrences = model.NumOfOccurrences,
                 LastUpdated = model.LastUpdated,
                 MergedHashTags = model.MergedHashTags.Select(x => x.MapToHashTagEntity()).ToHashSet(),
                 ExcludedHashTags = model.ExcludedHashTags.Select(x => x.MapToHashTagEntity()).ToHashSet(),

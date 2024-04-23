@@ -1,36 +1,76 @@
 ﻿using HashTrack.Core.Models.Search;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Input;
+using HashTrack.Core;
+using HashTrack.Core.Attributes;
+using HashTrack.Core.Enums;
+using HashTrack.Core.Interfaces;
 
 namespace HashTrack.UI.ViewModels
 {
-    public class MainViewModel : INotifyPropertyChanged
+    [RegisterService(LifeCycle.Singleton, typeof(MainViewModel))]
+    public class MainViewModel : BaseViewModel
     {
-        private HashTagModel _selectedHashTag;
+        private int _selectedTabIndex;
+        public HashTagDetailViewModel HashTagDetailVM { get; private set; }
+        public SearchViewModel SearchVM { get; private set; }
+        public HashTagOverviewViewModel HashTagOverviewVM { get; private set; }
+        public ICommand TabChange { get; private set; }
 
-        public HashTagModel SelectedHashTag
+        public MainViewModel(
+            IEventAggregator eventAggregator,
+            SearchViewModel searchVM,
+            HashTagOverviewViewModel hashTagOverviewVM,
+            HashTagDetailViewModel hashTagDetailVM)
         {
-            get { return _selectedHashTag; }
-            set
-            {
-                if (_selectedHashTag != value)
-                {
-                    _selectedHashTag = value;
-                    OnPropertyChanged(nameof(SelectedHashTag));
-                }
-            }
+            HashTagDetailVM = hashTagDetailVM;
+            SearchVM = searchVM;
+            HashTagOverviewVM = hashTagOverviewVM;
+
+            eventAggregator.Subscribe(Events.UI.ChangeSelectedTab, ExecuteTabChange);
+        }
+        
+        public int SelectedTabIndex
+        {
+            get => _selectedTabIndex;
+            set => SetField(ref _selectedTabIndex, value);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
+        private void ExecuteTabChange(object obj)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (!(obj is Tuple<int, object> tuple))
+            {
+                return;
+            }
+            
+            var tabIndex = tuple.Item1;
+            var data = tuple.Item2;
+            switch(tabIndex)
+            {
+                case 0:
+                    //SearchVM
+                    if (data is string searchQuery)
+                    {
+                        SearchVM.SearchFilters.SearchText = searchQuery;
+                    }
+                    break;
+                case 1:
+                    //HashTagOverviewVM
+                    break;
+                case 2:
+                    //HashTagDetailVM
+                    if (data is HashTagModel hashTag)
+                    {
+                        HashTagDetailVM.HashTag = hashTag;
+                    }
+                    break;
+                default:
+                    return;
+            }
+            
+            SelectedTabIndex = tabIndex;
         }
     }
+
 
 }

@@ -37,9 +37,9 @@ namespace HashTrack
             _hashTrackSearchWpfControl = resolver.Resolve<SidePanelWpfControl>();
 
             // Register event handlers
-            //TODO: Use IEventPublisher instead of directly this and add Task.Run to make it asynchronous as these event are only synchronous
+            //TODO: Use IEventAggregator instead of directly this and add Task.Run to make it asynchronous as these event are only synchronous
             Application.AdvancedSearchComplete += _searchCompleteHandlerFactory.HandleSearchCompleted;
-            _hashTrackSearchWpfControl.SearchInitiated += _artifactSearchService.SearchExactMatch;
+            //_hashTrackSearchWpfControl.SearchInitiated += _artifactSearchService.SearchExactMatch;
             //var _hashTrackSearchWpfControl = new SidePanelWpfControl();
             indexingService.IndexAllArtifacts();
 

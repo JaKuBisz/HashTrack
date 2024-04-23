@@ -22,15 +22,15 @@ namespace HashTrack.BusinessLogic.Services.Handlers
     {//TODO: Use events instead of direct call to UI
         //private readonly SidePanelWpfControl _hashTrackSearchWpfControl;
         private readonly IPersistenceHashTagService _storage;
-        private readonly IEventPublisher _eventPublisher;
+        private readonly IEventAggregator _eventAggregator;
         private readonly ICache _cache;
 
-        public IndexingSearchCompleteHandler(IPersistenceHashTagService storage, ICache cache, IEventPublisher eventPublisher)//SidePanelWpfControl hashTrackSearchWpfControl, IStorage storage)
+        public IndexingSearchCompleteHandler(IPersistenceHashTagService storage, ICache cache, IEventAggregator eventAggregator)//SidePanelWpfControl hashTrackSearchWpfControl, IStorage storage)
         {   
             //_hashTrackSearchWpfControl = hashTrackSearchWpfControl;
             _storage = storage;
             _cache = cache;
-            _eventPublisher = eventPublisher;
+            _eventAggregator = eventAggregator;
         }
         public void HandleSearchComplete(Outlook.Search searchResult)
         {
@@ -44,11 +44,11 @@ namespace HashTrack.BusinessLogic.Services.Handlers
             //_storage.Set(Constants.Storage.IndexedHashTags, groupedResults);
 
             //var clusteredResults = ClusterResults(groupedResults).ToHashSet();
-            //var result = clusteredResults.Select(x =>new IndexingResultsViewItem(x.Id, x.NumOfOccurences, x.SearchResults)).ToList();
+            //var result = clusteredResults.Select(x =>new IndexingResultsViewItem(x.Id, x.NumOfOccurrences, x.SearchResults)).ToList();
             
             _storage.SaveHashTags(groupedResults.ToHashSet());
             _cache.Set(Constants.Storage.IndexedHashTags, groupedResults);
-            _eventPublisher.FireEvent(Events.IndexingSearchProcessed);
+            _eventAggregator.FireEvent(Events.IndexingSearchProcessed);
             //_hashTrackSearchWpfControl.SetIndexingResult(result);
         }
         
@@ -90,7 +90,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
         private List<HashTagModel> ClusterResults(List<HashTagModel> hashtags)
         {
             //We order hastags so we dont have to check which one has more occurrences and automatically know its the main hashtag
-            var orderedHashtags = hashtags.OrderByDescending(x => x.NumOfOccurences).ToList();
+            var orderedHashtags = hashtags.OrderByDescending(x => x.NumOfOccurrences).ToList();
             //TODO: Improve O(n^2) complexity, see notes
             foreach (var primaryHashtag in orderedHashtags)
             {
@@ -121,7 +121,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
 
         private HashTagModel CombineHashTags(HashTagModel primary, HashTagModel secondary)
         {
-            primary.NumOfOccurences += secondary.NumOfOccurences;
+            primary.NumOfOccurrences += secondary.NumOfOccurrences;
             foreach (var result in secondary.SearchResults)
             {
                 primary.SearchResults.Add(result);

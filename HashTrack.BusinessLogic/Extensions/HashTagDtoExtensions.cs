@@ -8,14 +8,14 @@ namespace HashTrack.BusinessLogic.Extensions
         public static void AddNewSearchResult(this HashTagModel hashTag, ArtefactModel searchResult)
         {
             if (!hashTag.SearchResults.Add(searchResult)) return;
-            hashTag.NumOfOccurences++;
+            hashTag.NumOfOccurrences++;
         }
 
         public static void MergeHashTag(this HashTagModel primary, HashTagModel secondary)
         {
             primary.MergedHashTags.Add(secondary);
       /*      
-            primary.NumOfOccurences += secondary.NumOfOccurences;
+            primary.NumOfOccurrences += secondary.NumOfOccurrences;
             primary.MergedHashTags.Add(secondary.Id);
             foreach (var result in secondary.SearchResults)
             {
@@ -37,7 +37,7 @@ namespace HashTrack.BusinessLogic.Extensions
         {
             primary.MergedHashTags.Remove(secondary);
             /*
-            primary.NumOfOccurences -= secondary.NumOfOccurences;
+            primary.NumOfOccurrences -= secondary.NumOfOccurrences;
             foreach (var result in secondary.SearchResults)
             {
                 primary.SearchResults.Remove(result);

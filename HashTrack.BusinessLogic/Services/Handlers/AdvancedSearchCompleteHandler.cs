@@ -15,13 +15,13 @@ namespace HashTrack.BusinessLogic.Services.Handlers
     public class AdvancedSearchCompleteHandler : ISearchCompleteHandler
     {//TODO: Use events instead of direct call to UI
         //private readonly SidePanelWpfControl _hashTrackSearchWpfControl;
-        private readonly IEventPublisher _eventPublisher;
+        private readonly IEventAggregator _eventAggregator;
         private readonly ICache _cache;
 
 
-        public AdvancedSearchCompleteHandler(IEventPublisher eventPublisher, ICache cache)//SidePanelWpfControl hashTrackSearchWpfControl)
+        public AdvancedSearchCompleteHandler(IEventAggregator eventAggregator, ICache cache)//SidePanelWpfControl hashTrackSearchWpfControl)
         {
-            _eventPublisher = eventPublisher;
+            _eventAggregator = eventAggregator;
             _cache = cache;
             //_hashTrackSearchWpfControl = hashTrackSearchWpfControl;
         }
@@ -43,7 +43,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
 
             //_hashTrackSearchWpfControl.SetSearchResults(transformedResults);
             _cache.Set(Constants.Storage.Artefacts, transformedResults);
-            _eventPublisher.FireEvent(Events.DefaultSearchProcessed);
+            _eventAggregator.FireEvent(Events.DefaultSearchProcessed);
         }
 
         private List<ArtefactModel> TransformResultForView(Outlook.Results results)

@@ -14,7 +14,7 @@ namespace HashTrack.Persistence.Mappers
             return new HashTagModel
             {
                 Tag = entity.Tag,
-                NumOfOccurences = entity.NumOfOccurrences,
+                NumOfOccurrences = entity.NumOfOccurrences,
                 LastUpdated = entity.LastUpdated,
                 MergedHashTags = entity.MergedHashTags.Select(x => x.MapToHashTagDto()).ToHashSet(),
                 ExcludedHashTags = entity.ExcludedHashTags.Select(x => x.MapToHashTagDto()).ToHashSet()
@@ -35,7 +35,7 @@ namespace HashTrack.Persistence.Mappers
             return new HashTagModel
             {
                 Id = entity.Tag,
-                NumOfOccurences = entity.NumOfOccurrences,
+                NumOfOccurrences = entity.NumOfOccurrences,
                 LastUpdated = entity.LastUpdated,
                 MergedHashTags = mergedHashTags,
                 ExcludedHashTags = excludedHashTags
@@ -57,7 +57,7 @@ namespace HashTrack.Persistence.Mappers
             return new HashTagModel
             {
                 Id = entity.Tag,
-                NumOfOccurences = entity.NumOfOccurrences,
+                NumOfOccurrences = entity.NumOfOccurrences,
                 LastUpdated = entity.LastUpdated,
                 MergedHashTags = mergedHashTags,
                 ExcludedHashTags = excludedHashTags

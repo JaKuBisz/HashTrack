@@ -77,7 +77,7 @@
         <Compile Include="Services\ArtifactSearchService.cs" />
         <Compile Include="Services\Clustering\ClusteringClassifier.cs" />
         <Compile Include="Services\Clustering\ClusteringService.cs" />
-        <Compile Include="Services\EventPublisher.cs" />
+        <Compile Include="Services\EventAggregator.cs" />
         <Compile Include="Services\Handlers\AdvancedSearchCompleteHandler.cs" />
         <Compile Include="Services\Handlers\IndexingSearchCompleteHandler.cs" />
         <Compile Include="Services\IndexingService.cs" />
