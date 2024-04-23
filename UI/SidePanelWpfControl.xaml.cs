@@ -29,7 +29,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 namespace HashTrack
 {
     /// <summary>
-    /// Interaction logic for SidePanelWpfControl.xaml haha
+    /// Interaction logic for SidePanelWpfControl.xaml
     /// </summary>
     [RegisterService(LifeCycle.Singleton, typeof(SidePanelWpfControl))]
     public partial class SidePanelWpfControl : System.Windows.Controls.UserControl

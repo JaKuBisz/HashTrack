@@ -175,7 +175,7 @@
                     <TextBlock Text="{Binding Tag}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2" Margin="8"/>
                     
                     <TextBlock Text="Number of usages:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Margin="5"/>
-                    <TextBlock Text="{Binding NumOfUsages}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
+                    <TextBlock Text="{Binding NumOfOccurences}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
                     
                     <TextBlock Text="Last Updated:" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" Margin="5"/>
                     <TextBlock Text="{Binding LastUpdated}" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
