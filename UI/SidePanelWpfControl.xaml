@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HashTrack"
+             xmlns:vm="clr-namespace:HashTrack.UI.ViewModels"
              xmlns:Collections="clr-namespace:System.Collections;assembly=mscorlib" x:Class="HashTrack.SidePanelWpfControl"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="400">
@@ -150,7 +151,7 @@
                 </ListView>
             </Grid>
         </TabItem>
-        <TabItem Header="Hashtag detail" Name="_tabHashTagDetail">
+        <TabItem Header="Hashtag detail" Name="_tabHashTagDetail" d:DataContext="{d:DesignInstance Type=vm:HashTagDetailViewModel, IsDesignTimeCreatable=True}">
             <Grid>
                 <!-- Grid Row Definitions -->
                 <Grid.RowDefinitions>
@@ -172,13 +173,13 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="{Binding Tag}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2" Margin="8"/>
+                    <TextBlock Text="{Binding HashTag.Tag}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2" Margin="8"/>
                     
                     <TextBlock Text="Number of usages:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Margin="5"/>
-                    <TextBlock Text="{Binding NumOfOccurences}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
+                    <TextBlock Text="{Binding HashTag.NumOfOccurences}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
                     
                     <TextBlock Text="Last Updated:" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" Margin="5"/>
-                    <TextBlock Text="{Binding LastUpdated}" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
+                    <TextBlock Text="{Binding HashTag.LastUpdated}" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
                     <!--
                     <TextBlock Text="First Use:" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" Margin="5"/>
                     <TextBlock Text="{Binding SelectedHashTag.FirstUse}" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
@@ -190,7 +191,7 @@
                         <Button Content="+" Click="AddMergedTag_Click" Width="25" Height="25" DockPanel.Dock="Right"/>
                  </DockPanel>
 
-                <ListBox Grid.Row="2" ItemsSource="{Binding MergedHashTags}" Margin="0,0">
+                <ListBox Grid.Row="2" ItemsSource="{Binding HashTag.MergedHashTags}" Margin="0,0">
                         <ListBox.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Un-merge" Command="{Binding UnmergeCommand}" CommandParameter="{Binding Path=PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
@@ -208,7 +209,7 @@
                     <TextBlock Text="Excluded Tags" FontWeight="Bold" DockPanel.Dock="Left"/>                    
                     <Button Content="+" Click="AddExcludedTag_Click" Width="25" Height="25" DockPanel.Dock="Right"/>
                 </DockPanel>
-                <ListBox Grid.Row="4" ItemsSource="{Binding ExcludedHashTags}" Margin="0,0">
+                <ListBox Grid.Row="4" ItemsSource="{Binding HashTag.ExcludedHashTags}" Margin="0,0">
                     <ListBox.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Remove Exception" Command="{Binding RemoveExceptionCommand}" CommandParameter="{Binding Path=PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>

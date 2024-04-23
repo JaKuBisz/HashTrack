@@ -24,6 +24,7 @@ using HashTrack.Core.Enums;
 using HashTrack.Core.Interfaces;
 using HashTrack.Core.Interfaces.Persistence;
 using HashTrack.Core.Models.Search;
+using HashTrack.UI.ViewModels;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack
@@ -39,9 +40,11 @@ namespace HashTrack
         private readonly IPersistenceHashTagService _hashTagsStorageService;
         private readonly ICache _cache;
         private readonly IEventPublisher _eventPublisher;
+        public HashTagDetailViewModel HashTagDetailVM { get; private set; }
+
         public HashTagModel SelectedHashTag;
 
-        public SidePanelWpfControl(IEventPublisher eventPublisher, IPersistenceHashTagService hashTagsStorageService, ICache cache)
+        public SidePanelWpfControl(IEventPublisher eventPublisher, IPersistenceHashTagService hashTagsStorageService, ICache cache, HashTagDetailViewModel hashTagDetailViewModel)
         {
             InitializeComponent();
             list_searchResults.ItemsSource = _searchResults;
@@ -49,6 +52,10 @@ namespace HashTrack
             _eventPublisher = eventPublisher;
             _hashTagsStorageService = hashTagsStorageService;
             _cache = cache;
+            
+            
+            HashTagDetailVM = hashTagDetailViewModel;
+            _tabHashTagDetail.DataContext = HashTagDetailVM;
             //TODO: Use Async
             eventPublisher.Subscribe(Events.IndexingSearchProcessed, UpdateIndexingResults);
             eventPublisher.Subscribe(Events.DefaultSearchProcessed, UpdateSearchResults);
@@ -305,6 +312,10 @@ namespace HashTrack
 
         private void MenuItem_Details_Click(object sender, RoutedEventArgs e)
         {
+            var menuItem = sender as System.Windows.Controls.MenuItem;
+            SelectedHashTag = (HashTagModel)menuItem.DataContext;
+            HashTagDetailVM.HashTag = SelectedHashTag;
+            mainTabControl.SelectedIndex = 2;
         }
 
         private void AddMergedTag_Click(object sender, RoutedEventArgs e)
@@ -313,24 +324,29 @@ namespace HashTrack
         }
         private void AddExcludedTag_Click(object sender, RoutedEventArgs e)
         {
-
+            AddTagPopup.IsOpen = true;
         }
 
         private void ClosePopup_Click(object sender, RoutedEventArgs e)
         {
-
+            AddTagPopup.IsOpen = false;
         }
 
         private void AddTag_Click(object sender, RoutedEventArgs e)
         {
-
+            //Excluded or Merged?
+            /*
+            var newTag = new HashTagModel { Tag = SearchTagTextBox.Text };
+            HashTagDetailVM.MergedHashTags.Add(newTag);*/
+            AddTagPopup.IsOpen = false;
         }
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
+
             var menuItem = sender as System.Windows.Controls.MenuItem;
             SelectedHashTag = (HashTagModel)menuItem.DataContext;
-            _tabHashTagDetail.DataContext = SelectedHashTag;
+            HashTagDetailVM.HashTag = SelectedHashTag;
             mainTabControl.SelectedIndex = 2;
         }
     }

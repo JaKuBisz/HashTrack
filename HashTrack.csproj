@@ -200,6 +200,7 @@
     <Compile Include="ThisAddIn.Designer.cs">
       <DependentUpon>ThisAddIn.Designer.xml</DependentUpon>
     </Compile>
+    <Compile Include="UI\RelayCommand.cs" />
     <Compile Include="UI\SidePanelPlaceholder.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -209,7 +210,10 @@
     <Compile Include="UI\SidePanelWpfControl.xaml.cs">
       <DependentUpon>SidePanelWpfControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\ViewModels\BaseViewModel.cs" />
+    <Compile Include="UI\ViewModels\HashTagDetailViewModel.cs" />
     <Compile Include="UI\ViewModels\MainViewModel.cs" />
+    <Compile Include="UI\ViewModels\SearchViewModel.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
