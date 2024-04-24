@@ -26,6 +26,7 @@ using HashTrack.Core.Interfaces.Persistence;
 using HashTrack.Core.Models.Search;
 using HashTrack.UI.ViewModels;
 using ComboBox = System.Windows.Controls.ComboBox;
+using ListBox = System.Windows.Controls.ListBox;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack
@@ -49,7 +50,7 @@ namespace HashTrack
 
         #region SearchTab
         
-        private void list_searchResults_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void list_searchResults_item_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton != MouseButton.Left)
             {
@@ -59,7 +60,7 @@ namespace HashTrack
             var item = sender as System.Windows.Controls.ListViewItem;
             if (item.Content is ArtefactModel content)
             {
-                ExecuteCommand(MainViewModel.TabChange, content);
+                ExecuteCommand(MainViewModel.SearchVM.OpenArtefact, content);
             }
         }
         
@@ -82,27 +83,48 @@ namespace HashTrack
             {
                 return;
             }
+            
+            if (sender is System.Windows.Controls.ListViewItem listView
+                && listView.Content is HashTagModel content)
+            {
+                ExecuteCommand(MainViewModel.HashTagOverviewVM.OpenTagDetail, content);
+            }
+        }
 
-            var item = sender as System.Windows.Controls.ListViewItem;
-            var content = item.Content as HashTagModel;
-            if (content == null)
+        private void list_Hashtags_contextMenuItem_tagDetails_OnClick(object sender, RoutedEventArgs e)
+        {
+            var tag = (HashTagModel)list_Hashtags.SelectedItem;
+            if (tag == null)
             {
                 return;
             }
-
-            var searchResults = content.SearchResults;
             
-            ExecuteCommand(MainViewModel.HashTagOverviewVM.StartIndexingCommand, content);
-            /*
-            MainViewModel.HashTagOverviewVM.StartIndexing
-            tb_searchbar.Text = content.Tag;
-            SetSearchResults(searchResults.ToList());
-            mainTabControl.SelectedIndex = 0;*/
+            ExecuteCommand(MainViewModel.HashTagOverviewVM.OpenTagDetail, tag);
+        }
+
+        private void list_Hashtags_contextMenuItem_tagOccurrences_OnClick(object sender, RoutedEventArgs e)
+        {
+            var tag = (HashTagModel)list_Hashtags.SelectedItem;
+            if (tag == null)
+            {
+                return;
+            }
+            
+            ExecuteCommand(MainViewModel.HashTagOverviewVM.OpenSearchResultsCommand, tag);
         }
         
         #endregion
         
         #region HashTagDetailTab
+        
+
+        private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var tagsListBox = (ListBox)sender;
+            var selectedTags =
+                tagsListBox.SelectedItems.Cast<HashTagModel>().ToList();
+            MainViewModel.HashTagDetailVM.PopupVM.UpdateSelectionCommand.Execute(selectedTags);
+        }
         #endregion
         
         

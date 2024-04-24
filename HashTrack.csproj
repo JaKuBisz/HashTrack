@@ -207,7 +207,14 @@
     <Compile Include="ThisAddIn.Designer.cs">
       <DependentUpon>ThisAddIn.Designer.xml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Enums\OrderBy.cs" />
+    <Compile Include="UI\Attributes\DisplayNameAttribute.cs" />
+    <Compile Include="UI\ChangeTabEvent.cs" />
+    <Compile Include="UI\Enums\OrderByHashTagsOverview.cs" />
+    <Compile Include="UI\Enums\OrderBySearch.cs" />
+    <Compile Include="UI\Extensions\AdvancedSearchQueryExtensions.cs" />
+    <Compile Include="UI\Extensions\CacheExtensions.cs" />
+    <Compile Include="UI\Helpers\OrderByOptionConverter.cs" />
+    <Compile Include="UI\Services\MessageService.cs" />
     <Compile Include="UI\SidePanelPlaceholder.cs">
       <SubType>UserControl</SubType>
     </Compile>

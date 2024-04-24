@@ -8,7 +8,7 @@ namespace HashTrack.Core
         public const string IndexingSearchCompleted = "IndexingSearchCompleted";
         public const string IndexingSearchProcessed = "IndexingSearchProcessed";
         
-        public class UI
+        public static class UI
         {
             public const string ChangeSelectedTab = "ChangeSelectedTab";
             public const string MergeTags = "MergeTags";

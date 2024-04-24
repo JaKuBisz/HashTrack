@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -12,23 +13,25 @@ using HashTrack.Core.Enums;
 using HashTrack.Core.Interfaces;
 using HashTrack.Core.Models.Search;
 using HashTrack.Enums;
+using HashTrack.Extensions;
 
 namespace HashTrack.UI.ViewModels
 {
     [RegisterService(LifeCycle.Singleton, typeof(HashTagOverviewViewModel))]
     public class HashTagOverviewViewModel : BaseViewModel
     {
-        // Add properties and commands for displaying an overview of hash tags
         private readonly ICache _cache;
         private readonly IEventAggregator _eventAggregator;
+        
         private ObservableCollection<HashTagModel> _indexingHashtags;
+        private DateTime? _fromDate;
+        private DateTime? _toDate;
+        private int _minOccurrences;
+        private int _maxOccurrences;
+        private string _searchBar;
+        private OrderByHashTagsOverview _selectedOrderBy = OrderByHashTagsOverview.OccurrencesDesc;
 
-        public ICommand StartIndexingCommand { get; private set; }
-        public ICommand HashTagItemDoubleClick { get; private set; }
-        public ICommand OrderByChangedCommand { get; private set; }
-        public ICommand OpenTagDetail { get; private set; }
-        public ICommand MergeTags { get; private set; }
-
+        
         public HashTagOverviewViewModel(IEventAggregator eventAggregator, ICache cache)
         {
             _indexingHashtags = new ObservableCollection<HashTagModel>();
@@ -37,8 +40,16 @@ namespace HashTrack.UI.ViewModels
             //TODO: Use Async use eventHandler from Outlook Office object
             eventAggregator.Subscribe(Events.IndexingSearchProcessed, UpdateIndexingResults);
             InitializeCommands();
+            _indexingHashtags = new ObservableCollection<HashTagModel>()
+            {
+                new HashTagModel() { Tag = "#test", NumOfOccurrences = 100 },
+                new HashTagModel() { Tag = "#test2", NumOfOccurrences = 200 },
+                new HashTagModel() { Tag = "#test3", NumOfOccurrences = 300 },
+                new HashTagModel() { Tag = "#test4", NumOfOccurrences = 400 },
+                new HashTagModel() { Tag = "#test5", NumOfOccurrences = 500 },
+                new HashTagModel() { Tag = "#test6", NumOfOccurrences = 600 },
+            };
         }
-
 
         private void InitializeCommands()
         {
@@ -47,14 +58,102 @@ namespace HashTrack.UI.ViewModels
             
             HashTagItemDoubleClick = new RelayCommand<object>(list_Hashtags_MouseDoubleClick);
             OpenTagDetail = new RelayCommand<object>(ExecuteOpenTagDetail);
+            OpenSearchResultsCommand = new RelayCommand<object>(ExecuteOpenSearchResults);
             MergeTags = new RelayCommand<object>(ExecuteMergeTags);
         }
         
+#region Properties
+        public List<OrderByHashTagsOverview> OrderByOptions { get; } =
+            Enum.GetValues(typeof(OrderByHashTagsOverview)).Cast<OrderByHashTagsOverview>().ToList();
+
+        public OrderByHashTagsOverview OrderBy
+        {
+            get => _selectedOrderBy;
+            set => SetField(ref _selectedOrderBy, value);
+        }
+        public ObservableCollection<HashTagModel> IndexingHashtags
+        {
+            get => _indexingHashtags;
+            set
+            {
+                SetField(ref _indexingHashtags, value);
+                OnPropertyChanged(nameof(FilteredIndexingHashtags));
+            }
+        }
+
+        public ObservableCollection<HashTagModel> FilteredIndexingHashtags => FilterIndexingResults(_indexingHashtags);
+
+        public DateTime? FromDate
+        {
+            get => _fromDate;
+            set => SetField(ref _fromDate, value);
+        }
+        
+        public DateTime? ToDate
+        {
+            get => _toDate;
+            set => SetField(ref _toDate, value);
+        }
+        
+        public int MinOccurrences
+        {
+            get => _minOccurrences;
+            set => SetField(ref _minOccurrences, value);
+        }
+        
+        public int MaxOccurrences
+        {
+            get => _maxOccurrences;
+            set => SetField(ref _maxOccurrences, value);
+        }
+        
+        public string SearchBar
+        {
+            get => _searchBar;
+            set
+            {
+                SetField(ref _searchBar, value);
+                OnPropertyChanged(nameof(FilteredIndexingHashtags));
+            }
+        }
+
+        #endregion
+
+#region Commands
+        public ICommand StartIndexingCommand { get; private set; }
+        public ICommand HashTagItemDoubleClick { get; private set; }
+        public ICommand OrderByChangedCommand { get; private set; }
+        public ICommand OpenTagDetail { get; private set; }
+        public ICommand OpenSearchResultsCommand { get; private set; }
+        public ICommand MergeTags { get; private set; }
+
+#endregion
+
+        private ObservableCollection<HashTagModel> FilterIndexingResults(ObservableCollection<HashTagModel> indexingHashtags)
+        {
+            if (string.IsNullOrWhiteSpace(SearchBar))
+            {
+                return indexingHashtags;
+            }
+
+            var result = indexingHashtags.Where(x => x.Tag.Contains(SearchBar));
+            return new ObservableCollection<HashTagModel>(result);
+        }
         private void ExecuteOpenTagDetail(object obj)
         {
             if (obj is HashTagModel model)
             {
-                _eventAggregator.FireEvent(Events.UI.ChangeSelectedTab, (2, model));
+                var evt = new ChangeTabEvent(ChangeTabEventTarget.TagDetailsTab, model);
+                _eventAggregator.FireEvent(ChangeTabEvent.Tag, evt);
+            }
+        }
+
+        private void ExecuteOpenSearchResults(object obj)
+        {
+            if (obj is HashTagModel model)
+            {
+                var evt = new ChangeTabEvent(ChangeTabEventTarget.SearchTab, model);
+                _eventAggregator.FireEvent(ChangeTabEvent.Tag, evt);
             }
         }
 
@@ -62,18 +161,18 @@ namespace HashTrack.UI.ViewModels
         {
             if (obj is HashTagModel model)
             {
-                _eventAggregator.FireEvent(Events.UI.ChangeSelectedTab, (2, model));
+                var evt = new ChangeTabEvent(ChangeTabEventTarget.TagDetailsTab, model);
+                _eventAggregator.FireEvent(ChangeTabEvent.Tag, evt);
             }
         }
         
         private void SetIndexingResult(List<HashTagModel> result)
         {
-            _indexingHashtags.Clear();
-            result.ForEach(_indexingHashtags.Add);
+            IndexingHashtags = new ObservableCollection<HashTagModel>(result);
         }
         private void UpdateIndexingResults()
         {
-            var hashTags = _cache.Get<List<HashTagModel>>(Constants.Storage.IndexedHashTags);
+            var hashTags = _cache.GetHashTags();
             SetIndexingResult(hashTags.ToList());
         }
         //TODO: FIx this - currently will delete cached need to implement a caching service
@@ -92,13 +191,13 @@ namespace HashTrack.UI.ViewModels
             //TODO: Implement sorting
             switch (orderBy)
             {
-                case (int)OrderBy.DateDesc:
+                case (int)OrderByHashTagsOverview.DateDesc:
                     //_indexingHashtags = new ObservableCollection<HashTagModel>(_indexingHashtags.OrderByDescending(x => x.));
                     break;
-                case (int)OrderBy.OccurencesDesc:
+                case (int)OrderByHashTagsOverview.OccurrencesDesc:
                     _indexingHashtags = new ObservableCollection<HashTagModel>(_indexingHashtags.OrderByDescending(x => x.NumOfOccurrences));
                     break;
-                case (int)OrderBy.OccurencesAsc:
+                case (int)OrderByHashTagsOverview.OccurrencesAsc:
                     _indexingHashtags = new ObservableCollection<HashTagModel>(_indexingHashtags.OrderBy(x => x.NumOfOccurrences));
                     break;
                 default:
@@ -114,7 +213,8 @@ namespace HashTrack.UI.ViewModels
         {
             if (obj is HashTagModel model)
             {
-                _eventAggregator.FireEvent(Events.UI.ChangeSelectedTab, (0, model.Tag));
+                var evt = new ChangeTabEvent(ChangeTabEventTarget.SearchTab, model);
+                _eventAggregator.FireEvent(ChangeTabEvent.Tag, evt);
             }
         }
 
@@ -143,8 +243,9 @@ namespace HashTrack.UI.ViewModels
         {
             var menuItem = sender as System.Windows.Controls.MenuItem;
             var selectedHashTag = (HashTagModel)menuItem.DataContext;
-
-            _eventAggregator.FireEvent(Events.UI.ChangeSelectedTab, (2, selectedHashTag));
+            
+            var evt = new ChangeTabEvent(ChangeTabEventTarget.TagDetailsTab, selectedHashTag);
+            _eventAggregator.FireEvent(ChangeTabEvent.Tag, evt);
         }
 
         #endregion

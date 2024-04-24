@@ -37,6 +37,7 @@ namespace HashTrack
             _hashTrackSearchWpfControl = resolver.Resolve<SidePanelWpfControl>();
 
             // Register event handlers
+            //TODO: Use Async use eventHandler from Outlook Office object
             //TODO: Use IEventAggregator instead of directly this and add Task.Run to make it asynchronous as these event are only synchronous
             Application.AdvancedSearchComplete += _searchCompleteHandlerFactory.HandleSearchCompleted;
             //_hashTrackSearchWpfControl.SearchInitiated += _artifactSearchService.SearchExactMatch;

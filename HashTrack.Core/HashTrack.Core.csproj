@@ -49,6 +49,7 @@
         <Compile Include="Constants\Events.cs" />
         <Compile Include="Enums\ArtifactTypes.cs" />
         <Compile Include="Enums\LifeCycle.cs" />
+        <Compile Include="Enums\MessageType.cs" />
         <Compile Include="Exceptions\SearchQueryException.cs" />
         <Compile Include="Exceptions\UnknownResultItemTypeException.cs" />
         <Compile Include="Extensions\UniqueEntityExtensions.cs" />
@@ -58,6 +59,7 @@
         <Compile Include="Interfaces\Handlers\ISearchCompleteHandler.cs" />
         <Compile Include="Interfaces\Handlers\ISearchCompleteHandlerFactory.cs" />
         <Compile Include="Interfaces\ICache.cs" />
+        <Compile Include="Interfaces\IMessageService.cs" />
         <Compile Include="Interfaces\Indexing\IIndexingService.cs" />
         <Compile Include="Interfaces\IEventAggregator.cs" />
         <Compile Include="Interfaces\IPersistenceHashTagService.cs" />

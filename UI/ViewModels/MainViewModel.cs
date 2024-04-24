@@ -1,6 +1,7 @@
 ﻿using HashTrack.Core.Models.Search;
 using System;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using HashTrack.Core;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
@@ -39,37 +40,30 @@ namespace HashTrack.UI.ViewModels
 
         private void ExecuteTabChange(object obj)
         {
-            if (!(obj is Tuple<int, object> tuple))
+            if (!(obj is ChangeTabEvent evt) || evt.TagModel is null)
             {
                 return;
             }
-            
-            var tabIndex = tuple.Item1;
-            var data = tuple.Item2;
-            switch(tabIndex)
+/*
+            switch(evt.Target)
             {
-                case 0:
+                case ChangeTabEventTarget.SearchTab:
                     //SearchVM
-                    if (data is string searchQuery)
-                    {
-                        SearchVM.SearchFilters.SearchText = searchQuery;
-                    }
+                    SearchVM.SearchFilters.SearchText = evt.TagModel.Tag;
                     break;
-                case 1:
+                case ChangeTabEventTarget.TagOverviewTab:
                     //HashTagOverviewVM
+                    return;
                     break;
-                case 2:
+                case ChangeTabEventTarget.TagDetailsTab:
                     //HashTagDetailVM
-                    if (data is HashTagModel hashTag)
-                    {
-                        HashTagDetailVM.HashTag = hashTag;
-                    }
+                    HashTagDetailVM.HashTag = evt.TagModel;
                     break;
                 default:
                     return;
-            }
+            }*/
             
-            SelectedTabIndex = tabIndex;
+            SelectedTabIndex = (int)evt.Target;
         }
     }
 
