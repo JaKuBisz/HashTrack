@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using HashTrack.Core.Enums;
 using HashTrack.Core.Models.Search;
 using HashTrack.Persistence.Entities;
 
@@ -17,7 +18,12 @@ namespace HashTrack.Persistence.Mappers
                 NumOfOccurrences = entity.NumOfOccurrences,
                 LastUpdated = entity.LastUpdated,
                 MergedHashTags = entity.MergedHashTags.Select(x => x.MapToHashTagDto()).ToHashSet(),
-                ExcludedHashTags = entity.ExcludedHashTags.Select(x => x.MapToHashTagDto()).ToHashSet()
+                ExcludedHashTags = entity.ExcludedHashTags.Select(x => x.MapToHashTagDto()).ToHashSet(),
+                CreateFolder = entity.CreateFolder,
+                CreateCategory = entity.CreateCategory,
+                FolderName = entity.FolderName,
+                CategoryName = entity.CategoryName,
+                CategoryColor = (CategoryColor) entity.CategoryColor
             };
         }
         /*

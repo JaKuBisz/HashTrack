@@ -24,6 +24,7 @@ using HashTrack.Core.Enums;
 using HashTrack.Core.Interfaces;
 using HashTrack.Core.Interfaces.Persistence;
 using HashTrack.Core.Models.Search;
+using HashTrack.UI;
 using HashTrack.UI.ViewModels;
 using ComboBox = System.Windows.Controls.ComboBox;
 using ListBox = System.Windows.Controls.ListBox;

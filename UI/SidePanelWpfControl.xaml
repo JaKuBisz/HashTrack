@@ -6,13 +6,14 @@
              xmlns:local="clr-namespace:HashTrack"
              xmlns:vm="clr-namespace:HashTrack.UI.ViewModels"
              xmlns:helpers="clr-namespace:HashTrack.UI.Helpers"
-             xmlns:Collections="clr-namespace:System.Collections;assembly=mscorlib" x:Class="HashTrack.SidePanelWpfControl"
+             xmlns:Collections="clr-namespace:System.Collections;assembly=mscorlib"
+             x:Class="HashTrack.SidePanelWpfControl"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="400"
              d:DataContext="{d:DesignInstance Type=vm:MainViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
-            <helpers:OrderByOptionConverter x:Key="OrderByOptionConverter"/>
+            <helpers:EnumFriendlyNameConverter x:Key="OrderByOptionConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <TabControl x:Name="mainTabControl" SelectedIndex="{Binding SelectedTabIndex}">
@@ -130,7 +131,7 @@
                 <TextBox Text="{Binding SearchBar, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Margin="5,3" HorizontalAlignment="Stretch" FontSize="16"/>
                 <!-- <Button x:Name="index_btn_search" Content="Search" Grid.Row="3" Width="80" Margin="5,3"  HorizontalAlignment="Right" Click="btn_search_Click"/> -->
                 
-                <ListView x:Name="list_Hashtags" ItemsSource="{Binding FilteredIndexingHashtags}" Grid.Row="4" Margin="10" SelectionMode="Extended">
+                <ListView x:Name="list_Hashtags" ItemsSource="{Binding IndexingHashtags}" Grid.Row="4" Margin="10" SelectionMode="Extended">
                     <ListView.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="See hashtag details"
@@ -247,7 +248,7 @@
                     <Border Background="White" Padding="10" BorderBrush="Black" BorderThickness="1">
                         <StackPanel>
                             <TextBlock Text="Add Tag" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                            <TextBox Text="{Binding SearchTag}" x:Name="SearchTagTextBox" Margin="0,0,0,10"/>
+                            <TextBox Text="{Binding SearchTag, UpdateSourceTrigger=PropertyChanged}" x:Name="SearchTagTextBox" Margin="0,0,0,10"/>
                             <ListBox x:Name="HashtagsListBox" DisplayMemberPath="TagName" Margin="0,0,0,10" ToolTip="Select a tag from the list and click 'Add' to confirm." />
                             <ListBox Margin="0,0,0,10" ToolTip="Select a tag from the list and click 'Add' to confirm."
                                      ItemsSource="{Binding PopupTags}"
@@ -273,7 +274,6 @@
                         </StackPanel>
                     </Border>
                 </Popup>
-
             </Grid>
         </TabItem>
 

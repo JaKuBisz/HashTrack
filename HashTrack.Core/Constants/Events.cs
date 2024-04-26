@@ -7,6 +7,7 @@ namespace HashTrack.Core
         public const string DefaultSearchProcessed = "DefaultSearchProcessed";
         public const string IndexingSearchCompleted = "IndexingSearchCompleted";
         public const string IndexingSearchProcessed = "IndexingSearchProcessed";
+        public const string CategoryManagerSearch = "CategoryManagerSearch";
         
         public static class UI
         {

@@ -40,15 +40,6 @@ namespace HashTrack.UI.ViewModels
             //TODO: Use Async use eventHandler from Outlook Office object
             eventAggregator.Subscribe(Events.IndexingSearchProcessed, UpdateIndexingResults);
             InitializeCommands();
-            _indexingHashtags = new ObservableCollection<HashTagModel>()
-            {
-                new HashTagModel() { Tag = "#test", NumOfOccurrences = 100 },
-                new HashTagModel() { Tag = "#test2", NumOfOccurrences = 200 },
-                new HashTagModel() { Tag = "#test3", NumOfOccurrences = 300 },
-                new HashTagModel() { Tag = "#test4", NumOfOccurrences = 400 },
-                new HashTagModel() { Tag = "#test5", NumOfOccurrences = 500 },
-                new HashTagModel() { Tag = "#test6", NumOfOccurrences = 600 },
-            };
         }
 
         private void InitializeCommands()
@@ -71,17 +62,15 @@ namespace HashTrack.UI.ViewModels
             get => _selectedOrderBy;
             set => SetField(ref _selectedOrderBy, value);
         }
+        
         public ObservableCollection<HashTagModel> IndexingHashtags
         {
-            get => _indexingHashtags;
+            get => FilterIndexingResults(_indexingHashtags);
             set
             {
                 SetField(ref _indexingHashtags, value);
-                OnPropertyChanged(nameof(FilteredIndexingHashtags));
             }
         }
-
-        public ObservableCollection<HashTagModel> FilteredIndexingHashtags => FilterIndexingResults(_indexingHashtags);
 
         public DateTime? FromDate
         {
@@ -113,7 +102,7 @@ namespace HashTrack.UI.ViewModels
             set
             {
                 SetField(ref _searchBar, value);
-                OnPropertyChanged(nameof(FilteredIndexingHashtags));
+                OnPropertyChanged(nameof(IndexingHashtags));
             }
         }
 

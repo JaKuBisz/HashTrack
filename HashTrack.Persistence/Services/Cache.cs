@@ -20,11 +20,14 @@ namespace HashTrack.Persistence.Services
             _memoryCache = memoryCache;
         }
 
+        public bool TryGet<T>(string key, out T item)
+        {
+            return _memoryCache.TryGetValue(key, out item);
+        }
 
         public T Get<T>(string key)
         {
-            _memoryCache.TryGetValue(key, out T item);
-            return item;
+            return TryGet(key, out T item) ? item : default;
         }
 
         public void Set<T>(string key, T item)

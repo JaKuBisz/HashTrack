@@ -22,7 +22,8 @@ namespace HashTrack.UI.ViewModels
             IEventAggregator eventAggregator,
             SearchViewModel searchVM,
             HashTagOverviewViewModel hashTagOverviewVM,
-            HashTagDetailViewModel hashTagDetailVM)
+            HashTagDetailViewModel hashTagDetailVM,
+            TagSettingsViewModel hshtagvm)
         {
             HashTagDetailVM = hashTagDetailVM;
             SearchVM = searchVM;
@@ -30,6 +31,11 @@ namespace HashTrack.UI.ViewModels
 
             eventAggregator.Subscribe(Events.UI.ChangeSelectedTab, ExecuteTabChange);
             TabChange = new RelayCommand<object>(ExecuteTabChange);
+
+            var hashtagset = new HashTagSettings();
+            hashtagset.DataContext = hshtagvm;
+            var test = new Form1(hashtagset);
+            test.Show();
         }
         
         public int SelectedTabIndex

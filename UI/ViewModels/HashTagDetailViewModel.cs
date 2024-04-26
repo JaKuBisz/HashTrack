@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using HashTrack.Core;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
 using HashTrack.Core.Interfaces;
@@ -18,11 +19,10 @@ namespace HashTrack.UI.ViewModels
     [RegisterService(LifeCycle.Singleton, typeof(HashTagDetailViewModel))]
     public class HashTagDetailViewModel : BaseViewModel
     {
-        private HashTagModel _hashTag;
-        private ObservableCollection<HashTagModel> _mergedHashTags;
-        private ObservableCollection<HashTagModel> _excludedHashTags;
-        private PopupViewModel _popupVm;
         private readonly ICache _cache;
+        private PopupViewModel _popupVm;
+        private HashTagModel _hashTag;
+        
         public ICommand UnmergeCommand { get; private set; }
         public ICommand RemoveExceptionCommand { get; private set; }
         public ICommand MergeCommand { get; private set; }
@@ -32,19 +32,27 @@ namespace HashTrack.UI.ViewModels
         public ICommand AddTagCommand { get; private set; }
         
 
-        public HashTagDetailViewModel(ICache cache)
+        public HashTagDetailViewModel(ICache cache, IEventAggregator eventAggregator)
         {
             PopupVM = new PopupViewModel(this);
             _cache = cache;
-            MergedHashTags = new ObservableCollection<HashTagModel>();
-            ExcludedHashTags = new ObservableCollection<HashTagModel>();
+            eventAggregator.Subscribe(Events.UI.ChangeSelectedTab, ExecuteTabChange);
             InitializeCommands();
+        }
+        
+        public ObservableCollection<HashTagModel> MergedHashTags => new ObservableCollection<HashTagModel>(_hashTag.MergedHashTags);
 
-            _hashTag = new HashTagModel
+        public ObservableCollection<HashTagModel> ExcludedHashTags => new ObservableCollection<HashTagModel>(_hashTag.ExcludedHashTags);
+       
+        public HashTagModel HashTag
+        {
+            get => _hashTag;
+            set
             {
-                Tag = "#test",
-                NumOfOccurrences = 100
-            };
+                SetField(ref _hashTag, value);
+                OnPropertyChanged(nameof(MergedHashTags));
+                OnPropertyChanged(nameof(ExcludedHashTags));
+            }
         }
 
         public PopupViewModel PopupVM
@@ -53,23 +61,6 @@ namespace HashTrack.UI.ViewModels
             set => SetField(ref _popupVm, value);
         }
 
-        public ObservableCollection<HashTagModel> MergedHashTags
-        {
-            get => _mergedHashTags;
-            set => SetField(ref _mergedHashTags, value);
-        }
-
-        public ObservableCollection<HashTagModel> ExcludedHashTags
-        {
-            get => _excludedHashTags;
-            set => SetField(ref _excludedHashTags, value);
-        }
-
-        public HashTagModel HashTag
-        {
-            get => _hashTag;
-            set => SetField(ref _hashTag, value);
-        }
 /*
     public HashTagDetailViewModel()
     {
@@ -95,13 +86,23 @@ namespace HashTrack.UI.ViewModels
             });*/
         }
         
+        private void ExecuteTabChange(object obj)
+        {
+            if (!(obj is ChangeTabEvent evt) || evt.TagModel is null || evt.Target != ChangeTabEventTarget.TagDetailsTab)
+            {
+                return;
+            }
+            
+            HashTag = evt.TagModel;
+        }
+        
         private void ExecuteOpenPopup(object parameter)
         {
             //Merged tags
             bool isMerged = Convert.ToBoolean(parameter);
 
             var tags = _cache.GetHashTags().ToHashSet();
-            var exceptTags = (isMerged ? MergedHashTags : ExcludedHashTags).ToHashSet();
+            var exceptTags = isMerged ? _hashTag.TotalMergedHashTags() : _hashTag.TotalExcludedHashTags();
             exceptTags.Add(HashTag);
             
             var resultTags = tags.Except(exceptTags);
@@ -183,6 +184,7 @@ namespace HashTrack.UI.ViewModels
             {
                 _parent = parent;
                 _popupTags = new ObservableCollection<HashTagModel>();
+                InitializeCommands();
             }
             
             private void InitializeCommands()
@@ -212,13 +214,20 @@ namespace HashTrack.UI.ViewModels
             public string SearchTag
             {
                 get => _searchTag;
-                set => SetField(ref _searchTag, value);
+                set
+                {
+                    SetField(ref _searchTag, value);
+                    OnPropertyChanged(nameof(PopupTags));
+                }
             }
-            
+
             public ObservableCollection<HashTagModel> PopupTags
             {
-                get => _popupTags;
-                set => SetField(ref _popupTags, value);
+                get => FilterTags(_popupTags);
+                set
+                {
+                    SetField(ref _popupTags, value);
+                }
             }
 
             public List<HashTagModel> SelectedTags
@@ -238,6 +247,17 @@ namespace HashTrack.UI.ViewModels
                 get => _isMergeMode;
                 set => SetField(ref _isMergeMode, value);
             }
+            
+            private ObservableCollection<HashTagModel> FilterTags(ObservableCollection<HashTagModel> tags)
+            {
+                if (string.IsNullOrWhiteSpace(SearchTag))
+                {
+                    return tags;
+                }
+
+                var result = tags.Where(x => x.Tag.Contains(SearchTag));
+                return new ObservableCollection<HashTagModel>(result);
+            }
 
             private void ClosePopup()
             {
@@ -251,14 +271,14 @@ namespace HashTrack.UI.ViewModels
                 {
                     foreach (var tag in PopupTags)
                     {
-                        _parent._mergedHashTags.Add(tag);
+                        //_parent._mergedHashTags.Add(tag);
                     }
                 }
                 else
                 {
                     foreach (var tag in PopupTags)
                     {
-                        _parent._excludedHashTags.Add(tag);
+                       // _parent._excludedHashTags.Add(tag);
                     }
                 }
                 IsPopupOpen = false;

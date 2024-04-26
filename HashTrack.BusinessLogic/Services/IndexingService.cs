@@ -20,10 +20,10 @@ namespace HashTrack.BusinessLogic.Services
             _artifactSearchService = artifactSearchService;
         }
         
-        public void IndexAllArtifacts()
+        public void IndexAllArtifacts(DateTime? from = null)
         {
             // Index all artifacts in last 30 days
-            var from = DateTime.Now.AddDays(-30);
+            from = from ?? DateTime.Now.AddDays(-30);
             _artifactSearchService.SearchExactMatch(new AdvancedSearchQueryOptions
             {
                 Keyword = "#",
@@ -34,6 +34,5 @@ namespace HashTrack.BusinessLogic.Services
                 ExactMatch = false
             });
         }
-        
     }
 }

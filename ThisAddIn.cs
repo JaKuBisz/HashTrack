@@ -11,6 +11,9 @@ using HashTrack.Persistence.Interfaces;
 using Microsoft.Office.Tools.Ribbon;
 using System;
 using System.Collections.Generic;
+using System.Timers;
+using Outlook = Microsoft.Office.Interop.Outlook;
+
 
 namespace HashTrack
 {
@@ -20,6 +23,9 @@ namespace HashTrack
         private ISearchCompleteHandlerFactory _searchCompleteHandlerFactory;
         private IArtifactSearchService _artifactSearchService;
         private SidePanelWpfControl _hashTrackSearchWpfControl;
+        private IIndexingService _indexingService;
+        private IComponentContext _resolver;
+        private Timer _indexingTimer;
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
@@ -27,33 +33,58 @@ namespace HashTrack
             MyStartup.ConfigureContainer();
 
             // Resolve services (can not be done in the constructor of the class)
-
-
-            var resolver = IoC.Startup.ServiceLocator.Resolve<IComponentContext>();
-            var service = resolver.ResolveKeyed<ISearchCompleteHandler>(Events.DefaultSearchCompleted);
-            _searchCompleteHandlerFactory = resolver.Resolve<ISearchCompleteHandlerFactory>();
-            _artifactSearchService = resolver.Resolve<IArtifactSearchService>();
-            var indexingService = resolver.Resolve<IIndexingService>();
-            _hashTrackSearchWpfControl = resolver.Resolve<SidePanelWpfControl>();
-
+            _resolver = IoC.Startup.ServiceLocator.Resolve<IComponentContext>();
+            ResolveServices();
+            
             // Register event handlers
+            RegisterEventHandlers();
+            RunIndexing();
+
+            // Create and initiate the custom task pane
+            InicializeUI();
+        }
+
+        private void InicializeUI()
+        {
+            var mainUserControl = new SidePanelPlaceholder(_hashTrackSearchWpfControl);
+            myCustomTaskPane = CustomTaskPanes.Add(mainUserControl, "HashTrack - Hash search");
+            myCustomTaskPane.Visible = true;
+            myCustomTaskPane.Width = 350;
+        }
+        private void RegisterEventHandlers()
+        {
             //TODO: Use Async use eventHandler from Outlook Office object
             //TODO: Use IEventAggregator instead of directly this and add Task.Run to make it asynchronous as these event are only synchronous
             Application.AdvancedSearchComplete += _searchCompleteHandlerFactory.HandleSearchCompleted;
-            //_hashTrackSearchWpfControl.SearchInitiated += _artifactSearchService.SearchExactMatch;
-            //var _hashTrackSearchWpfControl = new SidePanelWpfControl();
-            indexingService.IndexAllArtifacts();
+        }
+        private void ResolveServices()
+        {
+            _searchCompleteHandlerFactory = _resolver.Resolve<ISearchCompleteHandlerFactory>();
+            _artifactSearchService = _resolver.Resolve<IArtifactSearchService>();
+            _indexingService = _resolver.Resolve<IIndexingService>();
+            _hashTrackSearchWpfControl = _resolver.Resolve<SidePanelWpfControl>();
+        }
 
-            // Create and initiate the custom task pane
-            var myUserControl1 = new SidePanelPlaceholder(_hashTrackSearchWpfControl);
-            myCustomTaskPane = this.CustomTaskPanes.Add(myUserControl1, "HashTrack - Hash search");
-            myCustomTaskPane.Visible = true;
-            myCustomTaskPane.Width = 350;
+        private void RunIndexing(object sender = null, ElapsedEventArgs e = null)
+        {
+            var lastIndexingDate = Properties.Settings.Default.LastIndexingDateTime;
+            _indexingService.IndexAllArtifacts(lastIndexingDate);
+            Properties.Settings.Default.LastIndexingDateTime = DateTime.Now;
+        }
+        
+        private void SetIndexingTimer()
+        {
+            _indexingTimer = new Timer(300000); // 5 minutes;
+            _indexingTimer.Elapsed += RunIndexing;
+            _indexingTimer.AutoReset = true;
+            _indexingTimer.Enabled = true;
         }
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
             // Note: Outlook no longer raises this event. If you have code that 
             //    must run when Outlook shuts down, see https://go.microsoft.com/fwlink/?LinkId=506785
+            _indexingTimer.Dispose();
+            Application.AdvancedSearchComplete -= _searchCompleteHandlerFactory.HandleSearchCompleted;
         }
 
         #region VSTO generated code

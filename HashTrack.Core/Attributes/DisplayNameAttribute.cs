@@ -1,6 +1,6 @@
 using System;
 
-namespace HashTrack.Attributes
+namespace HashTrack.Core.Attributes
 {
     [AttributeUsage(AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
     public sealed class DisplayNameAttribute : Attribute

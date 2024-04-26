@@ -2,11 +2,11 @@ using System;
 using System.Globalization;
 using System.Reflection;
 using System.Windows.Data;
-using HashTrack.Attributes;
+using HashTrack.Core.Attributes;
 
 namespace HashTrack.UI.Helpers
 {
-    public class OrderByOptionConverter : IValueConverter
+    public class EnumFriendlyNameConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

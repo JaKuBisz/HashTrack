@@ -207,13 +207,21 @@
     <Compile Include="ThisAddIn.Designer.cs">
       <DependentUpon>ThisAddIn.Designer.xml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Attributes\DisplayNameAttribute.cs" />
     <Compile Include="UI\ChangeTabEvent.cs" />
     <Compile Include="UI\Enums\OrderByHashTagsOverview.cs" />
     <Compile Include="UI\Enums\OrderBySearch.cs" />
     <Compile Include="UI\Extensions\AdvancedSearchQueryExtensions.cs" />
     <Compile Include="UI\Extensions\CacheExtensions.cs" />
-    <Compile Include="UI\Helpers\OrderByOptionConverter.cs" />
+    <Compile Include="UI\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\HashTagSettings.xaml.cs">
+      <DependentUpon>HashTagSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Helpers\EnumFriendlyNameConverter.cs" />
     <Compile Include="UI\Services\MessageService.cs" />
     <Compile Include="UI\SidePanelPlaceholder.cs">
       <SubType>UserControl</SubType>
@@ -227,8 +235,10 @@
     <Compile Include="UI\ViewModels\BaseViewModel.cs" />
     <Compile Include="UI\ViewModels\HashTagDetailViewModel.cs" />
     <Compile Include="UI\ViewModels\HashTagOverviewViewModel.cs" />
+    <Compile Include="UI\ViewModels\HashTagViewModel.cs" />
     <Compile Include="UI\ViewModels\MainViewModel.cs" />
     <Compile Include="UI\ViewModels\SearchViewModel.cs" />
+    <Compile Include="UI\ViewModels\TagSettingsViewModel.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -238,6 +248,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UI\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\SidePanelPlaceholder.resx">
       <DependentUpon>SidePanelPlaceholder.cs</DependentUpon>
     </EmbeddedResource>
@@ -251,6 +264,7 @@
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <AppDesigner Include="Properties\" />
     <None Include="ThisAddIn.Designer.xml">
@@ -258,6 +272,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\HashTagSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\SidePanelWpfControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -280,6 +298,9 @@
       <Project>{2c3b4c84-f07e-4d4e-bdb0-0fd3ed50de86}</Project>
       <Name>HashTrack.Persistence</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI\Attributes\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

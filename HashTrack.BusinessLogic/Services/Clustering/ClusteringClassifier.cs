@@ -1,6 +1,8 @@
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using HashTrack.Core.Attributes;
+using HashTrack.Core.Enums;
 using HashTrack.Core.Interfaces.Clustering;
 using HashTrack.Core.Models.Search;
 using SimMetrics.Net.API;
@@ -8,6 +10,7 @@ using SimMetrics.Net.Metric;
 
 namespace HashTrack.Clustering.Services
 {
+    [RegisterService(LifeCycle.Transient, typeof(IClusteringClassifier))]
     public class ClusteringClassifier : IClusteringClassifier
     {
         private const double SimilarityThreshold = 0.75;

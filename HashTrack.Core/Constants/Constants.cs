@@ -26,5 +26,11 @@
             public const string ClusteredHashTags = "ClusteredHashTags";
             public const string HashtagClusteringSettings = "HashtagClusteringSettings";
         }
+        
+        public class CustomProperties
+        {
+            public const string artefactID = "hashTrackArtefactID";
+            public const string Tags = "hashTrackTags";
+        }
     }
 }

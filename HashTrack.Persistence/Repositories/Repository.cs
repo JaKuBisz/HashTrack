@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
+using HashTrack.Persistence.Contexts;
 using HashTrack.Persistence.Interfaces;
 
 namespace HashTrack.Persistence.Repositories
@@ -48,11 +49,18 @@ namespace HashTrack.Persistence.Repositories
 
         public void Update(T entity, Func<T, bool> predicate)
         {
-            if (!_dbSet.Any(predicate))
+            var existingEntity = _dbSet.Local.FirstOrDefault(predicate) ?? _dbSet.FirstOrDefault(predicate);
+            if (existingEntity != null)
             {
-                _dbSet.Attach(entity);
+                // The entity already exists in the context, or we load it from the database
+                _context.Entry(existingEntity).CurrentValues.SetValues(entity);
             }
-            _context.Entry(entity).State = EntityState.Modified;
+            else
+            {
+                // Entity is not tracked, so attach and set as modified
+                _dbSet.Attach(entity);
+                _context.Entry(entity).State = EntityState.Modified;
+            }
         }
 
         public void Upsert(T entity, Func<T, bool> predicate)

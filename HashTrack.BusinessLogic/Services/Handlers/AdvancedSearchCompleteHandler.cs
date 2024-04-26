@@ -52,6 +52,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
             var searchResults = new List<ArtefactModel>();
             for (int i = 1; i <= results.Count; i++)
             {
+
                 searchResults.Add(ArtefactItemHelper.MapSearchResultViewItem(results[i]));
             }
             return searchResults;

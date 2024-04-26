@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using HashTrack.Core.Enums;
 
 namespace HashTrack.Persistence.Entities
 {
@@ -18,8 +19,14 @@ namespace HashTrack.Persistence.Entities
         public int NumOfOccurrences { get; set; }
 
         public DateTime LastUpdated { get; set; } 
+        public virtual ICollection<Guid> ArtifactsIds { get; set; } = new HashSet<Guid>();
         public virtual ICollection<HashTagEntity> MergedHashTags { get; set; }
         public virtual ICollection<HashTagEntity> ExcludedHashTags { get; set; }
+        public bool CreateFolder { get; set; }
+        public bool CreateCategory { get; set; }
+        public string FolderName { get; set; }
+        public string CategoryName { get; set; }
+        public int CategoryColor { get; set; } = 0;
 
         public HashTagEntity()
         {

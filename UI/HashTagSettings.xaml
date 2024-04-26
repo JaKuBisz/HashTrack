@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="HashTrack.UI.HashTagSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:HashTrack.UI"
+             xmlns:vm="clr-namespace:HashTrack.UI.ViewModels"
+             xmlns:helpers="clr-namespace:HashTrack.UI.Helpers"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance Type=vm:TagSettingsViewModel}">
+    <UserControl.Resources>
+            <helpers:EnumFriendlyNameConverter x:Key="EnumFriendlyNameConverter"/>
+            <Style TargetType="TextBox">
+                <Setter Property="Margin" Value="10"/>
+                <Setter Property="Height" Value="30"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="Margin" Value="10"/>
+                <Setter Property="Height" Value="30"/>
+                <Setter Property="Background" Value="LightGray"/>
+            </Style>
+            <Style TargetType="ComboBox">
+                <Setter Property="Margin" Value="10"/>
+                <Setter Property="Height" Value="30"/>
+            </Style>
+            <Style TargetType="CheckBox">
+                <Setter Property="Margin" Value="10"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+    </UserControl.Resources>
+
+    <Grid >
+        <StackPanel>
+            <CheckBox Content="Create search results folder" IsChecked="{Binding CreateFolderEnabled}" />
+            <TextBox Text="{Binding FolderName}" IsEnabled="{Binding CreateFolderEnabled}" />
+
+            <CheckBox Content="Create Category for tag" IsChecked="{Binding CreateCategoryEnabled}" />
+            <TextBox Text="{Binding CategoryName}" IsEnabled="{Binding CreateCategoryEnabled}" />
+
+            <ComboBox IsEnabled="{Binding CreateCategoryEnabled}"
+                      ItemsSource="{Binding CategoryColorOptions}"
+                      SelectedItem="{Binding CategoryColor}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource ResourceKey=EnumFriendlyNameConverter}}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <Button Content="Save Settings" Command="{Binding SaveSettingsCommand}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
