@@ -14,11 +14,12 @@ using HashTrack.Core.Models.Search;
 
 namespace HashTrack.UI.ViewModels
 {
-    [RegisterService(LifeCycle.Transient, typeof(TagSettingsViewModel))]
+    [RegisterService(LifeCycle.Singleton, typeof(TagSettingsViewModel))]
     public class TagSettingsViewModel : BaseViewModel
     {
         private readonly IPersistenceHashTagService _storage;
         private readonly ICategoryManagerService _categoryManager;
+        private readonly Form1 _popupForm;
         private HashTagModel _hashTag;
         private bool _createFolderEnabled;
         private bool _createCategoryEnabled;
@@ -33,9 +34,18 @@ namespace HashTrack.UI.ViewModels
             _storage = storage;
             _categoryManager = categoryManager;
             SaveSettingsCommand = new RelayCommand(SaveSettings);
-
-            var tst = _storage.GetHashTag("#MyTestHastrackTag1");//.FirstOrDefault();
-            HashTag = tst;
+            
+            var tagSettingControl = new HashTagSettings
+            {
+                DataContext = this
+            };
+            _popupForm = new Form1(tagSettingControl);
+        }
+        
+        public void ShowSettings(HashTagModel tag)
+        {
+            HashTag = tag;
+            _popupForm.Show();
         }
 
         private void SetDefaultValues(HashTagModel tag)
@@ -98,6 +108,9 @@ namespace HashTrack.UI.ViewModels
             _hashTag.FolderName = FolderName;
             _hashTag.CategoryName = CategoryName;
             _hashTag.CategoryColor = CategoryColor;
+            
+            _popupForm.Close();
+            
             _storage.SaveHashTag(_hashTag);
             _categoryManager.AssignHashTagItems(_hashTag);
         }

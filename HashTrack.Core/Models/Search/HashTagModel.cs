@@ -9,7 +9,7 @@ namespace HashTrack.Core.Models.Search
     public class HashTagModel : UniqueTag
     {//TODO Implement invalidating cache to not recalculate tge Totals each request occurrences 
         public int NumOfOccurrences { get; set; }
-        public HashSet<ArtefactModel> SearchResults { get; set; }
+        public HashSet<ArtefactModel> SearchResults { get; set; } = new HashSet<ArtefactModel>();
         public HashSet<Guid> ArtifactsIds { get; set; } = new HashSet<Guid>();
         public DateTime LastUpdated { get; set; } 
         public HashSet<HashTagModel> MergedHashTags { get; set; } = new HashSet<HashTagModel>(); //TODO: is null

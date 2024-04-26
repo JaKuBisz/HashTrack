@@ -54,6 +54,7 @@
         <Compile Include="Enums\MessageType.cs" />
         <Compile Include="Exceptions\SearchQueryException.cs" />
         <Compile Include="Exceptions\UnknownResultItemTypeException.cs" />
+        <Compile Include="Extensions\CacheExtensions.cs" />
         <Compile Include="Extensions\UniqueEntityExtensions.cs" />
         <Compile Include="Helpers\ArtefactItemHelper.cs" />
         <Compile Include="Interfaces\Clustering\IClusteringClassifier.cs" />

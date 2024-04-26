@@ -4,8 +4,9 @@ namespace HashTrack.Enums
 {
     public enum OrderByHashTagsOverview
     {
+        /*
         [DisplayName("Most recent")]
-        DateDesc,
+        DateDesc,*/
         [DisplayName("Most used")]
         OccurrencesDesc,
         [DisplayName("Least used")]

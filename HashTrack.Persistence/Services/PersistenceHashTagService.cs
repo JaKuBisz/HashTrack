@@ -55,7 +55,7 @@ namespace HashTrack.Persistence.Services
             foreach (var hashTag in hashTags)
             {
                 var entity = hashTag.MapToHashTagEntity();
-                _repository.Upsert(entity, x => x.Tag == entity.Tag);
+                _repository.Update(entity, x => x.Tag == entity.Tag);
             }
             _repository.Save();
         }

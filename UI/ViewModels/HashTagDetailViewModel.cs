@@ -10,6 +10,7 @@ using CommunityToolkit.Mvvm.Input;
 using HashTrack.Core;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
+using HashTrack.Core.Extensions;
 using HashTrack.Core.Interfaces;
 using HashTrack.Core.Models.Search;
 using HashTrack.Extensions;
@@ -22,20 +23,24 @@ namespace HashTrack.UI.ViewModels
         private readonly ICache _cache;
         private PopupViewModel _popupVm;
         private HashTagModel _hashTag;
+        private TagSettingsViewModel _tagSettingsVM;
         
         public ICommand UnmergeCommand { get; private set; }
         public ICommand RemoveExceptionCommand { get; private set; }
         public ICommand MergeCommand { get; private set; }
+        public ICommand OpenSettingCommand { get; private set; }
         public ICommand OpenPopupCommand { get; private set; }
         public ICommand ClosePopupCommand { get; private set; }
         public ICommand ConfirmPopupCommand { get; private set; }
         public ICommand AddTagCommand { get; private set; }
         
 
-        public HashTagDetailViewModel(ICache cache, IEventAggregator eventAggregator)
+        public HashTagDetailViewModel(ICache cache, IEventAggregator eventAggregator,
+            TagSettingsViewModel tagSettingsVM)
         {
             PopupVM = new PopupViewModel(this);
             _cache = cache;
+            _tagSettingsVM = tagSettingsVM;
             eventAggregator.Subscribe(Events.UI.ChangeSelectedTab, ExecuteTabChange);
             InitializeCommands();
         }
@@ -44,6 +49,8 @@ namespace HashTrack.UI.ViewModels
 
         public ObservableCollection<HashTagModel> ExcludedHashTags => new ObservableCollection<HashTagModel>(_hashTag.ExcludedHashTags);
        
+        public bool IsEnabled => HashTag != null;
+
         public HashTagModel HashTag
         {
             get => _hashTag;
@@ -75,6 +82,7 @@ namespace HashTrack.UI.ViewModels
             RemoveExceptionCommand = new RelayCommand<object>(ExecuteRemoveException, CanExecuteRemoveException);
             MergeCommand = new RelayCommand<object>(ExecuteMerge, CanExecuteMerge);
             OpenPopupCommand = new RelayCommand<object>(ExecuteOpenPopup);
+            OpenSettingCommand = new RelayCommand(ExecuteOpenSetting);
             AddTagCommand = new RelayCommand(AddTag_Click);
             
             /*
@@ -94,6 +102,11 @@ namespace HashTrack.UI.ViewModels
             }
             
             HashTag = evt.TagModel;
+        }
+        
+        private void ExecuteOpenSetting()
+        {
+            _tagSettingsVM.ShowSettings(HashTag);
         }
         
         private void ExecuteOpenPopup(object parameter)

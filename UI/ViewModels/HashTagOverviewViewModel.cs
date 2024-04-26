@@ -10,6 +10,7 @@ using HashTrack.Clustering.DTOs;
 using HashTrack.Core;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
+using HashTrack.Core.Extensions;
 using HashTrack.Core.Interfaces;
 using HashTrack.Core.Models.Search;
 using HashTrack.Enums;
@@ -38,7 +39,7 @@ namespace HashTrack.UI.ViewModels
             _eventAggregator = eventAggregator;
             _cache = cache;
             //TODO: Use Async use eventHandler from Outlook Office object
-            eventAggregator.Subscribe(Events.IndexingSearchProcessed, UpdateIndexingResults);
+            eventAggregator.Subscribe(Events.HashTagsUpdated, UpdateIndexingResults);
             InitializeCommands();
         }
 
@@ -60,16 +61,17 @@ namespace HashTrack.UI.ViewModels
         public OrderByHashTagsOverview OrderBy
         {
             get => _selectedOrderBy;
-            set => SetField(ref _selectedOrderBy, value);
+            set
+            {
+                SetField(ref _selectedOrderBy, value);
+                ReOrder();
+            }
         }
-        
+
         public ObservableCollection<HashTagModel> IndexingHashtags
         {
             get => FilterIndexingResults(_indexingHashtags);
-            set
-            {
-                SetField(ref _indexingHashtags, value);
-            }
+            set => SetField(ref _indexingHashtags, value);
         }
 
         public DateTime? FromDate
@@ -157,7 +159,7 @@ namespace HashTrack.UI.ViewModels
         
         private void SetIndexingResult(List<HashTagModel> result)
         {
-            IndexingHashtags = new ObservableCollection<HashTagModel>(result);
+            IndexingHashtags = new ObservableCollection<HashTagModel>(Order(result));
         }
         private void UpdateIndexingResults()
         {
@@ -175,24 +177,31 @@ namespace HashTrack.UI.ViewModels
             _indexingHashtags = new ObservableCollection<HashTagModel>(_indexingHashtags.Where(x => x.NumOfOccurrences <= maxOccurences));
         }
         
-        private void IndexingOrderBy(int orderBy)
+        private void ReOrder()
         {
-            //TODO: Implement sorting
-            switch (orderBy)
+            var orderedResults = Order(_indexingHashtags);
+            IndexingHashtags = new ObservableCollection<HashTagModel>(orderedResults);
+        }
+        private IEnumerable<HashTagModel> Order(IEnumerable<HashTagModel> items)
+        {
+            IEnumerable<HashTagModel> orderedItems;
+            switch (OrderBy)
             {
-                case (int)OrderByHashTagsOverview.DateDesc:
-                    //_indexingHashtags = new ObservableCollection<HashTagModel>(_indexingHashtags.OrderByDescending(x => x.));
+                /*case OrderByHashTagsOverview.DateDesc:
+                    orderedItems = new ObservableCollection<HashTagModel>(_indexingHashtags.OrderByDescending(x => x.()));
+                    break;*/
+                case OrderByHashTagsOverview.OccurrencesDesc:
+                    orderedItems = items.OrderByDescending(x => x.TotalNumOfOccurences());
                     break;
-                case (int)OrderByHashTagsOverview.OccurrencesDesc:
-                    _indexingHashtags = new ObservableCollection<HashTagModel>(_indexingHashtags.OrderByDescending(x => x.NumOfOccurrences));
-                    break;
-                case (int)OrderByHashTagsOverview.OccurrencesAsc:
-                    _indexingHashtags = new ObservableCollection<HashTagModel>(_indexingHashtags.OrderBy(x => x.NumOfOccurrences));
+                case OrderByHashTagsOverview.OccurrencesAsc:
+                    orderedItems = items.OrderBy(x => x.TotalNumOfOccurences());
                     break;
                 default:
+                    orderedItems = items;
                     break;
             }
 
+            return orderedItems;
         }
         
         
@@ -214,7 +223,7 @@ namespace HashTrack.UI.ViewModels
 
         private void OrderByChanged()
         {
-            //IndexingOrderBy(index_cb_order_by.SelectedIndex);
+            //OrderBy(index_cb_order_by.SelectedIndex);
         }
 
         private void MenuItem_Merge_Click(object sender, RoutedEventArgs e)

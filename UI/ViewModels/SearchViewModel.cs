@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using HashTrack.Core;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
+using HashTrack.Core.Extensions;
 using HashTrack.Core.Interfaces;
 using HashTrack.Core.Interfaces.Search;
 using HashTrack.Core.Models.Search;
@@ -101,16 +102,16 @@ namespace HashTrack.UI.ViewModels
             switch (content.OriginalItem)
             {
                 case Outlook.MailItem mailItem:
-                    mailItem.Display(false);
+                    mailItem.Display(true);
                     break;
                 case Outlook.AppointmentItem appointmentItem:
-                    appointmentItem.Display(false);
+                    appointmentItem.Display(true);
                     break;
                 case Outlook.ContactItem contactItem:
-                    contactItem.Display(false);
+                    contactItem.Display(true);
                     break;
                 case Outlook.TaskItem taskItem:
-                    taskItem.Display(false);
+                    taskItem.Display(true);
                     break;
             }
         }

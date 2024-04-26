@@ -25,11 +25,6 @@ namespace HashTrack.Persistence.Services
             return _memoryCache.TryGetValue(key, out item);
         }
 
-        public T Get<T>(string key)
-        {
-            return TryGet(key, out T item) ? item : default;
-        }
-
         public void Set<T>(string key, T item)
         {
             _memoryCache.Set(key, item, cacheEntryOptions);

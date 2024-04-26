@@ -102,6 +102,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
+ 
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10, 5" HorizontalAlignment="Center">
                     <TextBlock Text="From:" VerticalAlignment="Center"/>
                     <DatePicker VerticalAlignment="Center" Margin="3, 10" SelectedDate="{Binding FromDate}"/>
@@ -110,13 +111,16 @@
                     <Button Content="Re-index" Grid.Row="3" HorizontalAlignment="Center" Margin="10" VerticalAlignment="Top" Command="{Binding StartIndexingCommand}"/>
                 </StackPanel>
 
-                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5, 5" HorizontalAlignment="Center">
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0" HorizontalAlignment="Center">
                     <TextBlock Text="Num usages From:" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding MinOccurrences}" Width="50" VerticalAlignment="Center" Margin="3, 10"/>
-                    <TextBlock Text="To:" VerticalAlignment="Center" Margin="3, 0, 0, 0"/>
-                    <TextBox Text="{Binding MaxOccurrences}" Width="50" Margin="3, 10"/>
-                    <TextBlock Text="Order by:" VerticalAlignment="Center" Margin="5,10,0,10"/>
-                    <ComboBox x:Name="index_cb_order_by" Margin="5,10,0,10" 
+                    <TextBox Text="{Binding MinOccurrences}" Width="80" VerticalAlignment="Center" Margin="8"/>
+                    <TextBlock Text="To:" VerticalAlignment="Center" Margin="8, 0, 0, 0"/>
+                    <TextBox Text="{Binding MaxOccurrences}" Width="80" Margin="8"/>                    
+                </StackPanel>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="10, 5" HorizontalAlignment="Right">
+                    <TextBlock Text="Order by:" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="index_cb_order_by" Margin="8,0,0,0" 
                               ItemsSource="{Binding OrderByOptions}"
                               SelectedItem="{Binding OrderBy}">
                         <ComboBox.ItemTemplate>
@@ -125,13 +129,13 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
-
                 </StackPanel>
 
                 <TextBox Text="{Binding SearchBar, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Margin="5,3" HorizontalAlignment="Stretch" FontSize="16"/>
                 <!-- <Button x:Name="index_btn_search" Content="Search" Grid.Row="3" Width="80" Margin="5,3"  HorizontalAlignment="Right" Click="btn_search_Click"/> -->
                 
-                <ListView x:Name="list_Hashtags" ItemsSource="{Binding IndexingHashtags}" Grid.Row="4" Margin="10" SelectionMode="Extended">
+                <ListView x:Name="list_Hashtags" ItemsSource="{Binding IndexingHashtags}" Grid.Row="4" Margin="2, 10" SelectionMode="Extended"
+                          HorizontalAlignment="Stretch" Width="Auto">
                     <ListView.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="See hashtag details"
@@ -170,7 +174,7 @@
                 </ListView>
             </Grid>
         </TabItem>
-        <TabItem Header="Hashtag detail" Name="_tabHashTagDetail" DataContext="{Binding HashTagDetailVM}">
+        <TabItem Header="Hashtag detail" DataContext="{Binding HashTagDetailVM}" IsEnabled="{Binding IsEnabled}" Name="_tabHashTagDetail" Height="22" Margin="-2,-2,-2,0" VerticalAlignment="Top">
             <Grid>
                 <!-- Grid Row Definitions -->
                 <Grid.RowDefinitions>
@@ -191,8 +195,13 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="{Binding HashTag.Tag}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2" Margin="8"/>
+                    <TextBlock Text="{Binding HashTag.Tag}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" Margin="8"
+                                Grid.Column="0" Grid.Row="0" />
+
+                    <Button Content="Settings" Command="{Binding OpenSettingCommand}" 
+                            Height="25" Width="50" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Margin="5" />
                     
                     <TextBlock Text="Number of usages:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Margin="5"/>
                     <TextBlock Text="{Binding HashTag.NumOfOccurrences}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
@@ -203,6 +212,8 @@
                     <TextBlock Text="First Use:" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" Margin="5"/>
                     <TextBlock Text="{Binding SelectedHashTag.FirstUse}" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
                     -->
+                    
+
                 </Grid>
                 <!-- Merged Tags Section -->
                 <DockPanel Grid.Row="1" LastChildFill="False" Margin="5, 20, 5, 5">

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using HashTrack.Core.Enums;
@@ -17,7 +18,6 @@ namespace HashTrack.Persistence.Entities
 
         [Required]
         public int NumOfOccurrences { get; set; }
-
         public DateTime LastUpdated { get; set; } 
         public virtual ICollection<HashTagEntity> MergedHashTags { get; set; }
         public virtual ICollection<HashTagEntity> ExcludedHashTags { get; set; }

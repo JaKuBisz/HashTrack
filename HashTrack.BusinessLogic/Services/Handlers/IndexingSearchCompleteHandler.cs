@@ -56,7 +56,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
             
             _storage.SaveHashTags(groupedResults.ToHashSet());
             _cache.Set(Constants.Storage.IndexedHashTags, groupedResults);
-            _eventAggregator.FireEvent(Events.IndexingSearchProcessed);
+            _eventAggregator.FireEvent(Events.HashTagsUpdated);
             //_hashTrackSearchWpfControl.SetIndexingResult(result);
         }
         

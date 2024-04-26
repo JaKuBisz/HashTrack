@@ -211,7 +211,6 @@
     <Compile Include="UI\Enums\OrderByHashTagsOverview.cs" />
     <Compile Include="UI\Enums\OrderBySearch.cs" />
     <Compile Include="UI\Extensions\AdvancedSearchQueryExtensions.cs" />
-    <Compile Include="UI\Extensions\CacheExtensions.cs" />
     <Compile Include="UI\Form1.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -12,6 +12,8 @@ using Microsoft.Office.Tools.Ribbon;
 using System;
 using System.Collections.Generic;
 using System.Timers;
+using HashTrack.Core.Extensions;
+using HashTrack.Extensions;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 
@@ -22,6 +24,9 @@ namespace HashTrack
         private Microsoft.Office.Tools.CustomTaskPane myCustomTaskPane;
         private ISearchCompleteHandlerFactory _searchCompleteHandlerFactory;
         private IArtifactSearchService _artifactSearchService;
+        private IPersistenceHashTagService _persistenceHashTagService;
+        private IEventAggregator _eventAggregator;
+        private ICache _cache;
         private SidePanelWpfControl _hashTrackSearchWpfControl;
         private IIndexingService _indexingService;
         private IComponentContext _resolver;
@@ -36,9 +41,8 @@ namespace HashTrack
             _resolver = IoC.Startup.ServiceLocator.Resolve<IComponentContext>();
             ResolveServices();
             
-            // Register event handlers
             RegisterEventHandlers();
-            RunIndexing();
+            StartupServices();
 
             // Create and initiate the custom task pane
             InicializeUI();
@@ -61,8 +65,24 @@ namespace HashTrack
         {
             _searchCompleteHandlerFactory = _resolver.Resolve<ISearchCompleteHandlerFactory>();
             _artifactSearchService = _resolver.Resolve<IArtifactSearchService>();
+            _eventAggregator = _resolver.Resolve<IEventAggregator>();
+            _cache = _resolver.Resolve<ICache>();
             _indexingService = _resolver.Resolve<IIndexingService>();
             _hashTrackSearchWpfControl = _resolver.Resolve<SidePanelWpfControl>();
+            _persistenceHashTagService = _resolver.Resolve<IPersistenceHashTagService>();
+        }
+
+        private void StartupServices()
+        {
+            RunIndexing();
+            CacheDataFromStorage();
+        }
+        
+        private void CacheDataFromStorage()
+        {
+            var hashTags = _persistenceHashTagService.GetAllHashTags();
+            _cache.AddHashTags(hashTags);
+            _eventAggregator.FireEvent(Events.HashTagsUpdated);
         }
 
         private void RunIndexing(object sender = null, ElapsedEventArgs e = null)
