@@ -34,7 +34,7 @@ namespace HashTrack.UI.ViewModels
             _categoryManager = categoryManager;
             SaveSettingsCommand = new RelayCommand(SaveSettings);
 
-            var tst = _storage.GetAllHashTags().FirstOrDefault();
+            var tst = _storage.GetHashTag("#MyTestHastrackTag1");//.FirstOrDefault();
             HashTag = tst;
         }
 

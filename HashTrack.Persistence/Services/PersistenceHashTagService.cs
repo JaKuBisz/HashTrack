@@ -25,12 +25,20 @@ namespace HashTrack.Persistence.Services
         public HashSet<HashTagModel> GetAllHashTags()
         {
             var hashTagEntities = _repository.GetAll();
+            if (hashTagEntities == null)
+            {
+                return new HashSet<HashTagModel>();
+            }
             return GetHashTagsModels(hashTagEntities);
         }
 
         public HashTagModel GetHashTag(string tag)
         {
             var hashtagEntity = _repository.GetByTag(tag);
+            if (hashtagEntity == null)
+            {
+                return null;
+            }
             return hashtagEntity.MapToHashTagDto();
         }
 

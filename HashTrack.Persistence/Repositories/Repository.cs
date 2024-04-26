@@ -34,7 +34,14 @@ namespace HashTrack.Persistence.Repositories
 
         public IEnumerable<T> GetAll()
         {
-            return _dbSet.ToList();
+            try
+            {
+                return _dbSet.ToList();
+            }
+            catch (System.Exception e)
+            {
+                return default;
+            }
         }
 
         public T GetById(int id)

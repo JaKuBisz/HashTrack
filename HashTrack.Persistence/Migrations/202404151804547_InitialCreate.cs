@@ -14,6 +14,11 @@
                         Tag = c.String(nullable: false, maxLength: 512),
                         NumOfOccurrences = c.Int(nullable: false),
                         LastUpdated = c.DateTime(nullable: false),
+                        CreateFolder = c.Boolean(nullable: false),
+                        CreateCategory = c.Boolean(nullable: false),
+                        FolderName = c.String(maxLength: 512),
+                        CategoryName = c.String(maxLength: 512),
+                        CategoryColor = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Tag);
             

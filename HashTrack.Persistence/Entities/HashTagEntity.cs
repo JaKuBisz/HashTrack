@@ -19,15 +19,18 @@ namespace HashTrack.Persistence.Entities
         public int NumOfOccurrences { get; set; }
 
         public DateTime LastUpdated { get; set; } 
-        public virtual ICollection<Guid> ArtifactsIds { get; set; } = new HashSet<Guid>();
         public virtual ICollection<HashTagEntity> MergedHashTags { get; set; }
         public virtual ICollection<HashTagEntity> ExcludedHashTags { get; set; }
+
         public bool CreateFolder { get; set; }
         public bool CreateCategory { get; set; }
+        
+        [StringLength(512)]
         public string FolderName { get; set; }
+        
+        [StringLength(512)]
         public string CategoryName { get; set; }
-        public int CategoryColor { get; set; } = 0;
-
+        public int CategoryColor { get; set; }
         public HashTagEntity()
         {
             MergedHashTags = new HashSet<HashTagEntity>();

@@ -27,15 +27,18 @@ namespace HashTrack.BusinessLogic.Services.Handlers
         private readonly IEventAggregator _eventAggregator;
         private readonly ICache _cache;
         private readonly IClusteringClassifier _clusteringClassifier;
+        private readonly ICategoryManagerService _categoryManager;
 
         public IndexingSearchCompleteHandler(
-            IPersistenceHashTagService storage, ICache cache, IEventAggregator eventAggregator, IClusteringClassifier clusteringClassifier)//SidePanelWpfControl hashTrackSearchWpfControl, IStorage storage)
+            IPersistenceHashTagService storage, ICache cache, IEventAggregator eventAggregator,
+            IClusteringClassifier clusteringClassifier, ICategoryManagerService categoryManager)//SidePanelWpfControl hashTrackSearchWpfControl, IStorage storage)
         {   
             //_hashTrackSearchWpfControl = hashTrackSearchWpfControl;
             _storage = storage;
             _cache = cache;
             _eventAggregator = eventAggregator;
             _clusteringClassifier = clusteringClassifier;
+            _categoryManager = categoryManager;
         }
         public void HandleSearchComplete(Outlook.Search searchResult)
         {
@@ -76,14 +79,20 @@ namespace HashTrack.BusinessLogic.Services.Handlers
                 var searchResultViewItem = ArtefactItemHelper.MapSearchResultViewItem(item);
                 foreach (var hashTag in hashTags)
                 {
-                    if (indexedHashTags.TryGetByKey(hashTag, out var resultItem))
+                    if (indexedHashTags.TryGetByKey(hashTag, out var hashTagModel))
                     {
-                        resultItem.AddNewSearchResult(searchResultViewItem);
+                        hashTagModel.AddNewSearchResult(searchResultViewItem);
                         //resultItem.AddNewSearchResult(searchResultViewItem);
                     }
                     else
                     {
-                        indexedHashTags.Add(new HashTagModel(hashTag, new HashSet<ArtefactModel> { searchResultViewItem }));
+                        hashTagModel = new HashTagModel(hashTag, new HashSet<ArtefactModel> { searchResultViewItem });
+                        indexedHashTags.Add(hashTagModel);
+                    }
+
+                    if (hashTagModel.CreateCategory)
+                    {
+                        _categoryManager.AddItemToCategory(hashTagModel, item);
                     }
                 }
             }
@@ -135,7 +144,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
             {
 
                 property = properties.Add(
-                    Constants.CustomProperties.Tags,
+                    Constants.CustomProperties.artefactID,
                     Outlook.OlUserPropertyType.olText,
                     true,
                     1);
@@ -236,7 +245,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
             var matches = Regex.Matches(text, @"#\w+");
             foreach (Match match in matches)
             {
-                string hashtag = match.Value.ToLower(); // Normalize to lowercase for consistent counting
+                string hashtag = match.Value;
                 hashtags.Add(hashtag);
             }
 

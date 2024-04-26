@@ -30,7 +30,7 @@ namespace HashTrack.BusinessLogic.Services
                 var handler = _context.ResolveKeyed<ISearchCompleteHandler>(SearchObject.Tag);
                 handler.HandleSearchComplete(SearchObject);
             }
-            catch (ComponentNotRegisteredException)
+            catch (ComponentNotRegisteredException e)
             {
                 _eventAggregator.FireEvent(SearchObject.Tag, SearchObject);
             }

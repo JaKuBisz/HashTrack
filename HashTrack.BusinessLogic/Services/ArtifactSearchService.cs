@@ -88,7 +88,7 @@ namespace HashTrack.BusinessLogic.Services
             tags.Add(hashTag);
             foreach (var tag in tags)
             {
-                var wordFilter = Constants.DaslFilter.ExactMatch(tag.ToString());
+                var wordFilter = $" = '{tag.Tag}'";
                 filters.Add($"{GetCustomProperty(Constants.CustomProperties.Tags)} {wordFilter}");
             }
             var tagsFilter = string.Join(" OR ", filters);

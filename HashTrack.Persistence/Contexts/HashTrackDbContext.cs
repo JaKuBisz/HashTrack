@@ -37,16 +37,6 @@ namespace HashTrack.Persistence.Contexts
                     m.MapLeftKey("HashTagId");
                     m.MapRightKey("ExcludedHashTagId");
                 });
-
-            modelBuilder.Entity<HashTagEntity>()
-                .HasMany(h => h.ExcludedHashTags)
-                .WithMany()
-                .Map(m =>
-                {
-                    m.ToTable("HashTagExclusions");
-                    m.MapLeftKey("HashTagId");
-                    m.MapRightKey("ExcludedHashTagId");
-                });
             /*
             modelBuilder.Entity<HashTagEntity>()
                 .HasMany(h => h.Items)

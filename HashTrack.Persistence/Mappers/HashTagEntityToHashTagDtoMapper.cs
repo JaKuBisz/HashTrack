@@ -19,11 +19,6 @@ namespace HashTrack.Persistence.Mappers
                 LastUpdated = entity.LastUpdated,
                 MergedHashTags = entity.MergedHashTags.Select(x => x.MapToHashTagDto()).ToHashSet(),
                 ExcludedHashTags = entity.ExcludedHashTags.Select(x => x.MapToHashTagDto()).ToHashSet(),
-                CreateFolder = entity.CreateFolder,
-                CreateCategory = entity.CreateCategory,
-                FolderName = entity.FolderName,
-                CategoryName = entity.CategoryName,
-                CategoryColor = (CategoryColor) entity.CategoryColor
             };
         }
         /*

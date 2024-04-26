@@ -26,6 +26,7 @@ namespace HashTrack.BusinessLogic.Services
         {
             //TODO: Create new eventHandler for this; would need to hack this to await in synchronous method
             _artifactSearchService.SearchAllItemsForTag(hashTagModel);
+            _eventAggregator.Unsubscribe(Events.CategoryManagerSearch, HandleSearchComplete);
             _eventAggregator.Subscribe(Events.CategoryManagerSearch, HandleSearchComplete);
             
             
@@ -39,15 +40,15 @@ namespace HashTrack.BusinessLogic.Services
             
                 foreach (object item in searchResult.Results)
                 {
-                    AddItemToCategory(hashTagModel.CategoryName, hashTagModel.CategoryColor, item);
+                    AddItemToCategory(hashTagModel, item);
                 }
-                
-                _eventAggregator.Unsubscribe(Events.CategoryManagerSearch, HandleSearchComplete);
             }
         }
         
-        public void AddItemToCategory(string categoryName, CategoryColor categoryColor, object item)
+        public void AddItemToCategory(HashTagModel hashTagModel, object item)
         {
+            var categoryName = string.IsNullOrWhiteSpace(hashTagModel.CategoryName) ? hashTagModel.Tag : hashTagModel.CategoryName;
+            var categoryColor = hashTagModel.CategoryColor;
             Outlook.NameSpace session = _application.Session;
 
             // Check if the category already exists
@@ -67,28 +68,28 @@ namespace HashTrack.BusinessLogic.Services
             switch (item)
             {
                 case Outlook.MailItem mailItem:
-                    if (!mailItem.Categories.Contains(category.Name))
+                    if (string.IsNullOrWhiteSpace(mailItem.Categories) || !mailItem.Categories.Contains(category.Name))
                     {
                         mailItem.Categories += category.Name;
                         mailItem.Save();
                     }
                     break;
                 case Outlook.ContactItem contactItem:
-                    if(!contactItem.Categories.Contains(category.Name))
+                    if(string.IsNullOrWhiteSpace(contactItem.Categories) || !contactItem.Categories.Contains(category.Name))
                     {
                         contactItem.Categories += category.Name;
                         contactItem.Save();
                     }
                     break;
                 case Outlook.AppointmentItem appointmentItem:
-                    if(!appointmentItem.Categories.Contains(category.Name))
+                    if(string.IsNullOrWhiteSpace(appointmentItem.Categories) || !appointmentItem.Categories.Contains(category.Name))
                     {
                         appointmentItem.Categories += category.Name;
                         appointmentItem.Save();
                     }
                     break;
                 case Outlook.TaskItem taskItem:
-                    if(!taskItem.Categories.Contains(category.Name))
+                    if(string.IsNullOrWhiteSpace(taskItem.Categories) || !taskItem.Categories.Contains(category.Name))
                     {
                         taskItem.Categories += category.Name;
                         taskItem.Save();
