@@ -127,7 +127,7 @@ namespace HashTrack.UI.ViewModels
                 return indexingHashtags;
             }
 
-            var result = indexingHashtags.Where(x => x.Tag.Contains(SearchBar));
+            var result = indexingHashtags.Where(x => x.Id.Contains(SearchBar));
             return new ObservableCollection<HashTagModel>(result);
         }
         private void ExecuteOpenTagDetail(object obj)

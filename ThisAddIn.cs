@@ -88,8 +88,9 @@ namespace HashTrack
         private void RunIndexing(object sender = null, ElapsedEventArgs e = null)
         {
             var lastIndexingDate = Properties.Settings.Default.LastIndexingDateTime;
-            //_indexingService.IndexAllArtifacts(lastIndexingDate);
+            _indexingService.IndexAllArtifacts(lastIndexingDate);
             Properties.Settings.Default.LastIndexingDateTime = DateTime.Now;
+            Properties.Settings.Default.Save();
         }
         
         private void SetIndexingTimer()

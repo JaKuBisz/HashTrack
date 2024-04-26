@@ -7,7 +7,7 @@ namespace HashTrack.BusinessLogic.Extensions
     {
         public static void AddNewSearchResult(this HashTagModel hashTag, ArtefactModel searchResult)
         {
-            if (!hashTag.SearchResults.Add(searchResult)) return;
+            if (!hashTag.SearchResults.Add(searchResult) || hashTag.ArtifactsIds.Add(searchResult.Id)) return;
             hashTag.NumOfOccurrences++;
         }
 
@@ -36,6 +36,7 @@ namespace HashTrack.BusinessLogic.Extensions
         public static void UnMergeHashTag(this HashTagModel primary, HashTagModel secondary)
         {
             primary.MergedHashTags.Remove(secondary);
+            primary.ExcludedHashTags.Add(secondary);
             /*
             primary.NumOfOccurrences -= secondary.NumOfOccurrences;
             foreach (var result in secondary.SearchResults)

@@ -47,7 +47,7 @@ namespace HashTrack.BusinessLogic.Services
         
         public void AddItemToCategory(HashTagModel hashTagModel, object item)
         {
-            var categoryName = string.IsNullOrWhiteSpace(hashTagModel.CategoryName) ? hashTagModel.Tag : hashTagModel.CategoryName;
+            var categoryName = string.IsNullOrWhiteSpace(hashTagModel.CategoryName) ? hashTagModel.Id : hashTagModel.CategoryName;
             var categoryColor = hashTagModel.CategoryColor;
             Outlook.NameSpace session = _application.Session;
 

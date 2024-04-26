@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using HashTrack.Core.Enums;
+using Newtonsoft.Json;
 
 namespace HashTrack.Persistence.Entities
 {
@@ -18,6 +20,7 @@ namespace HashTrack.Persistence.Entities
 
         [Required]
         public int NumOfOccurrences { get; set; }
+        public string ArtefactIdsJson { get; set; }
         public DateTime LastUpdated { get; set; } 
         public virtual ICollection<HashTagEntity> MergedHashTags { get; set; }
         public virtual ICollection<HashTagEntity> ExcludedHashTags { get; set; }
@@ -31,6 +34,13 @@ namespace HashTrack.Persistence.Entities
         [StringLength(512)]
         public string CategoryName { get; set; }
         public int CategoryColor { get; set; }
+        
+        [NotMapped]
+        public HashSet<Guid> ArtefactIds
+        {
+            get => string.IsNullOrEmpty(ArtefactIdsJson) ? new HashSet<Guid>() : JsonConvert.DeserializeObject<HashSet<Guid>>(ArtefactIdsJson);
+            set => ArtefactIdsJson = JsonConvert.SerializeObject(value);
+        }
         public HashTagEntity()
         {
             MergedHashTags = new HashSet<HashTagEntity>();

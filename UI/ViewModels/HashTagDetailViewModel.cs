@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using HashTrack.BusinessLogic.Extensions;
 using HashTrack.Core;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
@@ -21,6 +22,7 @@ namespace HashTrack.UI.ViewModels
     public class HashTagDetailViewModel : BaseViewModel
     {
         private readonly ICache _cache;
+        private readonly IPersistenceHashTagService _persistenceHashTagService;
         private PopupViewModel _popupVm;
         private HashTagModel _hashTag;
         private TagSettingsViewModel _tagSettingsVM;
@@ -36,11 +38,12 @@ namespace HashTrack.UI.ViewModels
         
 
         public HashTagDetailViewModel(ICache cache, IEventAggregator eventAggregator,
-            TagSettingsViewModel tagSettingsVM)
+            TagSettingsViewModel tagSettingsVM, IPersistenceHashTagService persistenceHashTagService)
         {
             PopupVM = new PopupViewModel(this);
             _cache = cache;
             _tagSettingsVM = tagSettingsVM;
+            _persistenceHashTagService = persistenceHashTagService;
             eventAggregator.Subscribe(Events.UI.ChangeSelectedTab, ExecuteTabChange);
             InitializeCommands();
         }
@@ -59,6 +62,7 @@ namespace HashTrack.UI.ViewModels
                 SetField(ref _hashTag, value);
                 OnPropertyChanged(nameof(MergedHashTags));
                 OnPropertyChanged(nameof(ExcludedHashTags));
+                OnPropertyChanged(nameof(IsEnabled));
             }
         }
 
@@ -268,7 +272,7 @@ namespace HashTrack.UI.ViewModels
                     return tags;
                 }
 
-                var result = tags.Where(x => x.Tag.Contains(SearchTag));
+                var result = tags.Where(x => x.Id.Contains(SearchTag));
                 return new ObservableCollection<HashTagModel>(result);
             }
 
@@ -279,21 +283,24 @@ namespace HashTrack.UI.ViewModels
 
             private void ConfirmPopup()
             {
-                //TODO: implement persistent merge
+                //TODO: do in parent via command or event
                 if (IsMergeMode)
                 {
                     foreach (var tag in PopupTags)
                     {
-                        //_parent._mergedHashTags.Add(tag);
+                        _parent._hashTag.MergeHashTag(tag);
+                        _parent.HashTag = _parent.HashTag; // Ensure UI update
                     }
                 }
                 else
                 {
                     foreach (var tag in PopupTags)
                     {
-                       // _parent._excludedHashTags.Add(tag);
+                        _parent._hashTag.UnMergeHashTag(tag);
+                        _parent.HashTag = _parent.HashTag;
                     }
                 }
+                _parent._persistenceHashTagService.SaveHashTag(_parent.HashTag);
                 IsPopupOpen = false;
             }
         }

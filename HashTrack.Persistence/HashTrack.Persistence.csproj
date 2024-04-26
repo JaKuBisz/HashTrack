@@ -119,6 +119,10 @@
     <Compile Include="Migrations\202404151804547_InitialCreate.Designer.cs">
       <DependentUpon>202404151804547_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202404261907380_AddedArtefactIds.cs" />
+    <Compile Include="Migrations\202404261907380_AddedArtefactIds.Designer.cs">
+      <DependentUpon>202404261907380_AddedArtefactIds.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\HashTagRepository.cs" />
@@ -141,6 +145,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202404151804547_InitialCreate.resx">
       <DependentUpon>202404151804547_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202404261907380_AddedArtefactIds.resx">
+      <DependentUpon>202404261907380_AddedArtefactIds.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

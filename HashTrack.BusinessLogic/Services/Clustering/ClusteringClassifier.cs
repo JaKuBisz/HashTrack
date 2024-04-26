@@ -38,7 +38,7 @@ namespace HashTrack.Clustering.Services
                 return false;
             }
             
-            return Classify(tag1.Tag, tag2.Tag);
+            return Classify(tag1.Id, tag2.Id);
         }
         
         private static (string TextPart, string NumberPart) SplitTag(string tag)

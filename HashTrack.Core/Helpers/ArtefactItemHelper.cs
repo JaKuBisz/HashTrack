@@ -1,4 +1,5 @@
 using System;
+using HashTrack.Core;
 using HashTrack.Core.Models.Search;
 using HashTrack.DTOs;
 using HashTrack.Exception;
@@ -20,7 +21,7 @@ namespace HashTrack.Helpers
                     Date = mailItem.ReceivedTime,
                     Type = "Email",
                     OriginalItem = mailItem,
-                    EntryId = mailItem.EntryID,
+                    Id = GetGuid(mailItem.UserProperties),
                 };
             }
             
@@ -33,7 +34,7 @@ namespace HashTrack.Helpers
                     Date = DateTime.Now,
                     Type = "Contact",
                     OriginalItem = contactItem,
-                    EntryId = contactItem.EntryID,
+                    Id = GetGuid(contactItem.UserProperties),
                 };
             }
             
@@ -46,7 +47,7 @@ namespace HashTrack.Helpers
                     Date = appointmentItem.Start,
                     Type = "Appointment",
                     OriginalItem = appointmentItem,
-                    EntryId = appointmentItem.EntryID,
+                    Id = GetGuid(appointmentItem.UserProperties),
                 };
             }
             
@@ -59,11 +60,19 @@ namespace HashTrack.Helpers
                     Date = taskItem.CreationTime,
                     Type = "Task",
                     OriginalItem = taskItem,
-                    EntryId = taskItem.EntryID,
+                    Id = GetGuid(taskItem.UserProperties),
                 };
             }
             
             throw new UnknownResultItemTypeException($"The result is not of any known type for result: '{result}'");
+            
+            Guid GetGuid(Outlook.UserProperties property)
+            {
+                return Guid.TryParse(property
+                    .Find(Constants.CustomProperties.artefactID).Value.ToString(), out var id)
+                    ? id
+                    : Guid.Empty;
+            }
         }
         
         public static string GetBody(object item)

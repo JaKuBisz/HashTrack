@@ -34,14 +34,8 @@ namespace HashTrack.Persistence.Repositories
 
         public IEnumerable<T> GetAll()
         {
-            try
-            {
-                return _dbSet.ToList();
-            }
-            catch (System.Exception e)
-            {
-                return default;
-            }
+            return _dbSet.ToList();
+            
         }
 
         public T GetById(int id)
@@ -65,8 +59,7 @@ namespace HashTrack.Persistence.Repositories
             else
             {
                 // Entity is not tracked, so attach and set as modified
-                _dbSet.Attach(entity);
-                _context.Entry(entity).State = EntityState.Modified;
+                _dbSet.Add(entity);
             }
         }
 

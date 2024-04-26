@@ -14,12 +14,12 @@ namespace HashTrack.Persistence.Mappers
         { 
             return new HashTagModel
             {
-                Tag = entity.Tag,
+                Id = entity.Tag,
                 NumOfOccurrences = entity.NumOfOccurrences,
                 LastUpdated = entity.LastUpdated,
                 MergedHashTags = entity.MergedHashTags.Select(x => x.MapToHashTagDto()).ToHashSet(),
                 ExcludedHashTags = entity.ExcludedHashTags.Select(x => x.MapToHashTagDto()).ToHashSet(),
-                ArtifactsIds = new HashSet<Guid>(),
+                ArtifactsIds = entity.ArtefactIds,
                 SearchResults = new HashSet<ArtefactModel>(),
                 CreateFolder = entity.CreateFolder,
                 CreateCategory = entity.CreateCategory,

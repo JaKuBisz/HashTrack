@@ -68,7 +68,7 @@ namespace HashTrack.UI.ViewModels
                 return;
             }
             
-            SearchFilters.SearchText = evt.TagModel.Tag;
+            SearchFilters.SearchText = evt.TagModel.Id;
             ExecuteSearch();
         }
 

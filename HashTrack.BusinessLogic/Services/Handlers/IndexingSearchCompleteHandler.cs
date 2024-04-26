@@ -65,9 +65,8 @@ namespace HashTrack.BusinessLogic.Services.Handlers
             // Group and index the search results here
             //TODO: First load indexed hashtags from storage
             var indexedHashTags = _storage.GetAllHashTags().ToList();
-            for (int i = 1; i <= searchResult.Results.Count; i++)
+            foreach (var item in searchResult.Results)
             {
-                var item = searchResult.Results[i];
                 var textContent = ArtefactItemHelper.GetBody(item);
                 if (textContent == null)
                 {
@@ -77,18 +76,17 @@ namespace HashTrack.BusinessLogic.Services.Handlers
                 HashSet<string> hashTags = ExtractHashtags(textContent);
                 EnrichArtefact(item, hashTags);
                 var searchResultViewItem = ArtefactItemHelper.MapSearchResultViewItem(item);
+                
                 foreach (var hashTag in hashTags)
                 {
-                    if (indexedHashTags.TryGetByKey(hashTag, out var hashTagModel))
+                    if (!indexedHashTags.TryGetByKey(hashTag, out var hashTagModel))
                     {
-                        hashTagModel.AddNewSearchResult(searchResultViewItem);
-                        //resultItem.AddNewSearchResult(searchResultViewItem);
-                    }
-                    else
-                    {
-                        hashTagModel = new HashTagModel(hashTag, new HashSet<ArtefactModel> { searchResultViewItem });
+                        hashTagModel = new HashTagModel(hashTag);
                         indexedHashTags.Add(hashTagModel);
                     }
+                    
+                    hashTagModel.AddNewSearchResult(searchResultViewItem);
+
 
                     if (hashTagModel.CreateCategory)
                     {

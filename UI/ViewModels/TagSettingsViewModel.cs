@@ -50,8 +50,8 @@ namespace HashTrack.UI.ViewModels
 
         private void SetDefaultValues(HashTagModel tag)
         {
-            FolderName = string.IsNullOrWhiteSpace(tag.FolderName) ? tag.Tag : tag.FolderName;
-            CategoryName = string.IsNullOrWhiteSpace(tag.CategoryName) ? tag.Tag : tag.CategoryName;
+            FolderName = string.IsNullOrWhiteSpace(tag.FolderName) ? tag.Id : tag.FolderName;
+            CategoryName = string.IsNullOrWhiteSpace(tag.CategoryName) ? tag.Id : tag.CategoryName;
             CategoryColor = tag.CategoryColor == CategoryColor.olCategoryColorNone ? CategoryColor.olCategoryColorDarkBlue : tag.CategoryColor;
             CreateFolderEnabled = tag.CreateFolder;
             CreateCategoryEnabled = tag.CreateCategory;

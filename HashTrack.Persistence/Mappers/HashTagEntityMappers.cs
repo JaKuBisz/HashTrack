@@ -10,11 +10,17 @@ namespace HashTrack.Persistence.Mappers
         {
             return new HashTagEntity
             {
-                Tag = model.Tag,
+                Tag = model.Id,
                 NumOfOccurrences = model.NumOfOccurrences,
                 LastUpdated = model.LastUpdated,
                 MergedHashTags = model.MergedHashTags.Select(x => x.MapToHashTagEntity()).ToHashSet(),
                 ExcludedHashTags = model.ExcludedHashTags.Select(x => x.MapToHashTagEntity()).ToHashSet(),
+                ArtefactIds = model.ArtifactsIds,
+                CreateFolder = model.CreateFolder,
+                CreateCategory = model.CreateCategory,
+                FolderName = model.FolderName,
+                CategoryName = model.CategoryName,
+                CategoryColor = (int) model.CategoryColor,
             };
         }
     }

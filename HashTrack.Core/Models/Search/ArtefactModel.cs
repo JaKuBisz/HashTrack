@@ -2,10 +2,8 @@
 
 namespace HashTrack.Core.Models.Search
 {
-    public class ArtefactModel
+    public class ArtefactModel : UniqueTag<Guid>
     {
-        public string EntryId { get; set; }
-        public string StoreId { get; set; }
         public string Title { get; set; }
         public string Sender { get; set; }
         //public string Description { get; set; }

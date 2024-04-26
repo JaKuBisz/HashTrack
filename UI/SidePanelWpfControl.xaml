@@ -157,14 +157,14 @@
                                 <Border.ToolTip>
                                     <ToolTip>
                                         <StackPanel>
-                                            <TextBlock Text="{Binding Tag}" FontWeight="Bold" FontSize="14"/>
+                                            <TextBlock Text="{Binding Id}" FontWeight="Bold" FontSize="14"/>
                                             <TextBlock Text="{Binding NumOfOccurrences}" FontStyle="Italic"/>
                                             <!-- Add more details here -->
                                         </StackPanel>
                                     </ToolTip>
                                 </Border.ToolTip>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Tag}" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding Id}" FontWeight="Bold"/>
                                     <TextBlock Text=" - "/>
                                     <TextBlock Text="{Binding NumOfOccurrences}"/>
                                 </StackPanel>
@@ -197,7 +197,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="{Binding HashTag.Tag}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" Margin="8"
+                    <TextBlock Text="{Binding HashTag.Id}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" Margin="8"
                                 Grid.Column="0" Grid.Row="0" />
 
                     <Button Content="Settings" Command="{Binding OpenSettingCommand}" 
@@ -230,7 +230,7 @@
                         </ListBox.ContextMenu>
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Tag}" Margin="5"/>
+                                <TextBlock Text="{Binding Id}" Margin="5"/>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
@@ -250,12 +250,12 @@
                     </ListBox.ContextMenu>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Tag}" Margin="5"/>
+                            <TextBlock Text="{Binding Id}" Margin="5"/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <!-- Placeholder for Popup Window to Add Tags -->
-                <Popup DataContext="{Binding PopupVM}" x:Name="AddTagPopup" Placement="Center" Width="300" IsOpen="{Binding IsPopupOpen}">
+                <Popup DataContext="{Binding PopupVM}" x:Name="AddTagPopup" Placement="Center" Width="300" Height="500" IsOpen="{Binding IsPopupOpen}">
                     <Border Background="White" Padding="10" BorderBrush="Black" BorderThickness="1">
                         <StackPanel>
                             <TextBlock Text="Add Tag" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,10"/>
@@ -270,7 +270,7 @@
                                         <TextBlock>
                                             <TextBlock.Text>
                                                 <MultiBinding StringFormat="{}{0} - {1}">
-                                                    <Binding Path="Tag"/>
+                                                    <Binding Path="Id"/>
                                                     <Binding Path="NumOfOccurrences"/>
                                                 </MultiBinding>
                                             </TextBlock.Text>

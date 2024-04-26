@@ -6,7 +6,7 @@ using Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack.Core.Models.Search
 {
-    public class HashTagModel : UniqueTag
+    public class HashTagModel : UniqueTag<string>
     {//TODO Implement invalidating cache to not recalculate tge Totals each request occurrences 
         public int NumOfOccurrences { get; set; }
         public HashSet<ArtefactModel> SearchResults { get; set; } = new HashSet<ArtefactModel>();
@@ -25,11 +25,8 @@ namespace HashTrack.Core.Models.Search
         public HashTagModel()
         { }
   
-        public HashTagModel(string tag,HashSet<ArtefactModel> searchResults, int numOfOccurrences = 1) : base(tag)
-        {
-            NumOfOccurrences = numOfOccurrences;
-            SearchResults = searchResults; 
-        }
+        public HashTagModel(string id) : base(id)
+        { }
 
         public int TotalNumOfOccurences()
         {
