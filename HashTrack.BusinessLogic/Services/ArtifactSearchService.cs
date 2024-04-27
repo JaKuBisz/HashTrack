@@ -54,16 +54,8 @@ namespace HashTrack.BusinessLogic.Services
             var wordFilter = exactMatch 
                 ? Constants.DaslFilter.ExactMatch(keyword) 
                 : Constants.DaslFilter.SubString(keyword);
-            //var res = String.Format("urn:schemas:httpmail:textdescription {0} AND urn:schemas:httpmail:date >= '{1}' AND urn:schemas:httpmail:date <= '{2}'", wordFilter, startDate.ToString("yyyy-MM-dd"), endDate.ToString("yyyy-MM-dd"));
             var filter = $"{Filter.Body} {wordFilter} AND {Filter.Date} >= '{startDate}' AND {Filter.Date} <= '{endDate}'";
-            string test = $"{GetCustomPropFilter("TestProp2")} = 'TestSearchPhrase12'"; // or as wordFilter
             return filter;
-            
-            string GetCustomPropFilter(string propertyName)
-            {
-                return
-                    $"\"http://schemas.microsoft.com/mapi/string/{{00020329-0000-0000-C000-000000000046}}/{propertyName}\"";
-            }
         }
         private string GetIdsFilter(IEnumerable<Guid> artefactIds, DateTime? from = null, DateTime? to = null)
         {

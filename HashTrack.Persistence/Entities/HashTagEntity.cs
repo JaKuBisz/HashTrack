@@ -22,8 +22,8 @@ namespace HashTrack.Persistence.Entities
         public int NumOfOccurrences { get; set; }
         public string ArtefactIdsJson { get; set; }
         public DateTime LastUpdated { get; set; } 
-        public virtual ICollection<HashTagEntity> MergedHashTags { get; set; }
-        public virtual ICollection<HashTagEntity> ExcludedHashTags { get; set; }
+        public string MergedHashTagIdsJson { get; set; }
+        public string ExcludedHashTagIdsJson { get; set; }
 
         public bool CreateFolder { get; set; }
         public bool CreateCategory { get; set; }
@@ -41,10 +41,22 @@ namespace HashTrack.Persistence.Entities
             get => string.IsNullOrEmpty(ArtefactIdsJson) ? new HashSet<Guid>() : JsonConvert.DeserializeObject<HashSet<Guid>>(ArtefactIdsJson);
             set => ArtefactIdsJson = JsonConvert.SerializeObject(value);
         }
+        [NotMapped]
+        public HashSet<string> MergedHashTags
+        {
+            get => MergedHashTagIdsJson == null ? new HashSet<string>() : JsonConvert.DeserializeObject<HashSet<string>>(MergedHashTagIdsJson);
+            set => MergedHashTagIdsJson = JsonConvert.SerializeObject(value);
+        }
+        [NotMapped]
+        public HashSet<string> ExcludedHashTags
+        {
+            get => ExcludedHashTagIdsJson == null ? new HashSet<string>() : JsonConvert.DeserializeObject<HashSet<string>>(ExcludedHashTagIdsJson);
+            set => ExcludedHashTagIdsJson = JsonConvert.SerializeObject(value);
+        }
         public HashTagEntity()
         {
-            MergedHashTags = new HashSet<HashTagEntity>();
-            ExcludedHashTags = new HashSet<HashTagEntity>();
+            MergedHashTags = new HashSet<string>();
+            ExcludedHashTags = new HashSet<string>();
         }
     }
 }

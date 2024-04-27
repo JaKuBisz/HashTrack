@@ -7,6 +7,7 @@
         {
             public const string HttpMailSchema = "urn:schemas:httpmail";
             public static string ExactMatch(string keyword) => $"ci_phrasematch '{keyword}'";
+            public static string StartsWith(string keyword) => $"ci_startswith '{keyword}'";
             public static string SubString(string keyword) => $"like '%{keyword}%'";
             public const string And = " AND ";
             public const string Or = " OR ";

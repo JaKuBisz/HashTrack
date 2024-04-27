@@ -7,7 +7,7 @@ namespace HashTrack.BusinessLogic.Extensions
     {
         public static void AddNewSearchResult(this HashTagModel hashTag, ArtefactModel searchResult)
         {
-            if (!hashTag.SearchResults.Add(searchResult) || hashTag.ArtifactsIds.Add(searchResult.Id)) return;
+            if (!hashTag.SearchResults.Add(searchResult) || !hashTag.ArtifactsIds.Add(searchResult.Id)) return;
             hashTag.NumOfOccurrences++;
         }
 

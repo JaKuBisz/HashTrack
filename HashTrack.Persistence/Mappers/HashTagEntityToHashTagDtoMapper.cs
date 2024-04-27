@@ -5,20 +5,23 @@ using System.Linq;
 using HashTrack.Core.Enums;
 using HashTrack.Core.Models.Search;
 using HashTrack.Persistence.Entities;
+using HashTrack.Persistence.Interfaces;
 
 namespace HashTrack.Persistence.Mappers
 {
     public static class HashTagEntityToHashTagDtoMapper
     {
         public static HashTagModel MapToHashTagDto(this HashTagEntity entity)
-        { 
+        {
+            var mergedHashTagModels = new HashSet<HashTagModel>();
+            var excludedHashTagModels = new HashSet<HashTagModel>();
             return new HashTagModel
             {
                 Id = entity.Tag,
                 NumOfOccurrences = entity.NumOfOccurrences,
                 LastUpdated = entity.LastUpdated,
-                MergedHashTags = entity.MergedHashTags.Select(x => x.MapToHashTagDto()).ToHashSet(),
-                ExcludedHashTags = entity.ExcludedHashTags.Select(x => x.MapToHashTagDto()).ToHashSet(),
+                MergedHashTags = mergedHashTagModels,
+                ExcludedHashTags = excludedHashTagModels,
                 ArtifactsIds = entity.ArtefactIds,
                 SearchResults = new HashSet<ArtefactModel>(),
                 CreateFolder = entity.CreateFolder,

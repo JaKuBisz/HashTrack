@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using HashTrack.Core.Attributes;
@@ -17,6 +18,11 @@ namespace HashTrack.Persistence.Repositories
         public HashTagEntity GetByTag(string tag)
         {
             return _dbSet.FirstOrDefault(x => x.Tag == tag);
+        }
+
+        public HashSet<HashTagEntity> GetByTags(IEnumerable<string> tags)
+        {
+            return _dbSet.Where(x => tags.Contains(x.Tag)).ToHashSet();
         }
     }
 }

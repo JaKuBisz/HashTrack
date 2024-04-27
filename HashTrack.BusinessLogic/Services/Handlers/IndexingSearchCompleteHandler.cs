@@ -51,11 +51,11 @@ namespace HashTrack.BusinessLogic.Services.Handlers
                 GroupAndIndexResults(searchResult);
             //_storage.Set(Constants.Storage.IndexedHashTags, groupedResults);
 
-            //var clusteredResults = ClusterResults(groupedResults).ToHashSet();
+            var clusteredResults = ClusterHashTags(groupedResults).ToHashSet();
             //var result = clusteredResults.Select(x =>new IndexingResultsViewItem(x.Id, x.NumOfOccurrences, x.SearchResults)).ToList();
             
-            _storage.SaveHashTags(groupedResults.ToHashSet());
-            _cache.Set(Constants.Storage.IndexedHashTags, groupedResults);
+            _storage.SaveHashTags(clusteredResults);
+            _cache.SetHashTags(clusteredResults.ToList());
             _eventAggregator.FireEvent(Events.HashTagsUpdated);
             //_hashTrackSearchWpfControl.SetIndexingResult(result);
         }
@@ -76,6 +76,10 @@ namespace HashTrack.BusinessLogic.Services.Handlers
                 HashSet<string> hashTags = ExtractHashtags(textContent);
                 EnrichArtefact(item, hashTags);
                 var searchResultViewItem = ArtefactItemHelper.MapSearchResultViewItem(item);
+                if (searchResultViewItem is null)
+                {
+                    continue;
+                }
                 
                 foreach (var hashTag in hashTags)
                 {
@@ -194,7 +198,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
             }
         }
 
-        private List<HashTagModel> ClusterResults(List<HashTagModel> hashtags)
+        private List<HashTagModel> ClusterHashTags(List<HashTagModel> hashtags)
         {
             //We order hastags so we dont have to check which one has more occurrences and automatically know its the main hashtag
             var orderedHashtags = hashtags.OrderByDescending(x => x.NumOfOccurrences).ToList();
@@ -217,7 +221,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
                     if (primaryHashtag.MergedTagsContain(secondaryHashtag) // Merge if in merge list
                         || (!secondaryHashtag.MergedTagsContain(primaryHashtag)) // Prevent merge if in secondary merge list
                             && _clusteringClassifier.Classify(primaryHashtag, secondaryHashtag)) // Classify
-                    {//TODO: Implement _clusteringClassifier
+                    {
                         primaryHashtag.MergeHashTag(secondaryHashtag);
                     }
                 }
@@ -240,7 +244,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
         private HashSet<string> ExtractHashtags(string text)
         {
             var hashtags = new HashSet<string>();
-            var matches = Regex.Matches(text, @"#\w+");
+            var matches = Regex.Matches(text, @"(?<!\w)#\w+"); //Matches hashtags that are not preceded by a word
             foreach (Match match in matches)
             {
                 string hashtag = match.Value;

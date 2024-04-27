@@ -37,7 +37,7 @@ namespace HashTrack.Core.Extensions
         }
         
         public static void AddHashTags(this ICache cache, IEnumerable<HashTagModel> hashTags)
-        {
+        {//TODO: Add override option for saving From indexing - overding existing tags with updated one? no i need to merge them somehow here OMFG
             var existingHashTags = cache.GetHashTags();
             existingHashTags.AddRange(hashTags);
             cache.SetHashTags(existingHashTags.ToHashSet().ToList());

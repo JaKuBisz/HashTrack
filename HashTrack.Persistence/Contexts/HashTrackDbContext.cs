@@ -18,6 +18,7 @@ namespace HashTrack.Persistence.Contexts
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            /*
             modelBuilder.Entity<HashTagEntity>()
                 .HasMany(h => h.MergedHashTags)
                 .WithMany()

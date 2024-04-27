@@ -63,13 +63,14 @@ namespace HashTrack.Helpers
                     Id = GetGuid(taskItem.UserProperties),
                 };
             }
-            
-            throw new UnknownResultItemTypeException($"The result is not of any known type for result: '{result}'");
+
+            return null;
+            //throw new UnknownResultItemTypeException($"The result is not of any known type for result: '{result}'");
             
             Guid GetGuid(Outlook.UserProperties property)
             {
                 return Guid.TryParse(property
-                    .Find(Constants.CustomProperties.artefactID).Value.ToString(), out var id)
+                    .Find(Constants.CustomProperties.artefactID)?.Value?.ToString(), out var id)
                     ? id
                     : Guid.Empty;
             }
