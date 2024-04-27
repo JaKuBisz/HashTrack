@@ -2,7 +2,7 @@ using HashTrack.Core.Models.Search;
 
 namespace HashTrack.Core.Interfaces.Search
 {
-    public interface IArtifactSearchService
+    public interface ISearchService
     {
         void SearchAllItemsForTag(HashTagModel hashTag);
 
