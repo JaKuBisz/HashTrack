@@ -7,6 +7,7 @@ using HashTrack.Core.Interfaces.Handlers;
 using HashTrack.Core.Models.Search;
 using HashTrack.Helpers;
 using HashTrack.Interfaces;
+using HashTrack.Interfaces.Indexing;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack.BusinessLogic.Services.Handlers
@@ -17,13 +18,15 @@ namespace HashTrack.BusinessLogic.Services.Handlers
         //private readonly SidePanelWpfControl _hashTrackSearchWpfControl;
         private readonly IEventAggregator _eventAggregator;
         private readonly ICache _cache;
+        private readonly IIndexingService _indexingService;
+        
 
 
-        public AdvancedSearchCompleteHandler(IEventAggregator eventAggregator, ICache cache)//SidePanelWpfControl hashTrackSearchWpfControl)
+        public AdvancedSearchCompleteHandler(IEventAggregator eventAggregator, ICache cache, IIndexingService indexingService)//SidePanelWpfControl hashTrackSearchWpfControl)
         {
             _eventAggregator = eventAggregator;
             _cache = cache;
-            //_hashTrackSearchWpfControl = hashTrackSearchWpfControl;
+            _indexingService = indexingService;
         }
 
         public void HandleSearchComplete(Outlook.Search searchResult)
@@ -33,6 +36,9 @@ namespace HashTrack.BusinessLogic.Services.Handlers
                 return;
             }
         
+            //Automatically index the deep search results
+            _indexingService.IndexSearchResults(searchResult);
+            
             Outlook.Results results = searchResult.Results;
             var transformedResults = TransformResultForView(results);
             

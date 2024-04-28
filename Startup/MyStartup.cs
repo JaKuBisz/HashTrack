@@ -25,7 +25,7 @@ namespace HashTrack
         {
             // Force load assemblies
             var _ = typeof(HashTrackDbContext); // HashTrack.Persistence
-            _ = typeof(ArtifactSearchService); // HashTrack.BusinessLogic
+            _ = typeof(SearchService); // HashTrack.BusinessLogic
             _ = typeof(Constants); // HashTrack.Core
             _ = typeof(ServiceLocator); // HashTrack.IoC
         }

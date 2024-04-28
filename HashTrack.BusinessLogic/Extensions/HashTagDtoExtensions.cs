@@ -13,6 +13,7 @@ namespace HashTrack.BusinessLogic.Extensions
 
         public static void MergeHashTag(this HashTagModel primary, HashTagModel secondary)
         {
+            primary.ExcludedHashTags.Remove(secondary);
             primary.MergedHashTags.Add(secondary);
       /*      
             primary.NumOfOccurrences += secondary.NumOfOccurrences;
@@ -53,6 +54,11 @@ namespace HashTrack.BusinessLogic.Extensions
             {
                 primary.ExcludedHashTags.Remove(result);
             }*/
+        }
+
+        public static void RemoveExcluded(this HashTagModel primary, HashTagModel secondary)
+        {
+            primary.ExcludedHashTags.Remove(secondary);
         }
 
         public static bool MergedTagsContain(this HashTagModel hashTag, HashTagModel secondaryHashTag)

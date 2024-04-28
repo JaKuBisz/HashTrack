@@ -11,6 +11,7 @@ using HashTrack.Persistence.Interfaces;
 using Microsoft.Office.Tools.Ribbon;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Timers;
 using HashTrack.Core.Extensions;
 using HashTrack.Extensions;
@@ -23,7 +24,7 @@ namespace HashTrack
     {
         private Microsoft.Office.Tools.CustomTaskPane myCustomTaskPane;
         private ISearchCompleteHandlerFactory _searchCompleteHandlerFactory;
-        private IArtifactSearchService _artifactSearchService;
+        private ISearchService _searchService;
         private IPersistenceHashTagService _persistenceHashTagService;
         private IEventAggregator _eventAggregator;
         private ICache _cache;
@@ -60,11 +61,12 @@ namespace HashTrack
             //TODO: Use Async use eventHandler from Outlook Office object
             //TODO: Use IEventAggregator instead of directly this and add Task.Run to make it asynchronous as these event are only synchronous
             Application.AdvancedSearchComplete += _searchCompleteHandlerFactory.HandleSearchCompleted;
+            ((Outlook.ApplicationEvents_11_Event)Application).Quit += ShutdownServices;
         }
         private void ResolveServices()
         {
             _searchCompleteHandlerFactory = _resolver.Resolve<ISearchCompleteHandlerFactory>();
-            _artifactSearchService = _resolver.Resolve<IArtifactSearchService>();
+            _searchService = _resolver.Resolve<ISearchService>();
             _eventAggregator = _resolver.Resolve<IEventAggregator>();
             _cache = _resolver.Resolve<ICache>();
             _indexingService = _resolver.Resolve<IIndexingService>();
@@ -88,7 +90,7 @@ namespace HashTrack
         private void RunIndexing(object sender = null, ElapsedEventArgs e = null)
         {
             var lastIndexingDate = Properties.Settings.Default.LastIndexingDateTime;
-            _indexingService.IndexAllArtifacts(lastIndexingDate);
+            _searchService.PerformIndexing(lastIndexingDate);
             Properties.Settings.Default.LastIndexingDateTime = DateTime.Now;
             Properties.Settings.Default.Save();
         }
@@ -100,12 +102,19 @@ namespace HashTrack
             _indexingTimer.AutoReset = true;
             _indexingTimer.Enabled = true;
         }
+
+        private void ShutdownServices()
+        {
+            _indexingTimer.Dispose();
+            Application.AdvancedSearchComplete -= _searchCompleteHandlerFactory.HandleSearchCompleted;
+            ((Outlook.ApplicationEvents_11_Event)Application).Quit -= ShutdownServices;
+        }
+    
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
             // Note: Outlook no longer raises this event. If you have code that 
             //    must run when Outlook shuts down, see https://go.microsoft.com/fwlink/?LinkId=506785
-            _indexingTimer.Dispose();
-            Application.AdvancedSearchComplete -= _searchCompleteHandlerFactory.HandleSearchCompleted;
+            ShutdownServices();
         }
 
         #region VSTO generated code

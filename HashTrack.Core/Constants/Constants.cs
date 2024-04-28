@@ -9,6 +9,7 @@
             public static string ExactMatch(string keyword) => $"ci_phrasematch '{keyword}'";
             public static string StartsWith(string keyword) => $"ci_startswith '{keyword}'";
             public static string SubString(string keyword) => $"like '%{keyword}%'";
+            public static string Equals(string keyword) => $"= '{keyword}'"; // For custom properties
             public const string And = " AND ";
             public const string Or = " OR ";
             

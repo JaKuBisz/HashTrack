@@ -1,9 +1,9 @@
-using System;
+using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack.Interfaces.Indexing
 {
     public interface IIndexingService
     {
-        void IndexAllArtifacts(DateTime? from = null);
+        void IndexSearchResults(Outlook.Search searchResult);
     }
 }

@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using HashTrack.Core.Models;
+using HashTrack.Core.Models.Search;
 
 namespace HashTrack.Core.Extensions
 {
-    public static class HashTagExtrensions
+    public static class HashTagExtensions
     {
-        public static void AddOrReplace<T>(this HashSet<UniqueId<T>> hashset, UniqueId<T> value, bool replace = false)
+        public static void AddOrReplace(this HashSet<HashTagModel> hashset, HashTagModel value, bool replace = false)
         {
             if (hashset == null)
             {

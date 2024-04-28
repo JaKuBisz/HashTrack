@@ -23,16 +23,16 @@ namespace HashTrack.BusinessLogic.Services
             _eventAggregator = eventAggregator;
         }
 
-        public void HandleSearchCompleted(Outlook.Search SearchObject)
+        public void HandleSearchCompleted(Outlook.Search searchObject)
         {
             try
             {
-                var handler = _context.ResolveKeyed<ISearchCompleteHandler>(SearchObject.Tag);
-                handler.HandleSearchComplete(SearchObject);
+                var handler = _context.ResolveKeyed<ISearchCompleteHandler>(searchObject.Tag);
+                handler.HandleSearchComplete(searchObject);
             }
             catch (ComponentNotRegisteredException e)
             {
-                _eventAggregator.FireEvent(SearchObject.Tag, SearchObject);
+                _eventAggregator.FireEvent(searchObject.Tag, searchObject);
             }
         }
     }

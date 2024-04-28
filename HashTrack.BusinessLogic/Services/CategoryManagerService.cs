@@ -11,21 +11,21 @@ namespace HashTrack.BusinessLogic.Services
     [RegisterService(LifeCycle.Singleton, typeof(ICategoryManagerService))]
     public class CategoryManagerService : ICategoryManagerService
     {
-        private readonly IArtifactSearchService _artifactSearchService;
+        private readonly ISearchService _searchService;
         private readonly Outlook.Application _application;
         private readonly IEventAggregator _eventAggregator;
 
-        public CategoryManagerService(IArtifactSearchService artifactSearchService, Outlook.Application application, IEventAggregator eventAggregator)
+        public CategoryManagerService(ISearchService searchService, Outlook.Application application, IEventAggregator eventAggregator)
         {
             _application = application;
             _eventAggregator = eventAggregator;
-            _artifactSearchService = artifactSearchService;
+            _searchService = searchService;
         }
         
         public void AssignHashTagItems(HashTagModel hashTagModel)
         {
             //TODO: Create new eventHandler for this; would need to hack this to await in synchronous method
-            _artifactSearchService.SearchAllItemsForTag(hashTagModel);
+            _searchService.SearchAllItemsForTag(hashTagModel);
             _eventAggregator.Unsubscribe(Events.CategoryManagerSearch, HandleSearchComplete);
             _eventAggregator.Subscribe(Events.CategoryManagerSearch, HandleSearchComplete);
             

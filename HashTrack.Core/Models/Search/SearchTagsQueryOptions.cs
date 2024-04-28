@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace HashTrack.Core.Models.Search
 {
-    public class SearchQueryOptions
+    public class SearchTagsQueryOptions
     {
         public string Tag { get; set; }
         public IEnumerable<string> Tags { get; set; }
@@ -14,6 +14,6 @@ namespace HashTrack.Core.Models.Search
         public DateTime? To { get; set; }
         public string EventTag { get; set; } = Events.DefaultSearchCompleted;
         public bool ExactMatch { get; set; } = false;
-        public bool QuickSearch { get; set; } = false;
+        public bool UseCustomProperty { get; set; } = false;
     }
 }

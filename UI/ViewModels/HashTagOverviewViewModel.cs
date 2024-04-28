@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
-using HashTrack.Clustering.DTOs;
 using HashTrack.Core;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
 using HashTrack.Core.Extensions;
 using HashTrack.Core.Interfaces;
+using HashTrack.Core.Interfaces.Search;
 using HashTrack.Core.Models.Search;
 using HashTrack.Enums;
-using HashTrack.Extensions;
+using HashTrack.Interfaces.Indexing;
 
 namespace HashTrack.UI.ViewModels
 {
@@ -23,6 +22,7 @@ namespace HashTrack.UI.ViewModels
     {
         private readonly ICache _cache;
         private readonly IEventAggregator _eventAggregator;
+        private readonly ISearchService _searchService;
         
         private ObservableCollection<HashTagModel> _indexingHashtags;
         private DateTime? _fromDate;
@@ -33,11 +33,12 @@ namespace HashTrack.UI.ViewModels
         private OrderByHashTagsOverview _selectedOrderBy = OrderByHashTagsOverview.OccurrencesDesc;
 
         
-        public HashTagOverviewViewModel(IEventAggregator eventAggregator, ICache cache)
+        public HashTagOverviewViewModel(IEventAggregator eventAggregator, ICache cache, ISearchService searchService)
         {
             _indexingHashtags = new ObservableCollection<HashTagModel>();
             _eventAggregator = eventAggregator;
             _cache = cache;
+            _searchService = searchService;
             //TODO: Use Async use eventHandler from Outlook Office object
             eventAggregator.Subscribe(Events.HashTagsUpdated, UpdateIndexingResults);
             InitializeCommands();
@@ -89,15 +90,23 @@ namespace HashTrack.UI.ViewModels
         public int MinOccurrences
         {
             get => _minOccurrences;
-            set => SetField(ref _minOccurrences, value);
+            set
+            {
+                SetField(ref _minOccurrences, value);
+                OnPropertyChanged(nameof(IndexingHashtags));
+            }
         }
-        
+
         public int MaxOccurrences
         {
             get => _maxOccurrences;
-            set => SetField(ref _maxOccurrences, value);
+            set
+            {
+                SetField(ref _maxOccurrences, value);
+                OnPropertyChanged(nameof(IndexingHashtags));
+            }
         }
-        
+
         public string SearchBar
         {
             get => _searchBar;
@@ -122,12 +131,16 @@ namespace HashTrack.UI.ViewModels
 
         private ObservableCollection<HashTagModel> FilterIndexingResults(ObservableCollection<HashTagModel> indexingHashtags)
         {
-            if (string.IsNullOrWhiteSpace(SearchBar))
+            if (string.IsNullOrWhiteSpace(SearchBar) && MinOccurrences <= 0 && MaxOccurrences <= 0)
             {
                 return indexingHashtags;
             }
 
-            var result = indexingHashtags.Where(x => x.Id.Contains(SearchBar));
+            var result = indexingHashtags.Where(x =>
+                (string.IsNullOrWhiteSpace(SearchBar) || x.Id.Contains(SearchBar))
+                && x.NumOfOccurrences >= MinOccurrences
+            && (MaxOccurrences <= 0 || x.NumOfOccurrences <= MaxOccurrences));
+
             return new ObservableCollection<HashTagModel>(result);
         }
         private void ExecuteOpenTagDetail(object obj)
@@ -218,7 +231,9 @@ namespace HashTrack.UI.ViewModels
 
         private void StartIndexing()
         {
-
+            _searchService.PerformIndexing(_fromDate, _toDate);
+            Properties.Settings.Default.LastIndexingDateTime = DateTime.Now;
+            Properties.Settings.Default.Save();
         }
 
         private void OrderByChanged()

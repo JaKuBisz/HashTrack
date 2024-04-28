@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
+using HashTrack.Core.Extensions;
 using HashTrack.Core.Interfaces;
 using HashTrack.Core.Models.Search;
 using HashTrack.Persistence.Entities;
@@ -75,35 +76,36 @@ namespace HashTrack.Persistence.Services
 
         private HashSet<HashTagModel> GetEnrichedModels(IEnumerable<HashTagEntity> entities)
         {
-            var models = entities.Select(x => x.MapToHashTagDto());
+            var originalModels = entities.Select(x => x.MapToHashTagDto()).ToHashSet();
             var entitiesToEnrich = entities.Where(x => x.MergedHashTags.Any() || x.ExcludedHashTags.Any());
             if (!entitiesToEnrich.Any())
             {
-                return models.ToHashSet();
+                return originalModels.ToHashSet();
             }
             
-            var missingEntities = RetrieveMissingEntities();
-            if (missingEntities != null)
+            var missingChildEntities = RetrieveMissingEntities();
+            var enrichedChildModels = new HashSet<HashTagModel>();
+            if (missingChildEntities != null)
             {
-                var enrichedChildModels = GetEnrichedModels(missingEntities);
-                models = models.Concat(enrichedChildModels);
+                enrichedChildModels = GetEnrichedModels(missingChildEntities);
+                //models = models.Concat(enrichedChildModels);
             }
             
             foreach (var entity in entitiesToEnrich)
             {
-                GetEnrichedModelForEntity(entity);
+                originalModels.AddOrReplace(GetEnrichedModelForEntity(entity), true);
             }
 
-            return models.ToHashSet();
+            return originalModels.ToHashSet();
 
             HashTagModel GetEnrichedModelForEntity(HashTagEntity entity)
             {
-                var model = models.First(x => x.Id == entity.Tag);
+                var model = originalModels.First(x => x.Id == entity.Tag);
                 //Get missing entities that need to be retrieved from db
                 
-                model.MergedHashTags = models
+                model.MergedHashTags = enrichedChildModels
                     .Where(x => entity.MergedHashTags.Contains(x.Id, StringComparer.Ordinal)).ToHashSet();
-                model.ExcludedHashTags = models
+                model.ExcludedHashTags = enrichedChildModels
                     .Where(x => entity.ExcludedHashTags.Contains(x.Id, StringComparer.Ordinal)).ToHashSet();
                 
                 return model;

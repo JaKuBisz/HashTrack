@@ -74,7 +74,7 @@
     <ItemGroup>
         <Compile Include="Extensions\HashTagDtoExtensions.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
-        <Compile Include="Services\ArtifactSearchService.cs" />
+        <Compile Include="Services\SearchService.cs" />
         <Compile Include="Services\CategoryManagerService.cs" />
         <Compile Include="Services\Clustering\ClusteringClassifier.cs" />
         <Compile Include="Services\Clustering\ClusteringService.cs" />

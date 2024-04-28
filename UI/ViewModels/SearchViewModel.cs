@@ -22,8 +22,9 @@ namespace HashTrack.UI.ViewModels
     {
         //Services
         private readonly ICache _cache;
+        private readonly IPersistenceHashTagService _hashTagService;
         private readonly IEventAggregator _eventAggregator;
-        private readonly IArtifactSearchService _artifactSearchService;
+        private readonly ISearchService _searchService;
         private readonly IMessageService _messageService;
         //Fields
         private SearchFilters _searchFilters = new SearchFilters();
@@ -35,13 +36,15 @@ namespace HashTrack.UI.ViewModels
         
         public SearchViewModel(
             IEventAggregator eventAggregator,
+            IPersistenceHashTagService hashTagService,
             ICache cache,
-            IArtifactSearchService artifactSearchService,
+            ISearchService searchService,
             IMessageService messageService)
         {
             _eventAggregator = eventAggregator;
+            _hashTagService = hashTagService;
             _cache = cache;
-            _artifactSearchService = artifactSearchService;
+            _searchService = searchService;
             _messageService = messageService;
             
             InitializeCommands();
@@ -79,22 +82,33 @@ namespace HashTrack.UI.ViewModels
             try
             {
                 var searchQuery = SearchFilters.GetSearchQuery();
-                if (searchQuery.Verify())
+                if (!searchQuery.Verify())
                 {
-                    _artifactSearchService.SearchExactMatch(searchQuery);
+                    _messageService.ShowMessage("Search query is incorrect", "Search query validation failed", MessageType.Warning);
                     return;
                 }
+
+                if (_hashTagService.GetHashTag(searchQuery.Tag) is HashTagModel hashTag
+                    && hashTag.HasMergedTags)
+                {
+                    var mergedTags = hashTag.MergedHashTags.Select(x => x.Id).ToHashSet();
+                    mergedTags.Add(hashTag.Id);
+                    searchQuery.Tag = null;
+                    searchQuery.Tags = mergedTags;
+                    if (!searchQuery.Verify())
+                    {
+                        _messageService.ShowMessage("Search query is incorrect", "Search query validation failed", MessageType.Warning);
+                        return;
+                    }
+                }
+
+                _searchService.SearchTags(searchQuery);
             }
             catch (System.Exception ex)
             {
                 _messageService.ShowMessage(ex);
                 throw;
             }
-                
-            _messageService.ShowMessage(
-                "Please select at least one artefact type to search for.",
-                "Search query is incorrect",
-                MessageType.Warning);
         }
         
         private void OpenArtifact(ArtefactModel content)
@@ -192,15 +206,15 @@ namespace HashTrack.UI.ViewModels
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
 
-        public AdvancedSearchQueryOptions GetSearchQuery()
+        public SearchTagsQueryOptions GetSearchQuery()
         {
-            return new AdvancedSearchQueryOptions
+            return new SearchTagsQueryOptions
             {
-                Keyword = SearchText,
+                Tag = SearchText,
                 Artefacts = EvaluateArtefactsSelection(),
                 From = FromDate,
                 To = ToDate,
-                Tag = Events.DefaultSearchCompleted,
+                EventTag = Events.DefaultSearchCompleted,
                 ExactMatch = true,
             };
         }

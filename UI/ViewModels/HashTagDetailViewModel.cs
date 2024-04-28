@@ -48,10 +48,30 @@ namespace HashTrack.UI.ViewModels
             InitializeCommands();
         }
         
-        public ObservableCollection<HashTagModel> MergedHashTags => new ObservableCollection<HashTagModel>(_hashTag.MergedHashTags);
+        public ObservableCollection<HashTagModel> MergedHashTags
+        {
+            get
+            {
+                if (_hashTag == null || _hashTag.MergedHashTags == null)
+                {
+                    return new ObservableCollection<HashTagModel>();
+                }
+                return new ObservableCollection<HashTagModel>(_hashTag.MergedHashTags);
+            }
+        }
 
-        public ObservableCollection<HashTagModel> ExcludedHashTags => new ObservableCollection<HashTagModel>(_hashTag.ExcludedHashTags);
-       
+        public ObservableCollection<HashTagModel> ExcludedHashTags
+        {
+            get
+            {
+                if (_hashTag == null || _hashTag.ExcludedHashTags == null)
+                {
+                    return new ObservableCollection<HashTagModel>();
+                }
+                return new ObservableCollection<HashTagModel>(_hashTag.ExcludedHashTags);
+            }
+        }
+
         public bool IsEnabled => HashTag != null;
 
         public HashTagModel HashTag
@@ -82,9 +102,9 @@ namespace HashTrack.UI.ViewModels
 
         private void InitializeCommands()
         {
-            UnmergeCommand = new RelayCommand<object>(ExecuteUnmerge, CanExecuteUnmerge);
-            RemoveExceptionCommand = new RelayCommand<object>(ExecuteRemoveException, CanExecuteRemoveException);
-            MergeCommand = new RelayCommand<object>(ExecuteMerge, CanExecuteMerge);
+            UnmergeCommand = new RelayCommand<HashTagModel>(ExecuteUnmerge);
+            RemoveExceptionCommand = new RelayCommand<HashTagModel>(ExecuteRemoveException);
+            MergeCommand = new RelayCommand<HashTagModel>(ExecuteMerge);
             OpenPopupCommand = new RelayCommand<object>(ExecuteOpenPopup);
             OpenSettingCommand = new RelayCommand(ExecuteOpenSetting);
             AddTagCommand = new RelayCommand(AddTag_Click);
@@ -127,34 +147,27 @@ namespace HashTrack.UI.ViewModels
             PopupVM.Open(isMerged, new ObservableCollection<HashTagModel>(resultTags));
         }
 
-        private void ExecuteUnmerge(object parameter)
+        private void ExecuteUnmerge(HashTagModel hashtag)
         {
-            // Unmerge logic here
+            _hashTag.UnMergeHashTag(hashtag);
+            HashTag = HashTag;
+            _persistenceHashTagService.SaveHashTag(HashTag);
+
         }
 
-        private bool CanExecuteUnmerge(object parameter)
+        private void ExecuteRemoveException(HashTagModel hashtag)
         {
-            return true; // Logic to determine if unmerge can be executed
+            _hashTag.RemoveExcluded(hashtag);
+            HashTag = HashTag;
+            _persistenceHashTagService.SaveHashTag(HashTag);
         }
 
-        private void ExecuteRemoveException(object parameter)
+        private void ExecuteMerge(HashTagModel hashtag)
         {
-            // Remove exception logic here
-        }
-
-        private bool CanExecuteRemoveException(object parameter)
-        {
-            return true; // Logic to determine if removing an exception can be executed
-        }
-
-        private void ExecuteMerge(object parameter)
-        {
-            // Merge logic here
-        }
-
-        private bool CanExecuteMerge(object parameter)
-        {
-            return true; // Logic to determine if merge can be executed
+            
+            _hashTag.MergeHashTag(hashtag);
+            HashTag = HashTag;
+            _persistenceHashTagService.SaveHashTag(HashTag);
         }
 
         #region Events
@@ -286,7 +299,7 @@ namespace HashTrack.UI.ViewModels
                 //TODO: do in parent via command or event
                 if (IsMergeMode)
                 {
-                    foreach (var tag in PopupTags)
+                    foreach (var tag in SelectedTags)
                     {
                         _parent._hashTag.MergeHashTag(tag);
                         _parent.HashTag = _parent.HashTag; // Ensure UI update
@@ -294,7 +307,7 @@ namespace HashTrack.UI.ViewModels
                 }
                 else
                 {
-                    foreach (var tag in PopupTags)
+                    foreach (var tag in SelectedTags)
                     {
                         _parent._hashTag.UnMergeHashTag(tag);
                         _parent.HashTag = _parent.HashTag;

@@ -1,20 +1,20 @@
 namespace HashTrack.Core.Models
 {
-    public abstract class UniqueTag<T>
+    public abstract class UniqueId<T>
     {
         public T Id { get; set; }
 
-        protected UniqueTag()
+        protected UniqueId()
         { }
 
-        protected UniqueTag(T id)
+        protected UniqueId(T id)
         {
             Id = id;
         }
 
         public override bool Equals(object obj)
         {
-            var other = obj as UniqueTag<T>;
+            var other = obj as UniqueId<T>;
             if (other == null) return false;
 
             return Id.Equals(other.Id);

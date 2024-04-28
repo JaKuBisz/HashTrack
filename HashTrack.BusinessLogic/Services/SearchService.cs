@@ -12,16 +12,42 @@ using Filter = HashTrack.Core.Constants.DaslFilter.HttpMail;
 
 namespace HashTrack.BusinessLogic.Services
 {
-    [RegisterService(LifeCycle.Singleton, typeof(IArtifactSearchService))]
-    public class ArtifactSearchService : IArtifactSearchService
+    [RegisterService(LifeCycle.Singleton, typeof(ISearchService))]
+    public class SearchService : ISearchService
     {
-        private readonly Microsoft.Office.Interop.Outlook.Application _application;
-        public ArtifactSearchService(Outlook.Application application) 
+        private readonly Outlook.Application _application;
+        public SearchService(Outlook.Application application) 
         {
             _application = application;
 
         }
+        
+        public void SearchTags(SearchTagsQueryOptions searchTagsQuery)//, ArtifactTypes artifactTypes)
+        {
+            string scope = GetScope(searchTagsQuery.Artefacts);
+            string filter = GetFilter(searchTagsQuery);
+            _application.AdvancedSearch(scope, filter, true, searchTagsQuery.EventTag);
+        }
+        
+        public void PerformIndexing(DateTime? from = null, DateTime? to = null)
+        {
+            // Index all artifacts in last 30 days
+            from = from ?? DateTime.Now.AddDays(-30);
+            to = to ?? DateTime.Now;
+            var query = new SearchTagsQueryOptions
+            {
+                Tag = "#",
+                Artefacts = ArtifactTypes.All,
+                From = from,
+                To = to,
+                EventTag = Events.IndexingSearchCompleted,
+                ExactMatch = false,
+                UseCustomProperty = false
+            };
 
+            SearchTags(query);
+        }
+        
         public void SearchAllItemsForTag(HashTagModel hashTag)
         {
             //TODO: implement missing functionality; handler, indedxing need to be done; so reinddex before etc.
@@ -30,44 +56,38 @@ namespace HashTrack.BusinessLogic.Services
             var search = _application.AdvancedSearch(scope, filter, true, Events.CategoryManagerSearch);
         }
 
-        public void SearchItemsByIds(IEnumerable<Guid> artefactIds)
-        {
-            string scope = GetScope(ArtifactTypes.All);
-            string filter = GetIdsFilter(artefactIds);
-            throw new NotImplementedException();
-            //var search = _application.AdvancedSearch(scope, filter, true, searchQuery.Tag);
-        }
 
-        public void SearchExactMatch(AdvancedSearchQueryOptions searchQuery)//, ArtifactTypes artifactTypes)
-        {
-            string scope = GetScope(searchQuery.Artefacts);
-            string filter = GetFilter(searchQuery.Keyword, searchQuery.From, searchQuery.To, searchQuery.ExactMatch);
-            var search = _application.AdvancedSearch(scope, filter, true, searchQuery.Tag);
-        }
 
-        private string GetFilter(string keyword, DateTime? from, DateTime? to, bool exactMatch = false)
+        private string GetFilter(SearchTagsQueryOptions searchTagsQuery)
         {
-            //TODO: Search by seconds + Add support for multiple keywords
-            var startDate = (from ?? DateTime.MinValue).ToString("yyyy-MM-dd"); //
-            var endDate = (to ?? DateTime.MaxValue).ToString("yyyy-MM-dd");
-            
-            var wordFilter = exactMatch 
-                ? Constants.DaslFilter.ExactMatch(keyword) 
-                : Constants.DaslFilter.SubString(keyword);
-            var filter = $"{Filter.Body} {wordFilter} AND {Filter.Date} >= '{startDate}' AND {Filter.Date} <= '{endDate}'";
-            return filter;
-        }
-        private string GetIdsFilter(IEnumerable<Guid> artefactIds, DateTime? from = null, DateTime? to = null)
-        {
-            var startDate = (from ?? DateTime.MinValue).ToString("yyyy-MM-dd"); //
-            var endDate = (to ?? DateTime.MaxValue).ToString("yyyy-MM-dd");
+            var tags = searchTagsQuery.Tags ?? new List<string> { searchTagsQuery.Tag };
             var filters = new List<string>();
-            foreach (var id in artefactIds)
+            var wordFilter = string.Empty;
+            var filterProperty = string.Empty;
+            
+            var startDate = (searchTagsQuery.From ?? DateTime.MinValue).ToString("yyyy-MM-dd"); //
+            var endDate = (searchTagsQuery.To ?? DateTime.Now).ToString("yyyy-MM-dd");
+            
+            foreach (var tag in tags)
             {
-                var wordFilter = Constants.DaslFilter.ExactMatch(id.ToString());
-                filters.Add($"{GetCustomProperty(Constants.CustomProperties.artefactID)} {wordFilter}");
+                if (searchTagsQuery.UseCustomProperty && tag.Contains("#"))
+                {
+                    wordFilter = Constants.DaslFilter.Equals(tag);
+                    filterProperty = GetCustomProperty(Constants.CustomProperties.Tags);
+                }
+                else
+                {
+                    wordFilter = searchTagsQuery.ExactMatch ?
+                        Constants.DaslFilter.ExactMatch(tag) : Constants.DaslFilter.SubString(tag);
+                    filterProperty = Filter.Body;
+                }
+                
+                filters.Add($"{filterProperty} {wordFilter}");
             }
-            var filter = string.Join(" OR ", filters);
+
+            var tagsFilter = string.Join(" OR ", filters);
+            
+            var filter = $"{tagsFilter} AND {Filter.Date} >= '{startDate}' AND {Filter.Date} <= '{endDate}'";
             return filter;
         }
 

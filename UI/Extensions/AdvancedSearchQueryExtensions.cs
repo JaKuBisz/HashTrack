@@ -5,13 +5,13 @@ namespace HashTrack.Extensions
 {
     public static class AdvancedSearchQueryExtensions
     {
-        public static bool Verify(this AdvancedSearchQueryOptions searchQuery)
+        public static bool Verify(this SearchTagsQueryOptions searchTagsQuery)
         {
             var result = true;
-            result &= searchQuery != null;
-            result &= !string.IsNullOrWhiteSpace(searchQuery.Tag);
-            result &= !string.IsNullOrWhiteSpace(searchQuery.Keyword);
-            result &= searchQuery.Artefacts != ArtifactTypes.None;
+            result &= searchTagsQuery != null;
+            result &= !string.IsNullOrWhiteSpace(searchTagsQuery.EventTag);
+            result &= !string.IsNullOrWhiteSpace(searchTagsQuery.Tag) || searchTagsQuery.Tags != null;
+            result &= searchTagsQuery.Artefacts != ArtifactTypes.None;
 
             return result;
         }

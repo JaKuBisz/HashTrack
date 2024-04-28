@@ -6,17 +6,17 @@ namespace HashTrack.Core.Extensions
 {
     public static class UniqueEntityExtensions
     {
-        public static bool ContainsKey<T>(this IEnumerable<UniqueTag<T>> entities, T id)
+        public static bool ContainsKey<T>(this IEnumerable<UniqueId<T>> entities, T id)
         {
             return entities.Any(e => e.Id.Equals(id));
         }
         
-        public static TEntity GetByKey<TEntity, T>(this IEnumerable<TEntity> entities, T id) where TEntity : UniqueTag<T>
+        public static TEntity GetByKey<TEntity, T>(this IEnumerable<TEntity> entities, T id) where TEntity : UniqueId<T>
         {
             return entities.FirstOrDefault(e => e.Id.Equals(id));
         }
     
-        public static bool TryGetByKey<TEntity, T>(this IEnumerable<TEntity> entities, T id, out TEntity entity) where TEntity : UniqueTag<T>
+        public static bool TryGetByKey<TEntity, T>(this IEnumerable<TEntity> entities, T id, out TEntity entity) where TEntity : UniqueId<T>
         {
             entity = entities.FirstOrDefault(e => e.Id.Equals(id));
             return entity != null;
