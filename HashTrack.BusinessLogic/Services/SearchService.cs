@@ -22,7 +22,7 @@ namespace HashTrack.BusinessLogic.Services
 
         }
         
-        public void SearchTags(SearchTagsQueryOptions searchTagsQuery)//, ArtifactTypes artifactTypes)
+        public void SearchTags(SearchTagsQueryOptions searchTagsQuery)
         {
             string scope = GetScope(searchTagsQuery.Artefacts);
             string filter = GetFilter(searchTagsQuery);
@@ -66,7 +66,7 @@ namespace HashTrack.BusinessLogic.Services
             var filterProperty = string.Empty;
             
             var startDate = (searchTagsQuery.From ?? DateTime.MinValue).ToString("yyyy-MM-dd"); //
-            var endDate = (searchTagsQuery.To ?? DateTime.Now).ToString("yyyy-MM-dd");
+            var endDate = (searchTagsQuery.To ?? DateTime.Now).AddDays(1).ToString("yyyy-MM-dd");
             
             foreach (var tag in tags)
             {

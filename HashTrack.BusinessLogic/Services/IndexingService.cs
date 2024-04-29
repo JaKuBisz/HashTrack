@@ -56,12 +56,8 @@ namespace HashTrack.BusinessLogic.Services
         {
             try
             {
-                var groupedResults =
-                    ExtractTagsAndEnrichArtefacts(searchResult);
-                //_storage.Set(Constants.Storage.IndexedHashTags, groupedResults);
-
-                var clusteredResults = ClusterHashTags(groupedResults).ToHashSet();
-                //var result = clusteredResults.Select(x =>new IndexingResultsViewItem(x.Id, x.NumOfOccurrences, x.SearchResults)).ToList();
+                var hashtags = ExtractTagsAndEnrichArtefacts(searchResult);
+                var clusteredResults = ClusterHashTags(hashtags).ToHashSet();
 
                 _storage.SaveHashTags(clusteredResults);
                 _cache.SetHashTags(clusteredResults.ToList());
@@ -131,16 +127,9 @@ namespace HashTrack.BusinessLogic.Services
         private void EnrichArtefactWithHashTags(Outlook.UserProperties properties, string[] hashTags)
         {
             var tagsProperty = properties.Find(Constants.CustomProperties.Tags);
-            if (tagsProperty != null)
-            {
-                //Tag already indexed skip
-                //Should not be skipped for editable items
-                //return;
-            }
 
             if (tagsProperty is null)
             {
-
                 tagsProperty = properties.Add(
                     Constants.CustomProperties.Tags,
                     Outlook.OlUserPropertyType.olKeywords,

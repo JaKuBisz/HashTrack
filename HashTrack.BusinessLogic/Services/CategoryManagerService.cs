@@ -49,16 +49,14 @@ namespace HashTrack.BusinessLogic.Services
         {
             var categoryName = string.IsNullOrWhiteSpace(hashTagModel.CategoryName) ? hashTagModel.Id : hashTagModel.CategoryName;
             var categoryColor = hashTagModel.CategoryColor;
-            Outlook.NameSpace session = _application.Session;
+            var session = _application.Session;
 
-            // Check if the category already exists
-            Outlook.Category category = session.Categories[categoryName];
+            var category = session.Categories[categoryName];
             if (category == null)
             {
                 category = session.Categories.Add(categoryName, ((Outlook.OlCategoryColor)(int)categoryColor));
             }
 
-            // Assign the category to a mail item
             AssignCategoryToItem(item, category);
         }
         

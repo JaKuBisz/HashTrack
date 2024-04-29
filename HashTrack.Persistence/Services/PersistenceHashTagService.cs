@@ -84,10 +84,10 @@ namespace HashTrack.Persistence.Services
             }
             
             var missingChildEntities = RetrieveMissingEntities();
-            var enrichedChildModels = new HashSet<HashTagModel>();
+            var enrichedModels = new HashSet<HashTagModel>(originalModels);
             if (missingChildEntities != null)
             {
-                enrichedChildModels = GetEnrichedModels(missingChildEntities);
+                enrichedModels = GetEnrichedModels(missingChildEntities);
                 //models = models.Concat(enrichedChildModels);
             }
             
@@ -103,9 +103,9 @@ namespace HashTrack.Persistence.Services
                 var model = originalModels.First(x => x.Id == entity.Tag);
                 //Get missing entities that need to be retrieved from db
                 
-                model.MergedHashTags = enrichedChildModels
+                model.MergedHashTags = enrichedModels
                     .Where(x => entity.MergedHashTags.Contains(x.Id, StringComparer.Ordinal)).ToHashSet();
-                model.ExcludedHashTags = enrichedChildModels
+                model.ExcludedHashTags = enrichedModels
                     .Where(x => entity.ExcludedHashTags.Contains(x.Id, StringComparer.Ordinal)).ToHashSet();
                 
                 return model;
