@@ -4,7 +4,6 @@ using HashTrack.Core.Enums;
 namespace HashTrack.Persistence.Services
 {
     [RegisterService(LifeCycle.Singleton, typeof(PersistantStorage))]
-
     public class PersistantStorage //: IStorage
     {
         /*
@@ -17,7 +16,7 @@ namespace HashTrack.Persistence.Services
         public void Set<T>(string id, T value)
         {
             Outlook.StorageItem storageItem = GetStorage(id);
-            
+
             var serializedValue = JsonConvert.SerializeObject(value);
             storageItem.Body = serializedValue;
             storageItem.Save();

@@ -9,6 +9,7 @@ namespace HashTrack.Enums
         DateDesc,*/
         [DisplayName("Most used")]
         OccurrencesDesc,
+
         [DisplayName("Least used")]
         OccurrencesAsc
     }

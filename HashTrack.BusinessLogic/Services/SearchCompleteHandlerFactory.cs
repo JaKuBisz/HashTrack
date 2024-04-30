@@ -1,11 +1,9 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using Autofac.Core.Registration;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
 using HashTrack.Core.Interfaces;
 using HashTrack.Core.Interfaces.Handlers;
-using HashTrack.Interfaces;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack.BusinessLogic.Services

@@ -2,15 +2,16 @@ namespace HashTrack.Core.Models
 {
     public abstract class UniqueId<T>
     {
-        public T Id { get; set; }
-
         protected UniqueId()
-        { }
+        {
+        }
 
         protected UniqueId(T id)
         {
             Id = id;
         }
+
+        public T Id { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -25,6 +26,4 @@ namespace HashTrack.Core.Models
             return Id?.GetHashCode() ?? 0;
         }
     }
-
-
 }

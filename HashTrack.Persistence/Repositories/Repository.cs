@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
-using HashTrack.Persistence.Contexts;
 using HashTrack.Persistence.Interfaces;
 
 namespace HashTrack.Persistence.Repositories
@@ -35,7 +34,6 @@ namespace HashTrack.Persistence.Repositories
         public IEnumerable<T> GetAll()
         {
             return _dbSet.ToList();
-            
         }
 
         public T GetById(int id)
@@ -52,15 +50,11 @@ namespace HashTrack.Persistence.Repositories
         {
             var existingEntity = _dbSet.Local.FirstOrDefault(predicate) ?? _dbSet.FirstOrDefault(predicate);
             if (existingEntity != null)
-            {
                 // The entity already exists in the context, or we load it from the database
                 _context.Entry(existingEntity).CurrentValues.SetValues(entity);
-            }
             else
-            {
                 // Entity is not tracked, so attach and set as modified
                 _dbSet.Add(entity);
-            }
         }
 
         public void Upsert(T entity, Func<T, bool> predicate)
@@ -78,10 +72,7 @@ namespace HashTrack.Persistence.Repositories
 
         public void Delete(T entity)
         {
-            if (_context.Entry(entity).State == EntityState.Detached)
-            {
-                _dbSet.Attach(entity);
-            }
+            if (_context.Entry(entity).State == EntityState.Detached) _dbSet.Attach(entity);
             _dbSet.Remove(entity);
         }
 
@@ -90,5 +81,4 @@ namespace HashTrack.Persistence.Repositories
             _context.SaveChanges();
         }
     }
-
 }

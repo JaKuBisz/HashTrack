@@ -1,4 +1,3 @@
-using HashTrack.Core.Enums;
 using HashTrack.Core.Models.Search;
 
 namespace HashTrack.Core.Interfaces

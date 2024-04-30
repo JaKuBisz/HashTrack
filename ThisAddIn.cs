@@ -1,12 +1,14 @@
-﻿using Autofac;
+﻿using System;
+using System.Timers;
+using Autofac;
 using HashTrack.Core;
+using HashTrack.Core.Extensions;
 using HashTrack.Core.Interfaces;
 using HashTrack.Core.Interfaces.Handlers;
 using HashTrack.Core.Interfaces.Search;
 using HashTrack.Interfaces.Indexing;
-using System;
-using System.Timers;
-using HashTrack.Core.Extensions;
+using HashTrack.Properties;
+using Microsoft.Office.Tools;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 
@@ -14,18 +16,18 @@ namespace HashTrack
 {
     public partial class ThisAddIn
     {
-        private Microsoft.Office.Tools.CustomTaskPane myCustomTaskPane;
-        private ISearchCompleteHandlerFactory _searchCompleteHandlerFactory;
-        private ISearchService _searchService;
-        private IPersistenceHashTagService _persistenceHashTagService;
-        private IEventAggregator _eventAggregator;
         private ICache _cache;
+        private IEventAggregator _eventAggregator;
         private SidePanelWpfControl _hashTrackSearchWpfControl;
         private IIndexingService _indexingService;
-        private IComponentContext _resolver;
         private Timer _indexingTimer;
+        private IPersistenceHashTagService _persistenceHashTagService;
+        private IComponentContext _resolver;
+        private ISearchCompleteHandlerFactory _searchCompleteHandlerFactory;
+        private ISearchService _searchService;
+        private CustomTaskPane myCustomTaskPane;
 
-        private void ThisAddIn_Startup(object sender, System.EventArgs e)
+        private void ThisAddIn_Startup(object sender, EventArgs e)
         {
             // Register services
             MyStartup.ConfigureContainer();
@@ -33,7 +35,7 @@ namespace HashTrack
             // Resolve services (can not be done in the constructor of the class)
             _resolver = IoC.Startup.ServiceLocator.Resolve<IComponentContext>();
             ResolveServices();
-            
+
             RegisterEventHandlers();
             StartupServices();
 
@@ -48,6 +50,7 @@ namespace HashTrack
             myCustomTaskPane.Visible = true;
             myCustomTaskPane.Width = 350;
         }
+
         private void RegisterEventHandlers()
         {
             //TODO: Use Async use eventHandler from Outlook Office object
@@ -55,6 +58,7 @@ namespace HashTrack
             Application.AdvancedSearchComplete += _searchCompleteHandlerFactory.HandleSearchCompleted;
             ((Outlook.ApplicationEvents_11_Event)Application).Quit += ShutdownServices;
         }
+
         private void ResolveServices()
         {
             _searchCompleteHandlerFactory = _resolver.Resolve<ISearchCompleteHandlerFactory>();
@@ -71,7 +75,7 @@ namespace HashTrack
             RunIndexing();
             CacheDataFromStorage();
         }
-        
+
         private void CacheDataFromStorage()
         {
             var hashTags = _persistenceHashTagService.GetAllHashTags();
@@ -81,12 +85,12 @@ namespace HashTrack
 
         private void RunIndexing(object sender = null, ElapsedEventArgs e = null)
         {
-            var lastIndexingDate = Properties.Settings.Default.LastIndexingDateTime;
+            var lastIndexingDate = Settings.Default.LastIndexingDateTime;
             _searchService.PerformIndexing(lastIndexingDate);
-            Properties.Settings.Default.LastIndexingDateTime = DateTime.Now;
-            Properties.Settings.Default.Save();
+            Settings.Default.LastIndexingDateTime = DateTime.Now;
+            Settings.Default.Save();
         }
-        
+
         private void SetIndexingTimer()
         {
             _indexingTimer = new Timer(300000); // 5 minutes;
@@ -101,8 +105,8 @@ namespace HashTrack
             Application.AdvancedSearchComplete -= _searchCompleteHandlerFactory.HandleSearchCompleted;
             ((Outlook.ApplicationEvents_11_Event)Application).Quit -= ShutdownServices;
         }
-    
-        private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
+
+        private void ThisAddIn_Shutdown(object sender, EventArgs e)
         {
             // Note: Outlook no longer raises this event. If you have code that 
             //    must run when Outlook shuts down, see https://go.microsoft.com/fwlink/?LinkId=506785
@@ -112,15 +116,15 @@ namespace HashTrack
         #region VSTO generated code
 
         /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
+        ///     Required method for Designer support - do not modify
+        ///     the contents of this method with the code editor.
         /// </summary>
         private void InternalStartup()
         {
-            this.Startup += new System.EventHandler(ThisAddIn_Startup);
-            this.Shutdown += new System.EventHandler(ThisAddIn_Shutdown);
+            Startup += ThisAddIn_Startup;
+            Shutdown += ThisAddIn_Shutdown;
         }
-        
+
         #endregion
     }
 }

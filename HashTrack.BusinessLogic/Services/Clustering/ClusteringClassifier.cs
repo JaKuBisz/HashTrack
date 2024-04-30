@@ -1,6 +1,4 @@
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
 using HashTrack.Core.Interfaces.Clustering;
@@ -15,44 +13,36 @@ namespace HashTrack.Clustering.Services
     {
         private const double SimilarityThreshold = 0.75;
         private readonly IStringMetric _metric = new Levenstein();
-        
+
         public bool Classify(string text1, string text2)
         {
             var tag1 = SplitTag(text1);
             var tag2 = SplitTag(text2);
 
-            if (tag1.NumberPart != tag2.NumberPart)
-            {
-                return false;
-            }
+            if (tag1.NumberPart != tag2.NumberPart) return false;
 
-            double textualSimilarity = _metric.GetSimilarity(tag1.TextPart, tag2.TextPart);
+            var textualSimilarity = _metric.GetSimilarity(tag1.TextPart, tag2.TextPart);
 
             return textualSimilarity > SimilarityThreshold;
         }
-        
+
         public bool Classify(HashTagModel tag1, HashTagModel tag2)
         {
-            if (tag1.NumOfOccurrences <= tag2.NumOfOccurrences)
-            {
-                return false;
-            }
-            
+            if (tag1.NumOfOccurrences <= tag2.NumOfOccurrences) return false;
+
             return Classify(tag1.Id, tag2.Id);
         }
-        
+
         private static (string TextPart, string NumberPart) SplitTag(string tag)
         {
             var textPartBuilder = new StringBuilder();
             var numberPartBuilder = new StringBuilder();
 
-            foreach (char ch in tag)
-            {
+            foreach (var ch in tag)
                 if (char.IsDigit(ch))
                     numberPartBuilder.Append(ch);
                 else
                     textPartBuilder.Append(ch);
-            }
 
             return (textPartBuilder.ToString(), numberPartBuilder.ToString());
         }

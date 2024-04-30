@@ -8,6 +8,5 @@ namespace HashTrack.Core.Interfaces.Search
         void SearchTags(SearchTagsQueryOptions searchTagsQuery);
         void PerformIndexing(DateTime? from = null, DateTime? to = null);
         void SearchAllItemsForTag(HashTagModel hashTag);
-
     }
 }

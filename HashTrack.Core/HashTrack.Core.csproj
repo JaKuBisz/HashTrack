@@ -34,7 +34,7 @@
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="Microsoft.Office.Interop.Outlook">
-          <HintPath>..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\Shared\Visual Studio Tools for Office\PIA\Office15\Microsoft.Office.Interop.Outlook.dll</HintPath>
+            <HintPath>..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\Shared\Visual Studio Tools for Office\PIA\Office15\Microsoft.Office.Interop.Outlook.dll</HintPath>
         </Reference>
         <Reference Include="System"/>
         <Reference Include="System.Core"/>
@@ -42,40 +42,40 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Attributes\DisplayNameAttribute.cs" />
-        <Compile Include="Attributes\RegisterHandlerAttribute.cs" />
-        <Compile Include="Attributes\RegisterKeyedAttribute.cs" />
-        <Compile Include="Attributes\RegisterServiceAttribute.cs" />
-        <Compile Include="Constants\Constants.cs" />
-        <Compile Include="Constants\Events.cs" />
-        <Compile Include="Enums\ArtifactTypes.cs" />
-        <Compile Include="Enums\CategoryColor.cs" />
-        <Compile Include="Enums\LifeCycle.cs" />
-        <Compile Include="Enums\MessageType.cs" />
-        <Compile Include="Exceptions\SearchQueryException.cs" />
-        <Compile Include="Exceptions\UnknownResultItemTypeException.cs" />
-        <Compile Include="Extensions\CacheExtensions.cs" />
-        <Compile Include="Extensions\HashTagExtensions.cs" />
-        <Compile Include="Extensions\UniqueEntityExtensions.cs" />
-        <Compile Include="Helpers\ArtefactItemHelper.cs" />
-        <Compile Include="Interfaces\Clustering\IClusteringClassifier.cs" />
-        <Compile Include="Interfaces\Clustering\IClusteringService.cs" />
-        <Compile Include="Interfaces\Handlers\ISearchCompleteHandler.cs" />
-        <Compile Include="Interfaces\Handlers\ISearchCompleteHandlerFactory.cs" />
-        <Compile Include="Interfaces\ICache.cs" />
-        <Compile Include="Interfaces\ICategoryManagerService.cs" />
-        <Compile Include="Interfaces\IMessageService.cs" />
-        <Compile Include="Interfaces\Indexing\IIndexingService.cs" />
-        <Compile Include="Interfaces\IEventAggregator.cs" />
-        <Compile Include="Interfaces\IPersistenceHashTagService.cs" />
-        <Compile Include="Interfaces\Persistence\IStorage.cs" />
-        <Compile Include="Interfaces\Search\ISearchService.cs" />
-        <Compile Include="Models\ClusteringSettingDto.cs" />
-        <Compile Include="Models\Search\SearchTagsQueryOptions.cs" />
-        <Compile Include="Models\Search\HashTagModel.cs" />
-        <Compile Include="Models\Search\IndexingResultsViewItem.cs" />
-        <Compile Include="Models\Search\ArtefactModel.cs" />
-        <Compile Include="Models\UniqueId.cs" />
+        <Compile Include="Attributes\DisplayNameAttribute.cs"/>
+        <Compile Include="Attributes\RegisterHandlerAttribute.cs"/>
+        <Compile Include="Attributes\RegisterKeyedAttribute.cs"/>
+        <Compile Include="Attributes\RegisterServiceAttribute.cs"/>
+        <Compile Include="Constants\Constants.cs"/>
+        <Compile Include="Constants\Events.cs"/>
+        <Compile Include="Enums\ArtifactTypes.cs"/>
+        <Compile Include="Enums\CategoryColor.cs"/>
+        <Compile Include="Enums\LifeCycle.cs"/>
+        <Compile Include="Enums\MessageType.cs"/>
+        <Compile Include="Exceptions\SearchQueryException.cs"/>
+        <Compile Include="Exceptions\UnknownResultItemTypeException.cs"/>
+        <Compile Include="Extensions\CacheExtensions.cs"/>
+        <Compile Include="Extensions\HashTagExtensions.cs"/>
+        <Compile Include="Extensions\UniqueEntityExtensions.cs"/>
+        <Compile Include="Helpers\ArtefactItemHelper.cs"/>
+        <Compile Include="Interfaces\Clustering\IClusteringClassifier.cs"/>
+        <Compile Include="Interfaces\Clustering\IClusteringService.cs"/>
+        <Compile Include="Interfaces\Handlers\ISearchCompleteHandler.cs"/>
+        <Compile Include="Interfaces\Handlers\ISearchCompleteHandlerFactory.cs"/>
+        <Compile Include="Interfaces\ICache.cs"/>
+        <Compile Include="Interfaces\ICategoryManagerService.cs"/>
+        <Compile Include="Interfaces\IMessageService.cs"/>
+        <Compile Include="Interfaces\Indexing\IIndexingService.cs"/>
+        <Compile Include="Interfaces\IEventAggregator.cs"/>
+        <Compile Include="Interfaces\IPersistenceHashTagService.cs"/>
+        <Compile Include="Interfaces\Persistence\IStorage.cs"/>
+        <Compile Include="Interfaces\Search\ISearchService.cs"/>
+        <Compile Include="Models\ClusteringSettingDto.cs"/>
+        <Compile Include="Models\Search\SearchTagsQueryOptions.cs"/>
+        <Compile Include="Models\Search\HashTagModel.cs"/>
+        <Compile Include="Models\Search\IndexingResultsViewItem.cs"/>
+        <Compile Include="Models\Search\ArtefactModel.cs"/>
+        <Compile Include="Models\UniqueId.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>

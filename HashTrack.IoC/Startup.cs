@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autofac;
@@ -28,7 +27,7 @@ namespace HashTrack.IoC
             additionalConfigurations?.Invoke(builder);
             builder.Register(c =>
             {
-                var options = new MemoryCacheOptions()
+                var options = new MemoryCacheOptions
                 {
                     //SizeLimit = 1024,
                     CompactionPercentage = 0.2,
@@ -46,7 +45,7 @@ namespace HashTrack.IoC
         private static Assembly[] GetAssemblies()
         {
             return AppDomain.CurrentDomain.GetAssemblies();
-            return new Assembly[]
+            return new[]
             {
                 Assembly.Load("HashTrack.Core"),
                 Assembly.Load("HashTrack.BusinessLogic"),
@@ -61,7 +60,7 @@ namespace HashTrack.IoC
             Console.WriteLine("Registering services for assemblies: " +
                               string.Join(", ", assemblies.Select(a => a.GetName().Name)));
 
-            foreach (LifeCycle lifeCycle in LifeCycle.GetValues(typeof(LifeCycle)))
+            foreach (LifeCycle lifeCycle in Enum.GetValues(typeof(LifeCycle)))
             {
                 GetStandardServicesPipeline(builder, assemblies)
                     .PropertiesAutowired()
@@ -127,9 +126,7 @@ namespace HashTrack.IoC
                 {
                     var attribute = t.GetCustomAttribute<RegisterServiceAttribute>();
                     if (attribute.ServiceType != null && attribute.ServiceType.IsGenericTypeDefinition)
-                    {
                         return new[] { attribute.ServiceType };
-                    }
 
                     return t.GetInterfaces().Where(i => i.IsGenericTypeDefinition && i.Name == $"I{t.Name}");
                 });

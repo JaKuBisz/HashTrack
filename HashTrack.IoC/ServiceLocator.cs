@@ -16,5 +16,4 @@ namespace HashTrack.IoC
             return _scope.Resolve<T>();
         }
     }
-
 }

@@ -6,7 +6,7 @@ namespace HashTrack.Persistence.Mappers
 {
     public static class HashTagEntityMappers
     {
-        public static HashTagEntity MapToHashTagEntity (this HashTagModel model)
+        public static HashTagEntity MapToHashTagEntity(this HashTagModel model)
         {
             return new HashTagEntity
             {
@@ -20,7 +20,7 @@ namespace HashTrack.Persistence.Mappers
                 CreateCategory = model.CreateCategory,
                 FolderName = model.FolderName,
                 CategoryName = model.CategoryName,
-                CategoryColor = (int) model.CategoryColor,
+                CategoryColor = (int)model.CategoryColor
             };
         }
     }

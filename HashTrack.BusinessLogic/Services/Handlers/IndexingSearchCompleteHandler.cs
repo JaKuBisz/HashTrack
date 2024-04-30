@@ -1,4 +1,3 @@
-
 using HashTrack.Core;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Interfaces.Handlers;
@@ -19,10 +18,7 @@ namespace HashTrack.BusinessLogic.Services.Handlers
 
         public void HandleSearchComplete(Outlook.Search searchResult)
         {
-            if (searchResult.Tag != Events.IndexingSearchCompleted)
-            {
-                return;
-            }
+            if (searchResult.Tag != Events.IndexingSearchCompleted) return;
 
             _indexingService.IndexSearchResults(searchResult);
         }

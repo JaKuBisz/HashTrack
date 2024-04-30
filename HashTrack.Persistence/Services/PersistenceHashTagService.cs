@@ -25,34 +25,17 @@ namespace HashTrack.Persistence.Services
         public HashSet<HashTagModel> GetAllHashTags()
         {
             var hashTagEntities = _repository.GetAll();
-            if (hashTagEntities == null)
-            {
-                return new HashSet<HashTagModel>();
-            }
-            
-            return GetEnrichedModels(hashTagEntities);
-        }
+            if (hashTagEntities == null) return new HashSet<HashTagModel>();
 
-        public HashSet<HashTagModel> GetHashTagsByIds(IEnumerable<string> Ids)
-        {
-            var hashTagEntities = _repository.GetByTags(Ids);
-            if (hashTagEntities == null)
-            {
-                return new HashSet<HashTagModel>();
-            }
-            
             return GetEnrichedModels(hashTagEntities);
         }
 
         public HashTagModel GetHashTag(string tag)
         {
             var hashtagEntity = _repository.GetByTag(tag);
-            if (hashtagEntity == null)
-            {
-                return null;
-            }
+            if (hashtagEntity == null) return null;
 
-            return GetEnrichedModels(new []{hashtagEntity}).First();
+            return GetEnrichedModels(new[] { hashtagEntity }).First();
         }
 
         public void SaveHashTag(HashTagModel hashTag)
@@ -60,7 +43,6 @@ namespace HashTrack.Persistence.Services
             var entity = hashTag.MapToHashTagEntity();
             _repository.Update(entity, x => x.Tag == entity.Tag);
             _repository.Save();
-
         }
 
         public void SaveHashTags(HashSet<HashTagModel> hashTags)
@@ -70,30 +52,30 @@ namespace HashTrack.Persistence.Services
                 var entity = hashTag.MapToHashTagEntity();
                 _repository.Update(entity, x => x.Tag == entity.Tag);
             }
+
             _repository.Save();
+        }
+
+        public HashSet<HashTagModel> GetHashTagsByIds(IEnumerable<string> Ids)
+        {
+            var hashTagEntities = _repository.GetByTags(Ids);
+            if (hashTagEntities == null) return new HashSet<HashTagModel>();
+
+            return GetEnrichedModels(hashTagEntities);
         }
 
         private HashSet<HashTagModel> GetEnrichedModels(IEnumerable<HashTagEntity> entities)
         {
             var originalModels = entities.Select(x => x.MapToHashTagDto()).ToHashSet();
             var entitiesToEnrich = entities.Where(x => x.MergedHashTags.Any() || x.ExcludedHashTags.Any());
-            if (!entitiesToEnrich.Any())
-            {
-                return originalModels.ToHashSet();
-            }
-            
+            if (!entitiesToEnrich.Any()) return originalModels.ToHashSet();
+
             var missingChildEntities = RetrieveMissingEntities();
             var enrichedModels = new HashSet<HashTagModel>(originalModels);
-            if (missingChildEntities != null)
-            {
-                enrichedModels = GetEnrichedModels(missingChildEntities);
-                //models = models.Concat(enrichedChildModels);
-            }
-            
+            if (missingChildEntities != null) enrichedModels = GetEnrichedModels(missingChildEntities);
+            //models = models.Concat(enrichedChildModels);
             foreach (var entity in entitiesToEnrich)
-            {
                 originalModels.AddOrReplace(GetEnrichedModelForEntity(entity), true);
-            }
 
             return originalModels.ToHashSet();
 
@@ -101,26 +83,22 @@ namespace HashTrack.Persistence.Services
             {
                 var model = originalModels.First(x => x.Id == entity.Tag);
                 //Get missing entities that need to be retrieved from db
-                
+
                 model.MergedHashTags = enrichedModels
                     .Where(x => entity.MergedHashTags.Contains(x.Id, StringComparer.Ordinal)).ToHashSet();
                 model.ExcludedHashTags = enrichedModels
                     .Where(x => entity.ExcludedHashTags.Contains(x.Id, StringComparer.Ordinal)).ToHashSet();
-                
+
                 return model;
             }
-            
+
             IEnumerable<HashTagEntity> RetrieveMissingEntities()
             {
                 var tagsToRetrieve = entities.SelectMany(x => x.MergedHashTags)
                     .Concat(entities.SelectMany(x => x.ExcludedHashTags))
                     .Except(entities.Select(x => x.Tag));
-                if (tagsToRetrieve.Any())
-                {
-                    return _repository.GetByTags(tagsToRetrieve);
-                    //entities = entities.Concat(missingEntities);
-                }
-
+                if (tagsToRetrieve.Any()) return _repository.GetByTags(tagsToRetrieve);
+                //entities = entities.Concat(missingEntities);
                 return null;
             }
         }
@@ -133,12 +111,12 @@ namespace HashTrack.Persistence.Services
             {
                 return models;
             }
-            
+
             foreach (var entity in entitiesToEnrich)
             {
                 var model = models.First(x => x.Id == entity.Tag);
                 //Get missing entities that need to be retrieved from db
-                
+
                 var tagsToRetrieve = entity.MergedHashTags.Except(entities.Select(x => x.Tag)
                     .Concat(entity.ExcludedHashTags.Except(entities.Select(x => x.Tag))));
                 if (tagsToRetrieve.Any())
@@ -146,7 +124,7 @@ namespace HashTrack.Persistence.Services
                     var missingEntities = _repository.GetByTags(tagsToRetrieve);
                     entities = entities.Concat(missingEntities);
                 }
-                
+
                 model.MergedHashTags = models
                     .Where(x => entity.MergedHashTags.Contains(x.Id, StringComparer.Ordinal)).ToHashSet();
                 model.ExcludedHashTags = models
@@ -162,7 +140,7 @@ namespace HashTrack.Persistence.Services
 
             return models.ToHashSet();
         }
-        
+
         private HashTagModel EnrichModelWithChildren(HashTagEntity entity)
         {
             var model = entity.MapToHashTagDto();
@@ -177,7 +155,7 @@ namespace HashTrack.Persistence.Services
             {
                 EnrichModelWithChildren(childModel);
             }
-            
+
             model.MergedHashTags = childEntities
                 .Where(x => entity.MergedHashTags.Contains(x.Id, StringComparer.Ordinal)).ToHashSet();
             model.ExcludedHashTags = childEntities
@@ -185,7 +163,7 @@ namespace HashTrack.Persistence.Services
 
             return model;
         }*/
-        
+
 /*
         private HashSet<HashTagModel> GetHashTagsModels(IEnumerable<HashTagEntity> hashTagEntities)
         {
@@ -223,7 +201,7 @@ namespace HashTrack.Persistence.Services
             }
 
             return hashTags.Select(x => x.model).ToHashSet();*/
-        }
+    }
 /*
         private HashSet<HashTagModel> GetHashTagsModel(HashTagModel model, IEnumerable<HashTagEntity> mergedHashTagEntities, IEnumerable<HashTagEntity> excludedHashTagEntities)
         {
@@ -267,7 +245,7 @@ namespace HashTrack.Persistence.Services
 
             return hashTags.Select(x => x.model).ToHashSet();
         }
-        
+
         private             foreach (var (model, entity) in hashTags)
         {
             var tag = entity.Tag;

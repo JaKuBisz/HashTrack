@@ -1,5 +1,4 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using HashTrack.BusinessLogic.Services;
 using HashTrack.Core;
 using HashTrack.IoC;
@@ -15,7 +14,7 @@ namespace HashTrack
             ForceLoadAssemblies();
             Startup.ConfigureContainer(builder =>
             {
-                builder.Register(c => Globals.ThisAddIn.Application).As<Microsoft.Office.Interop.Outlook.Application>().InstancePerLifetimeScope();
+                builder.Register(c => Globals.ThisAddIn.Application).As<Application>().InstancePerLifetimeScope();
                 builder.RegisterType<ThisAddIn>().PropertiesAutowired();
                 //builder.RegisterType<SidePanelWpfControl>().SingleInstance();
             });

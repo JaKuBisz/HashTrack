@@ -13,17 +13,15 @@ namespace HashTrack.UI.ViewModels
     [RegisterService(LifeCycle.Singleton, typeof(TagSettingsViewModel))]
     public class TagSettingsViewModel : BaseViewModel
     {
-        private readonly IPersistenceHashTagService _storage;
         private readonly ICategoryManagerService _categoryManager;
-        private Form1 _popupForm;
-        private HashTagModel _hashTag;
-        private bool _createFolderEnabled;
-        private bool _createCategoryEnabled;
-        private string _folderName;
-        private string _categoryName;
+        private readonly IPersistenceHashTagService _storage;
         private CategoryColor _categoryColor;
-        
-        public ICommand SaveSettingsCommand { get; private set; }
+        private string _categoryName;
+        private bool _createCategoryEnabled;
+        private bool _createFolderEnabled;
+        private string _folderName;
+        private HashTagModel _hashTag;
+        private Form1 _popupForm;
 
         public TagSettingsViewModel(IPersistenceHashTagService storage, ICategoryManagerService categoryManager)
         {
@@ -31,30 +29,12 @@ namespace HashTrack.UI.ViewModels
             _categoryManager = categoryManager;
             SaveSettingsCommand = new RelayCommand(SaveSettings);
         }
-        
-        public void ShowSettings(HashTagModel tag)
-        {
-            var tagSettingControl = new HashTagSettings
-            {
-                DataContext = this
-            };
-            _popupForm = new Form1(tagSettingControl);
-            HashTag = tag;
-            _popupForm.Show();
-        }
 
-        private void SetDefaultValues(HashTagModel tag)
-        {
-            FolderName = string.IsNullOrWhiteSpace(tag.FolderName) ? tag.Id : tag.FolderName;
-            CategoryName = string.IsNullOrWhiteSpace(tag.CategoryName) ? tag.Id : tag.CategoryName;
-            CategoryColor = tag.CategoryColor == CategoryColor.olCategoryColorNone ? CategoryColor.olCategoryColorDarkBlue : tag.CategoryColor;
-            CreateFolderEnabled = tag.CreateFolder;
-            CreateCategoryEnabled = tag.CreateCategory;
-        }
+        public ICommand SaveSettingsCommand { get; private set; }
 
         public List<CategoryColor> CategoryColorOptions { get; } =
             Enum.GetValues(typeof(CategoryColor)).Cast<CategoryColor>().ToList();
-        
+
         public HashTagModel HashTag
         {
             get => _hashTag;
@@ -95,6 +75,28 @@ namespace HashTrack.UI.ViewModels
             set => SetField(ref _categoryColor, value);
         }
 
+        public void ShowSettings(HashTagModel tag)
+        {
+            var tagSettingControl = new HashTagSettings
+            {
+                DataContext = this
+            };
+            _popupForm = new Form1(tagSettingControl);
+            HashTag = tag;
+            _popupForm.Show();
+        }
+
+        private void SetDefaultValues(HashTagModel tag)
+        {
+            FolderName = string.IsNullOrWhiteSpace(tag.FolderName) ? tag.Id : tag.FolderName;
+            CategoryName = string.IsNullOrWhiteSpace(tag.CategoryName) ? tag.Id : tag.CategoryName;
+            CategoryColor = tag.CategoryColor == CategoryColor.olCategoryColorNone
+                ? CategoryColor.olCategoryColorDarkBlue
+                : tag.CategoryColor;
+            CreateFolderEnabled = tag.CreateFolder;
+            CreateCategoryEnabled = tag.CreateCategory;
+        }
+
 
         private void SaveSettings()
         {
@@ -103,12 +105,11 @@ namespace HashTrack.UI.ViewModels
             _hashTag.FolderName = FolderName;
             _hashTag.CategoryName = CategoryName;
             _hashTag.CategoryColor = CategoryColor;
-            
+
             _popupForm.Hide();
-            
+
             _storage.SaveHashTag(_hashTag);
             _categoryManager.AssignHashTagItems(_hashTag);
         }
     }
-
 }

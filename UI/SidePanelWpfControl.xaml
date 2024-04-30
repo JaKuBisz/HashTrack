@@ -1,94 +1,103 @@
 ﻿<UserControl
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:HashTrack"
-             xmlns:vm="clr-namespace:HashTrack.UI.ViewModels"
-             xmlns:helpers="clr-namespace:HashTrack.UI.Helpers"
-             xmlns:Collections="clr-namespace:System.Collections;assembly=mscorlib"
-             x:Class="HashTrack.SidePanelWpfControl"
-             mc:Ignorable="d" 
-             d:DesignHeight="800" d:DesignWidth="400"
-             d:DataContext="{d:DesignInstance Type=vm:MainViewModel}">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:vm="clr-namespace:HashTrack.UI.ViewModels"
+    xmlns:helpers="clr-namespace:HashTrack.UI.Helpers"
+    x:Class="HashTrack.SidePanelWpfControl"
+    mc:Ignorable="d"
+    d:DesignHeight="800" d:DesignWidth="400"
+    d:DataContext="{d:DesignInstance Type=vm:MainViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
-            <helpers:EnumFriendlyNameConverter x:Key="OrderByOptionConverter"/>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <helpers:EnumFriendlyNameConverter x:Key="OrderByOptionConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <TabControl x:Name="mainTabControl" SelectedIndex="{Binding SelectedTabIndex}">
         <TabItem Header="Search" DataContext="{Binding SearchVM}">
             <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-        <TextBlock Text="Artifact Filters" Grid.Row="0" FontSize="14" FontWeight="Bold" Margin="10" HorizontalAlignment="Center"/>
+                <TextBlock Text="Artifact Filters" Grid.Row="0" FontSize="14" FontWeight="Bold" Margin="10"
+                           HorizontalAlignment="Center" />
 
-        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0">
-            <CheckBox x:Name="ch_email" Content="Email" Margin="8" IsChecked="{Binding SearchFilters.IsEmailChecked}"/>
-            <CheckBox x:Name="ch_appointment" Content="Appointments" Margin="8" IsChecked="{Binding SearchFilters.IsAppointmentsChecked}"/>
-            <CheckBox x:Name="ch_task" Content="Tasks" Margin="8" IsChecked="{Binding SearchFilters.IsTasksChecked}"/>
-            <CheckBox x:Name="ch_contact" Content="Contacts" Margin="8" IsChecked="{Binding SearchFilters.IsContactsChecked}"/>
-        </StackPanel>
-                
-        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0" HorizontalAlignment="Center">
-            <TextBlock Text="From:" VerticalAlignment="Center"/>
-            <DatePicker x:Name="date_from" Margin="8" SelectedDate="{Binding SearchFilters.FromDate}"/>
-            <TextBlock Text="To:" VerticalAlignment="Center" Margin="10,0,0,0"/>
-            <DatePicker x:Name="date_to" Margin="8" SelectedDate="{Binding SearchFilters.ToDate}"/>
-        </StackPanel>
-                
-        <TextBox x:Name="tb_searchbar" Grid.Row="3" Margin="5,3" HorizontalAlignment="Stretch" FontSize="16" Text="{Binding SearchFilters.SearchText}"/>
-        <Button x:Name="btn_search" Content="Search" Grid.Row="3" Width="80" Margin="5,3"  HorizontalAlignment="Right"
-                Command="{Binding SearchCommand}"/>
+                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center"
+                            Margin="0">
+                    <CheckBox x:Name="ch_email" Content="Email" Margin="8"
+                              IsChecked="{Binding SearchFilters.IsEmailChecked}" />
+                    <CheckBox x:Name="ch_appointment" Content="Appointments" Margin="8"
+                              IsChecked="{Binding SearchFilters.IsAppointmentsChecked}" />
+                    <CheckBox x:Name="ch_task" Content="Tasks" Margin="8"
+                              IsChecked="{Binding SearchFilters.IsTasksChecked}" />
+                    <CheckBox x:Name="ch_contact" Content="Contacts" Margin="8"
+                              IsChecked="{Binding SearchFilters.IsContactsChecked}" />
+                </StackPanel>
 
-        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="10, 5" HorizontalAlignment="Right">
-            <TextBlock Text="Order by:" VerticalAlignment="Center"/>
-                <ComboBox x:Name="cb_order_by" Margin="8,0,0,0"
-                          ItemsSource="{Binding OrderByOptions}"
-                          SelectedItem="{Binding OrderBy}">
-                    <ComboBox.ItemTemplate>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0" HorizontalAlignment="Center">
+                    <TextBlock Text="From:" VerticalAlignment="Center" />
+                    <DatePicker x:Name="date_from" Margin="8" SelectedDate="{Binding SearchFilters.FromDate}" />
+                    <TextBlock Text="To:" VerticalAlignment="Center" Margin="10,0,0,0" />
+                    <DatePicker x:Name="date_to" Margin="8" SelectedDate="{Binding SearchFilters.ToDate}" />
+                </StackPanel>
+
+                <TextBox x:Name="tb_searchbar" Grid.Row="3" Margin="5,3" HorizontalAlignment="Stretch" FontSize="16"
+                         Text="{Binding SearchFilters.SearchText}" />
+                <Button x:Name="btn_search" Content="Search" Grid.Row="3" Width="80" Margin="5,3"
+                        HorizontalAlignment="Right"
+                        Command="{Binding SearchCommand}" />
+
+                <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="10, 5" HorizontalAlignment="Right">
+                    <TextBlock Text="Order by:" VerticalAlignment="Center" />
+                    <ComboBox x:Name="cb_order_by" Margin="8,0,0,0"
+                              ItemsSource="{Binding OrderByOptions}"
+                              SelectedItem="{Binding OrderBy}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Text="{Binding Converter={StaticResource ResourceKey=OrderByOptionConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+                <ListView x:Name="list_searchResults" Grid.Row="5" HorizontalAlignment="Stretch" Width="Auto"
+                          ItemsSource="{Binding SearchResults}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <EventSetter Event="MouseDoubleClick" Handler="list_searchResults_item_MouseDoubleClick" />
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Converter={StaticResource ResourceKey=OrderByOptionConverter}}"/>
+                            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="2">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="{Binding Title}" Grid.Row="0" />
+                                    <TextBlock Text="{Binding Sender}" Grid.Row="1" />
+                                    <TextBlock Text="{Binding Date}" Grid.Row="2" />
+                                    <TextBlock Text="{Binding Type}" HorizontalAlignment="Right"
+                                               VerticalAlignment="Bottom" Grid.Row="3" Margin="0,5,5,5"
+                                               FontStyle="Italic" />
+                                </Grid>
+                            </Border>
                         </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-        </StackPanel>
-        <ListView x:Name="list_searchResults" Grid.Row="5" HorizontalAlignment="Stretch" Width="Auto"
-                  ItemsSource="{Binding SearchResults}">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <EventSetter Event="MouseDoubleClick" Handler="list_searchResults_item_MouseDoubleClick"/>
-                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="2">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Text="{Binding Title}" Grid.Row="0"/>
-                            <TextBlock Text="{Binding Sender}" Grid.Row="1"/>
-                            <TextBlock Text="{Binding Date}" Grid.Row="2"/>
-                            <TextBlock Text="{Binding Type}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="3" Margin="0,5,5,5" FontStyle="Italic"/>
-                        </Grid>
-                    </Border>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                    </ListView.ItemTemplate>
+                </ListView>
             </Grid>
         </TabItem>
 
@@ -96,85 +105,97 @@
         <TabItem Header="Hashtags Overview" DataContext="{Binding HashTagOverviewVM}">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
- 
+
                 <StackPanel Orientation="Vertical">
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10, 5" HorizontalAlignment="Center">
-                        <TextBlock Text="From:" VerticalAlignment="Center"/>
-                        <DatePicker VerticalAlignment="Center" Margin="3, 10" SelectedDate="{Binding FromDate}"/>
-                        <TextBlock Text="To:" VerticalAlignment="Center" Margin="3, 0, 0, 0"/>
-                        <DatePicker Margin="3, 10" SelectedDate="{Binding ToDate}"/>
+                    <StackPanel Orientation="Horizontal" Margin="10, 5" HorizontalAlignment="Center">
+                        <TextBlock Text="From:" VerticalAlignment="Center" />
+                        <DatePicker VerticalAlignment="Center" Margin="3, 10" SelectedDate="{Binding FromDate}" />
+                        <TextBlock Text="To:" VerticalAlignment="Center" Margin="3, 0, 0, 0" />
+                        <DatePicker Margin="3, 10" SelectedDate="{Binding ToDate}" />
                     </StackPanel>
-                    <Button Content="Re-index" Grid.Row="3" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top" Command="{Binding StartIndexingCommand}"/>
+                    <Button Content="Re-index" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Top"
+                            Command="{Binding StartIndexingCommand}" />
                 </StackPanel>
 
 
-                <TextBox Grid.Row="1" Text="{Binding SearchBar, UpdateSourceTrigger=PropertyChanged}" Margin="5,3" HorizontalAlignment="Stretch" FontSize="16"/>
+                <TextBox Grid.Row="1" Text="{Binding SearchBar, UpdateSourceTrigger=PropertyChanged}" Margin="5,3"
+                         HorizontalAlignment="Stretch" FontSize="16" />
                 <!-- <Button x:Name="index_btn_search" Content="Search" Grid.Row="3" Width="80" Margin="5,3"  HorizontalAlignment="Right" Click="btn_search_Click"/> -->
-                
+
                 <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0" HorizontalAlignment="Center">
-                    <TextBlock Text="Num usages From:" VerticalAlignment="Center"/>
-                    <TextBox Text="{Binding MinOccurrences, UpdateSourceTrigger=PropertyChanged}" Width="80" VerticalAlignment="Center" Margin="8"/>
-                    <TextBlock Text="To:" VerticalAlignment="Center" Margin="8, 0, 0, 0"/>
-                    <TextBox Text="{Binding MaxOccurrences, UpdateSourceTrigger=PropertyChanged}" Width="80" Margin="8"/>                    
+                    <TextBlock Text="Num usages From:" VerticalAlignment="Center" />
+                    <TextBox Text="{Binding MinOccurrences, UpdateSourceTrigger=PropertyChanged}" Width="80"
+                             VerticalAlignment="Center" Margin="8" />
+                    <TextBlock Text="To:" VerticalAlignment="Center" Margin="8, 0, 0, 0" />
+                    <TextBox Text="{Binding MaxOccurrences, UpdateSourceTrigger=PropertyChanged}" Width="80" Margin="8" />
                 </StackPanel>
-                
+
                 <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="10, 5" HorizontalAlignment="Right">
-                    <TextBlock Text="Order by:" VerticalAlignment="Center"/>
-                    <ComboBox x:Name="index_cb_order_by" Margin="8,0,0,0" 
+                    <TextBlock Text="Order by:" VerticalAlignment="Center" />
+                    <ComboBox x:Name="index_cb_order_by" Margin="8,0,0,0"
                               ItemsSource="{Binding OrderByOptions}"
                               SelectedItem="{Binding OrderBy}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource ResourceKey=OrderByOptionConverter}}"/>
+                                <TextBlock
+                                    Text="{Binding Converter={StaticResource ResourceKey=OrderByOptionConverter}}" />
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
                 </StackPanel>
-                
-                <ListView x:Name="list_Hashtags" ItemsSource="{Binding IndexingHashtags}" Grid.Row="4" Margin="2, 10" SelectionMode="Extended"
+
+                <ListView x:Name="list_Hashtags" ItemsSource="{Binding IndexingHashtags}" Grid.Row="4" Margin="2, 10"
+                          SelectionMode="Extended"
                           HorizontalAlignment="Stretch" Width="Auto">
                     <ListView.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="See hashtag details"
-                                      Click="list_Hashtags_contextMenuItem_tagDetails_OnClick"/>
+                                      Click="list_Hashtags_contextMenuItem_tagDetails_OnClick" />
                             <MenuItem Header="See hashtag occurrences"
-                                      Click="list_Hashtags_contextMenuItem_tagOccurrences_OnClick"/>
+                                      Click="list_Hashtags_contextMenuItem_tagOccurrences_OnClick" />
                         </ContextMenu>
                     </ListView.ContextMenu>
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
-                            <EventSetter Event="MouseDoubleClick" Handler="list_Hashtags_MouseDoubleClick"/>
-                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <EventSetter Event="MouseDoubleClick" Handler="list_Hashtags_MouseDoubleClick" />
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         </Style>
                     </ListView.ItemContainerStyle>
-                    <ListView.ItemTemplate>            
+                    <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="2" HorizontalAlignment="Stretch">
+                            <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="5" Padding="10" Margin="2"
+                                    HorizontalAlignment="Stretch">
                                 <Border.ToolTip>
                                     <ToolTip>
                                         <StackPanel>
-                                            <TextBlock Text="{Binding Id}" FontWeight="Bold" FontSize="14"/>
-                                            <TextBlock Text="{Binding NumOfOccurrences}" FontStyle="Italic"/>
+                                            <TextBlock Text="{Binding Id}" FontWeight="Bold" FontSize="14" />
+                                            <TextBlock Text="{Binding NumOfOccurrences}" FontStyle="Italic" />
                                             <!-- Add more details here -->
                                         </StackPanel>
                                     </ToolTip>
                                 </Border.ToolTip>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Id}" FontWeight="Bold"/>
-                                    <TextBlock Text=" - " FontWeight="Bold"/>
-                                    <TextBlock Text="{Binding NumOfOccurrences}"/>
-                                    <TextBlock Text=" - " FontWeight="Bold" Visibility="{Binding HasMergedTags, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                    <TextBlock Text="{Binding MergedHashTags.Count}" Visibility="{Binding HasMergedTags, Converter={StaticResource BooleanToVisibilityConverter}}" FontWeight="Bold" Foreground="#FF6BC758"/>
-                                    <TextBlock Text=" - " FontWeight="Bold" Visibility="{Binding HasExcludedTags, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                    <TextBlock Text="{Binding ExcludedHashTags.Count}" Visibility="{Binding HasExcludedTags, Converter={StaticResource BooleanToVisibilityConverter}}" FontWeight="Bold" Foreground="#FFD03737"/>
+                                    <TextBlock Text="{Binding Id}" FontWeight="Bold" />
+                                    <TextBlock Text=" - " FontWeight="Bold" />
+                                    <TextBlock Text="{Binding NumOfOccurrences}" />
+                                    <TextBlock Text=" - " FontWeight="Bold"
+                                               Visibility="{Binding HasMergedTags, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <TextBlock Text="{Binding MergedHashTags.Count}"
+                                               Visibility="{Binding HasMergedTags, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                               FontWeight="Bold" Foreground="#FF6BC758" />
+                                    <TextBlock Text=" - " FontWeight="Bold"
+                                               Visibility="{Binding HasExcludedTags, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <TextBlock Text="{Binding ExcludedHashTags.Count}"
+                                               Visibility="{Binding HasExcludedTags, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                               FontWeight="Bold" Foreground="#FFD03737" />
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
@@ -182,100 +203,117 @@
                 </ListView>
             </Grid>
         </TabItem>
-        <TabItem Header="Hashtag detail" DataContext="{Binding HashTagDetailVM}" IsEnabled="{Binding IsEnabled}" Name="_tabHashTagDetail" Height="22" Margin="-2,-2,-2,0" VerticalAlignment="Top">
+        <TabItem Header="Hashtag detail" DataContext="{Binding HashTagDetailVM}" IsEnabled="{Binding IsEnabled}"
+                 Name="_tabHashTagDetail" Height="22" Margin="-2,-2,-2,0" VerticalAlignment="Top">
             <Grid>
                 <!-- Grid Row Definitions -->
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Text="{Binding HashTag.Id}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" Margin="8"
-                                Grid.Column="0" Grid.Row="0" />
+                    <TextBlock Text="{Binding HashTag.Id}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center"
+                               Margin="8"
+                               Grid.Column="0" Grid.Row="0" />
 
-                    <Button Content="Settings" Command="{Binding OpenSettingCommand}" 
+                    <Button Content="Settings" Command="{Binding OpenSettingCommand}"
                             Height="25" Width="50" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Margin="5" />
-                    
-                    <TextBlock Text="Number of usages:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Margin="5"/>
-                    <TextBlock Text="{Binding HashTag.NumOfOccurrences}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
-                    
-                    <TextBlock Text="Number of Merged tags:" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" Margin="5"/>
-                    <TextBlock Text="{Binding HashTag.MergedHashTags.Count}" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
-                    
-                    <TextBlock Text="Number of Excluded tags:" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" Margin="5"/>
-                    <TextBlock Text="{Binding HashTag.ExcludedHashTags.Count}" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
-                    
-                    <TextBlock Text="Category folder:" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center" Margin="5"/>
-                    <TextBlock Text="{Binding CategoryFolderName}" Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
+
+                    <TextBlock Text="Number of usages:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"
+                               Margin="5" />
+                    <TextBlock Text="{Binding HashTag.NumOfOccurrences}" Grid.Column="1" Grid.Row="1"
+                               VerticalAlignment="Center" Margin="5" TextAlignment="Center" />
+
+                    <TextBlock Text="Number of Merged tags:" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center"
+                               Margin="5" />
+                    <TextBlock Text="{Binding HashTag.MergedHashTags.Count}" Grid.Column="1" Grid.Row="2"
+                               VerticalAlignment="Center" Margin="5" TextAlignment="Center" />
+
+                    <TextBlock Text="Number of Excluded tags:" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center"
+                               Margin="5" />
+                    <TextBlock Text="{Binding HashTag.ExcludedHashTags.Count}" Grid.Column="1" Grid.Row="3"
+                               VerticalAlignment="Center" Margin="5" TextAlignment="Center" />
+
+                    <TextBlock Text="Category folder:" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center"
+                               Margin="5" />
+                    <TextBlock Text="{Binding CategoryFolderName}" Grid.Column="1" Grid.Row="4"
+                               VerticalAlignment="Center" Margin="5" TextAlignment="Center" />
                     <!--
                     <TextBlock Text="First Use:" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" Margin="5"/>
                     <TextBlock Text="{Binding SelectedHashTag.FirstUse}" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
                     -->
-                    
+
 
                 </Grid>
                 <!-- Merged Tags Section -->
                 <DockPanel Grid.Row="1" LastChildFill="False" Margin="5, 20, 5, 5">
-                        <TextBlock Text="Merged Tags" FontWeight="Bold" DockPanel.Dock="Left"/>
-                        <Button Content="+" Command="{Binding OpenPopupCommand}" 
-                                CommandParameter="True" Width="25" Height="25" DockPanel.Dock="Right"/>
-                 </DockPanel>
+                    <TextBlock Text="Merged Tags" FontWeight="Bold" DockPanel.Dock="Left" />
+                    <Button Content="+" Command="{Binding OpenPopupCommand}"
+                            CommandParameter="True" Width="25" Height="25" DockPanel.Dock="Right" />
+                </DockPanel>
 
                 <ListBox Grid.Row="2" ItemsSource="{Binding MergedHashTags}" Margin="0,0">
-                        <ListBox.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="Un-merge" Command="{Binding UnmergeCommand}" CommandParameter="{Binding Path=PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
-                            </ContextMenu>
-                        </ListBox.ContextMenu>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Id}" Margin="5"/>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-
-                <!-- Excluded Tags Section -->
-                <DockPanel Grid.Row="3" LastChildFill="False" Margin="5, 20, 5, 5">
-                    <TextBlock Text="Excluded Tags" FontWeight="Bold" DockPanel.Dock="Left"/>                    
-                    <Button Content="+" Command="{Binding OpenPopupCommand}"
-                            CommandParameter="False" Width="25" Height="25" DockPanel.Dock="Right"/>
-                </DockPanel>
-                <ListBox Grid.Row="4" ItemsSource="{Binding ExcludedHashTags}" Margin="0,0">
                     <ListBox.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Remove Exception" Command="{Binding RemoveExceptionCommand}" CommandParameter="{Binding Path=PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
-                            <MenuItem Header="Merge" Command="{Binding MergeCommand}" CommandParameter="{Binding Path=PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                            <MenuItem Header="Un-merge" Command="{Binding UnmergeCommand}"
+                                      CommandParameter="{Binding Path=PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                         </ContextMenu>
                     </ListBox.ContextMenu>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Id}" Margin="5"/>
+                            <TextBlock Text="{Binding Id}" Margin="5" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Excluded Tags Section -->
+                <DockPanel Grid.Row="3" LastChildFill="False" Margin="5, 20, 5, 5">
+                    <TextBlock Text="Excluded Tags" FontWeight="Bold" DockPanel.Dock="Left" />
+                    <Button Content="+" Command="{Binding OpenPopupCommand}"
+                            CommandParameter="False" Width="25" Height="25" DockPanel.Dock="Right" />
+                </DockPanel>
+                <ListBox Grid.Row="4" ItemsSource="{Binding ExcludedHashTags}" Margin="0,0">
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Remove Exception" Command="{Binding RemoveExceptionCommand}"
+                                      CommandParameter="{Binding Path=PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                            <MenuItem Header="Merge" Command="{Binding MergeCommand}"
+                                      CommandParameter="{Binding Path=PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Id}" Margin="5" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
                 <!-- Placeholder for Popup Window to Add Tags -->
-                <Popup DataContext="{Binding PopupVM}" x:Name="AddTagPopup" Placement="Center" Width="300" Height="500" IsOpen="{Binding IsPopupOpen}">
+                <Popup DataContext="{Binding PopupVM}" x:Name="AddTagPopup" Placement="Center" Width="300" Height="500"
+                       IsOpen="{Binding IsPopupOpen}">
                     <Border Background="White" Padding="10" BorderBrush="Black" BorderThickness="1">
                         <StackPanel>
-                            <TextBlock Text="Add Tag" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                            <TextBox Text="{Binding SearchTag, UpdateSourceTrigger=PropertyChanged}" x:Name="SearchTagTextBox" Margin="0,0,0,10"/>
-                            <ListBox x:Name="HashtagsListBox" DisplayMemberPath="TagName" Margin="0,0,0,10" ToolTip="Select a tag from the list and click 'Add' to confirm." />
-                            <ListBox Margin="0,0,0,10" ToolTip="Select a tag from the list and click 'Add' to confirm." Height="350"
+                            <TextBlock Text="Add Tag" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,10" />
+                            <TextBox Text="{Binding SearchTag, UpdateSourceTrigger=PropertyChanged}"
+                                     x:Name="SearchTagTextBox" Margin="0,0,0,10" />
+                            <ListBox x:Name="HashtagsListBox" DisplayMemberPath="TagName" Margin="0,0,0,10"
+                                     ToolTip="Select a tag from the list and click 'Add' to confirm." />
+                            <ListBox Margin="0,0,0,10" ToolTip="Select a tag from the list and click 'Add' to confirm."
+                                     Height="350"
                                      ItemsSource="{Binding PopupTags}"
                                      SelectionMode="Extended"
                                      SelectionChanged="Selector_OnSelectionChanged">
@@ -284,8 +322,8 @@
                                         <TextBlock>
                                             <TextBlock.Text>
                                                 <MultiBinding StringFormat="{}{0} - {1}">
-                                                    <Binding Path="Id"/>
-                                                    <Binding Path="NumOfOccurrences"/>
+                                                    <Binding Path="Id" />
+                                                    <Binding Path="NumOfOccurrences" />
                                                 </MultiBinding>
                                             </TextBlock.Text>
                                         </TextBlock>
@@ -293,8 +331,8 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Button Content="Close" Command="{Binding ClosePopupCommand}" Margin="5"/>
-                                <Button Content="Add" Command="{Binding ConfirmPopupCommand}" Margin="5"/>
+                                <Button Content="Close" Command="{Binding ClosePopupCommand}" Margin="5" />
+                                <Button Content="Add" Command="{Binding ConfirmPopupCommand}" Margin="5" />
                             </StackPanel>
                         </StackPanel>
                     </Border>

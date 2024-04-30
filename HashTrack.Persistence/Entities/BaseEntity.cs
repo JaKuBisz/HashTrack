@@ -8,6 +8,5 @@ namespace HashTrack.Persistence.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-
     }
 }

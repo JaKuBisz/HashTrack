@@ -1,11 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
 using HashTrack.Core.Enums;
 using HashTrack.Core.Models.Search;
 using HashTrack.Persistence.Entities;
-using HashTrack.Persistence.Interfaces;
 
 namespace HashTrack.Persistence.Mappers
 {
@@ -28,7 +24,7 @@ namespace HashTrack.Persistence.Mappers
                 CreateCategory = entity.CreateCategory,
                 FolderName = entity.FolderName,
                 CategoryName = entity.CategoryName,
-                CategoryColor = (CategoryColor) entity.CategoryColor,
+                CategoryColor = (CategoryColor)entity.CategoryColor
             };
         }
         /*
@@ -36,10 +32,10 @@ namespace HashTrack.Persistence.Mappers
         {
             var mergedHashTagEntities =
                 dbSet.Where(x => entity.MergedHashTags.Contains(x.Tag, StringComparer.OrdinalIgnoreCase));
-            
+
             var excludedHashTagEntities =
                 dbSet.Where(x => entity.ExcludedHashTags.Contains(x.Tag, StringComparer.OrdinalIgnoreCase));
-            
+
             var mergedHashTags = mergedHashTagEntities.Select(x => x.MapToHashTagDto(dbSet)).ToHashSet();
             var excludedHashTags = excludedHashTagEntities.Select(x => x.MapToHashTagDto(dbSet)).ToHashSet();
 
@@ -59,7 +55,7 @@ namespace HashTrack.Persistence.Mappers
                 .Where(x => entity.MergedHashTags.Contains(x.Tag, StringComparer.OrdinalIgnoreCase));
             var excludedHashTagEntities = hashTagEntities
                 .Where(x => entity.ExcludedHashTags.Contains(x.Tag, StringComparer.OrdinalIgnoreCase));
-            
+
             var mergedHashTags = mergedHashTagEntities
                 .Select(x => x.MapToHashTagDto(hashTagEntities)).ToHashSet();
             var excludedHashTags = excludedHashTagEntities

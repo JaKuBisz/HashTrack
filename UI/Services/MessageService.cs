@@ -18,7 +18,7 @@ namespace HashTrack.Services
         {
             ShowMessage(exception.Message, caption, messageType);
         }
-        
+
         public bool ShowQuestion(string text, string caption)
         {
             var result = MessageBox.Show(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -27,7 +27,7 @@ namespace HashTrack.Services
 
         private MessageBoxIcon GetMessageBoxIcon(MessageType messageType)
         {
-            switch(messageType)
+            switch (messageType)
             {
                 case MessageType.Information:
                     return MessageBoxIcon.Information;

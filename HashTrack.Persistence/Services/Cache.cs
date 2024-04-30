@@ -10,7 +10,8 @@ namespace HashTrack.Persistence.Services
     public class Cache : ICache
     {
         private readonly IMemoryCache _memoryCache;
-        private readonly MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions()
+
+        private readonly MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
         {
             SlidingExpiration = TimeSpan.FromHours(3)
         };

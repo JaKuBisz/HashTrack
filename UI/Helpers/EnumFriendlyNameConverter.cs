@@ -10,26 +10,19 @@ namespace HashTrack.UI.Helpers
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Enum enumValue)
-            {
-                return GetDisplayName(enumValue);
-            }
+            if (value is Enum enumValue) return GetDisplayName(enumValue);
             return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is string displayName)
-            {
                 foreach (var field in targetType.GetFields(BindingFlags.Public | BindingFlags.Static))
-                {
-                    if (Attribute.GetCustomAttribute(field, typeof(DisplayNameAttribute)) is DisplayNameAttribute attribute && attribute.DisplayName == displayName)
-                    {
+                    if (Attribute.GetCustomAttribute(field, typeof(DisplayNameAttribute)) is DisplayNameAttribute
+                            attribute && attribute.DisplayName == displayName)
                         return (Enum)field.GetValue(null);
-                    }
-                }
-            }
-            throw new ArgumentException("Invalid display name", nameof(value));        }
+            throw new ArgumentException("Invalid display name", nameof(value));
+        }
 
         public static string GetDisplayName(Enum value)
         {
@@ -39,14 +32,11 @@ namespace HashTrack.UI.Helpers
             {
                 var field = type.GetField(name);
                 if (field != null)
-                {
                     if (Attribute.GetCustomAttribute(field, typeof(DisplayNameAttribute)) is DisplayNameAttribute attr)
-                    {
                         return attr.DisplayName;
-                    }
-                }
             }
-            return null;  // or return name if no DisplayName attribute is found
+
+            return null; // or return name if no DisplayName attribute is found
         }
     }
 }

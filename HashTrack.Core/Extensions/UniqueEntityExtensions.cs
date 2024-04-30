@@ -10,13 +10,14 @@ namespace HashTrack.Core.Extensions
         {
             return entities.Any(e => e.Id.Equals(id));
         }
-        
+
         public static TEntity GetByKey<TEntity, T>(this IEnumerable<TEntity> entities, T id) where TEntity : UniqueId<T>
         {
             return entities.FirstOrDefault(e => e.Id.Equals(id));
         }
-    
-        public static bool TryGetByKey<TEntity, T>(this IEnumerable<TEntity> entities, T id, out TEntity entity) where TEntity : UniqueId<T>
+
+        public static bool TryGetByKey<TEntity, T>(this IEnumerable<TEntity> entities, T id, out TEntity entity)
+            where TEntity : UniqueId<T>
         {
             entity = entities.FirstOrDefault(e => e.Id.Equals(id));
             return entity != null;

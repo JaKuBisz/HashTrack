@@ -2,14 +2,14 @@ using System;
 
 namespace HashTrack.Core.Attributes
 {
-    [AttributeUsage(AttributeTargets.Field, Inherited = false, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Field)]
     public sealed class DisplayNameAttribute : Attribute
     {
-        public string DisplayName { get; }
-
         public DisplayNameAttribute(string displayName)
         {
             DisplayName = displayName;
         }
+
+        public string DisplayName { get; }
     }
 }

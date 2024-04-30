@@ -1,6 +1,4 @@
-﻿using HashTrack.Core.Models.Search;
-using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using HashTrack.Core;
 using HashTrack.Core.Attributes;
@@ -13,10 +11,6 @@ namespace HashTrack.UI.ViewModels
     public class MainViewModel : BaseViewModel
     {
         private int _selectedTabIndex;
-        public HashTagDetailViewModel HashTagDetailVM { get; private set; }
-        public SearchViewModel SearchVM { get; private set; }
-        public HashTagOverviewViewModel HashTagOverviewVM { get; private set; }
-        public ICommand TabChange { get; private set; }
 
         public MainViewModel(
             IEventAggregator eventAggregator,
@@ -31,7 +25,12 @@ namespace HashTrack.UI.ViewModels
             eventAggregator.Subscribe(Events.UI.ChangeSelectedTab, ExecuteTabChange);
             TabChange = new RelayCommand<object>(ExecuteTabChange);
         }
-        
+
+        public HashTagDetailViewModel HashTagDetailVM { get; private set; }
+        public SearchViewModel SearchVM { get; private set; }
+        public HashTagOverviewViewModel HashTagOverviewVM { get; private set; }
+        public ICommand TabChange { get; private set; }
+
         public int SelectedTabIndex
         {
             get => _selectedTabIndex;
@@ -40,11 +39,8 @@ namespace HashTrack.UI.ViewModels
 
         private void ExecuteTabChange(object obj)
         {
-            if (!(obj is ChangeTabEvent evt) || evt.TagModel is null)
-            {
-                return;
-            }
-/*
+            if (!(obj is ChangeTabEvent evt) || evt.TagModel is null) return;
+            /*
             switch(evt.Target)
             {
                 case ChangeTabEventTarget.SearchTab:
@@ -62,10 +58,8 @@ namespace HashTrack.UI.ViewModels
                 default:
                     return;
             }*/
-            
+
             SelectedTabIndex = (int)evt.Target;
         }
     }
-
-
 }

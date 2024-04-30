@@ -38,19 +38,13 @@ namespace HashTrack.Core.Extensions
         {
             return hashTag.TotalExcludedHashTags().Contains(secondaryHashTag);
         }
-        
-        
+
+
         public static void AddOrReplace(this HashSet<HashTagModel> hashset, HashTagModel value, bool replace = false)
         {
-            if (hashset == null)
-            {
-                throw new ArgumentNullException(nameof(hashset));
-            }
+            if (hashset == null) throw new ArgumentNullException(nameof(hashset));
 
-            if (replace || !hashset.Contains(value))
-            {
-                hashset.Add(value);
-            }
+            if (replace || !hashset.Contains(value)) hashset.Add(value);
         }
     }
 }

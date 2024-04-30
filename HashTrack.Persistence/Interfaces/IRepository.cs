@@ -16,5 +16,4 @@ namespace HashTrack.Persistence.Interfaces
         void Delete(T entity);
         void Save();
     }
-
 }

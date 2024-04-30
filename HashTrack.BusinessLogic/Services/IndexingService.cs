@@ -1,40 +1,40 @@
 using System;
-using HashTrack.Core;
-using HashTrack.Core.Attributes;
-using HashTrack.Core.Enums;
-using HashTrack.Core.Interfaces.Search;
-using HashTrack.Core.Models.Search;
-using HashTrack.Interfaces.Indexing;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using HashTrack.Core;
+using HashTrack.Core.Attributes;
+using HashTrack.Core.Enums;
 using HashTrack.Core.Extensions;
 using HashTrack.Core.Interfaces;
 using HashTrack.Core.Interfaces.Clustering;
+using HashTrack.Core.Models.Search;
 using HashTrack.Helpers;
+using HashTrack.Interfaces.Indexing;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack.BusinessLogic.Services
 {
     /// <summary>
-    /// This service serches for all occurences of "#somwWord" in all rtefacts and returns the list of all found hashtags and stATISCITCS OF THEIR USAGE. in the background.
+    ///     This service serches for all occurences of "#somwWord" in all rtefacts and returns the list of all found hashtags
+    ///     and stATISCITCS OF THEIR USAGE. in the background.
     /// </summary>
     [RegisterService(LifeCycle.Transient, typeof(IIndexingService))]
     public class IndexingService : IIndexingService
-    {        
-        private readonly IPersistenceHashTagService _storage;
-        private readonly IEventAggregator _eventAggregator;
+    {
         private readonly ICache _cache;
-        private readonly IClusteringClassifier _clusteringClassifier;
         private readonly ICategoryManagerService _categoryManager;
+        private readonly IClusteringClassifier _clusteringClassifier;
+        private readonly IEventAggregator _eventAggregator;
         private readonly IMessageService _messageService;
+        private readonly IPersistenceHashTagService _storage;
 
         public IndexingService(
             IPersistenceHashTagService storage, ICache cache, IEventAggregator eventAggregator,
             IClusteringClassifier clusteringClassifier, ICategoryManagerService categoryManager,
-            IMessageService messageService)//SidePanelWpfControl hashTrackSearchWpfControl, IStorage storage)
-        {   
+            IMessageService messageService) //SidePanelWpfControl hashTrackSearchWpfControl, IStorage storage)
+        {
             //_hashTrackSearchWpfControl = hashTrackSearchWpfControl;
             _storage = storage;
             _cache = cache;
@@ -43,14 +43,14 @@ namespace HashTrack.BusinessLogic.Services
             _categoryManager = categoryManager;
             _messageService = messageService;
         }
-        
+
         public void IndexSearchResults(Outlook.Search searchResult)
         {
             //Offload from UI thread
             Task.Run(() => PerformIndexing(searchResult));
         }
-        
-        
+
+
         private void PerformIndexing(Outlook.Search searchResult)
         {
             try
@@ -67,7 +67,7 @@ namespace HashTrack.BusinessLogic.Services
                 _messageService.ShowMessage(e, "Error occured during indexing");
             }
         }
-        
+
         private List<HashTagModel> ExtractTagsAndEnrichArtefacts(Outlook.Search searchResult)
         {
             // Group and index the search results here
@@ -76,19 +76,13 @@ namespace HashTrack.BusinessLogic.Services
             foreach (var item in searchResult.Results)
             {
                 var textContent = ArtefactItemHelper.GetBody(item);
-                if (textContent == null)
-                {
-                    continue;
-                }
-                
-                HashSet<string> hashTags = ExtractHashtags(textContent);
+                if (textContent == null) continue;
+
+                var hashTags = ExtractHashtags(textContent);
                 EnrichArtefact(item, hashTags);
                 var searchResultViewItem = ArtefactItemHelper.MapSearchResultViewItem(item);
-                if (searchResultViewItem is null)
-                {
-                    continue;
-                }
-                
+                if (searchResultViewItem is null) continue;
+
                 foreach (var hashTag in hashTags)
                 {
                     if (!indexedHashTags.TryGetByKey(hashTag, out var hashTagModel))
@@ -96,14 +90,11 @@ namespace HashTrack.BusinessLogic.Services
                         hashTagModel = new HashTagModel(hashTag);
                         indexedHashTags.Add(hashTagModel);
                     }
-                    
+
                     hashTagModel.AddNewSearchResult(searchResultViewItem);
 
 
-                    if (hashTagModel.CreateCategory)
-                    {
-                        _categoryManager.AddItemToCategory(hashTagModel, item);
-                    }
+                    if (hashTagModel.CreateCategory) _categoryManager.AddItemToCategory(hashTagModel, item);
                 }
             }
 
@@ -113,28 +104,23 @@ namespace HashTrack.BusinessLogic.Services
         private void EnrichArtefact(object item, HashSet<string> hashTags)
         {
             var properties = GetArtefactUserProperties(item);
-            if (properties is null)
-            {
-                return;
-            }
-            
+            if (properties is null) return;
+
             EnrichArtefactWithHashTags(properties, hashTags.ToArray());
             EnrichArtefactWithId(properties);
             SaveItem(item);
         }
-        
+
         private void EnrichArtefactWithHashTags(Outlook.UserProperties properties, string[] hashTags)
         {
             var tagsProperty = properties.Find(Constants.CustomProperties.Tags);
 
             if (tagsProperty is null)
-            {
                 tagsProperty = properties.Add(
                     Constants.CustomProperties.Tags,
                     Outlook.OlUserPropertyType.olKeywords,
                     true,
                     1);
-            }
 
             tagsProperty.Value = hashTags;
         }
@@ -145,7 +131,6 @@ namespace HashTrack.BusinessLogic.Services
 
             if (property is null)
             {
-
                 property = properties.Add(
                     Constants.CustomProperties.artefactID,
                     Outlook.OlUserPropertyType.olText,
@@ -205,27 +190,20 @@ namespace HashTrack.BusinessLogic.Services
             var orderedHashtags = hashtags.OrderByDescending(x => x.NumOfOccurrences).ToList();
             //TODO: Improve O(n^2) complexity, see notes
             foreach (var primaryHashtag in orderedHashtags)
+            foreach (var secondaryHashtag in orderedHashtags)
             {
-                foreach (var secondaryHashtag in orderedHashtags)
-                {
-                    if (primaryHashtag.Equals(secondaryHashtag))
-                    {
-                        continue;
-                    }
-                    
-                    if (primaryHashtag.ExcludedTagsContain(secondaryHashtag) || secondaryHashtag.ExcludedTagsContain(primaryHashtag))
-                    {// Ensure mutual exclusion from exception tags;
-                        continue;
-                    }
-                    
-                    //Prevents tag with less usages to be absorbed by tag with more usages automatically
-                    if (primaryHashtag.MergedTagsContain(secondaryHashtag) // Merge if in merge list
-                        || (!secondaryHashtag.MergedTagsContain(primaryHashtag)) // Prevent merge if in secondary merge list
-                            && _clusteringClassifier.Classify(primaryHashtag, secondaryHashtag)) // Classify
-                    {
-                        primaryHashtag.MergeHashTag(secondaryHashtag);
-                    }
-                }
+                if (primaryHashtag.Equals(secondaryHashtag)) continue;
+
+                if (primaryHashtag.ExcludedTagsContain(secondaryHashtag) ||
+                    secondaryHashtag.ExcludedTagsContain(primaryHashtag))
+                    // Ensure mutual exclusion from exception tags;
+                    continue;
+
+                //Prevents tag with less usages to be absorbed by tag with more usages automatically
+                if (primaryHashtag.MergedTagsContain(secondaryHashtag) // Merge if in merge list
+                    || (!secondaryHashtag.MergedTagsContain(primaryHashtag) // Prevent merge if in secondary merge list
+                        && _clusteringClassifier.Classify(primaryHashtag, secondaryHashtag))) // Classify
+                    primaryHashtag.MergeHashTag(secondaryHashtag);
             }
 
             return hashtags;
@@ -234,10 +212,7 @@ namespace HashTrack.BusinessLogic.Services
         private HashTagModel CombineHashTags(HashTagModel primary, HashTagModel secondary)
         {
             primary.NumOfOccurrences += secondary.NumOfOccurrences;
-            foreach (var result in secondary.SearchResults)
-            {
-                primary.SearchResults.Add(result);
-            }
+            foreach (var result in secondary.SearchResults) primary.SearchResults.Add(result);
 
             return primary;
         }
@@ -248,7 +223,7 @@ namespace HashTrack.BusinessLogic.Services
             var matches = Regex.Matches(text, @"(?<!\w)#\w+"); //Matches hashtags that are not preceded by a word
             foreach (Match match in matches)
             {
-                string hashtag = match.Value;
+                var hashtag = match.Value;
                 hashtags.Add(hashtag);
             }
 

@@ -6,10 +6,12 @@ namespace HashTrack.UI.ViewModels
     public class HashTagViewModel : BaseViewModel
     {
         private HashTagModel _hashTag;
-        
-        public ObservableCollection<HashTagModel> MergedHashTags => new ObservableCollection<HashTagModel>(_hashTag.MergedHashTags);
 
-        public ObservableCollection<HashTagModel> ExcludedHashTags => new ObservableCollection<HashTagModel>(_hashTag.ExcludedHashTags);
+        public ObservableCollection<HashTagModel> MergedHashTags =>
+            new ObservableCollection<HashTagModel>(_hashTag.MergedHashTags);
+
+        public ObservableCollection<HashTagModel> ExcludedHashTags =>
+            new ObservableCollection<HashTagModel>(_hashTag.ExcludedHashTags);
 
         public HashTagModel HashTag
         {
@@ -26,7 +28,5 @@ namespace HashTrack.UI.ViewModels
                 OnPropertyChanged(nameof(HashTag));
             }
         }
-        
-        
     }
 }

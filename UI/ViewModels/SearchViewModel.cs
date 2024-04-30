@@ -22,18 +22,17 @@ namespace HashTrack.UI.ViewModels
     {
         //Services
         private readonly ICache _cache;
-        private readonly IPersistenceHashTagService _hashTagService;
         private readonly IEventAggregator _eventAggregator;
-        private readonly ISearchService _searchService;
+        private readonly IPersistenceHashTagService _hashTagService;
         private readonly IMessageService _messageService;
+
+        private readonly ISearchService _searchService;
+
         //Fields
         private SearchFilters _searchFilters = new SearchFilters();
         private ObservableCollection<ArtefactModel> _searchResults = new ObservableCollection<ArtefactModel>();
         private OrderBySearch _selectedOrderBy = OrderBySearch.Date;
-        //Commands
-        public ICommand SearchCommand { get; private set; }
-        public ICommand OpenArtefact { get; private set; }
-        
+
         public SearchViewModel(
             IEventAggregator eventAggregator,
             IPersistenceHashTagService hashTagService,
@@ -46,11 +45,15 @@ namespace HashTrack.UI.ViewModels
             _cache = cache;
             _searchService = searchService;
             _messageService = messageService;
-            
+
             InitializeCommands();
             eventAggregator.Subscribe(Events.DefaultSearchProcessed, UpdateSearchResults);
             eventAggregator.Subscribe(Events.UI.ChangeSelectedTab, ExecuteTabChange);
         }
+
+        //Commands
+        public ICommand SearchCommand { get; private set; }
+        public ICommand OpenArtefact { get; private set; }
 
         private void InitializeCommands()
         {
@@ -66,11 +69,9 @@ namespace HashTrack.UI.ViewModels
 
         private void ExecuteTabChange(object obj)
         {
-            if (!(obj is ChangeTabEvent evt) || evt.TagModel is null || evt.Target != ChangeTabEventTarget.SearchTab)
-            {
-                return;
-            }
-            
+            if (!(obj is ChangeTabEvent evt) || evt.TagModel is null ||
+                evt.Target != ChangeTabEventTarget.SearchTab) return;
+
             SearchFilters.SearchText = evt.TagModel.Id;
             ExecuteSearch();
         }
@@ -84,7 +85,8 @@ namespace HashTrack.UI.ViewModels
                 var searchQuery = SearchFilters.GetSearchQuery();
                 if (!searchQuery.Verify())
                 {
-                    _messageService.ShowMessage("Search query is incorrect", "Search query validation failed", MessageType.Warning);
+                    _messageService.ShowMessage("Search query is incorrect", "Search query validation failed",
+                        MessageType.Warning);
                     return;
                 }
 
@@ -97,7 +99,8 @@ namespace HashTrack.UI.ViewModels
                     searchQuery.Tags = mergedTags;
                     if (!searchQuery.Verify())
                     {
-                        _messageService.ShowMessage("Search query is incorrect", "Search query validation failed", MessageType.Warning);
+                        _messageService.ShowMessage("Search query is incorrect", "Search query validation failed",
+                            MessageType.Warning);
                         return;
                     }
                 }
@@ -110,7 +113,7 @@ namespace HashTrack.UI.ViewModels
                 throw;
             }
         }
-        
+
         private void OpenArtifact(ArtefactModel content)
         {
             switch (content.OriginalItem)
@@ -130,15 +133,17 @@ namespace HashTrack.UI.ViewModels
             }
         }
 
-#endregion
-#region Helpers
+        #endregion
+
+        #region Helpers
+
         private void SetSearchResults(List<ArtefactModel> searchResults)
         {
             var orderedResults = Order(searchResults);
             _searchResults = new ObservableCollection<ArtefactModel>(orderedResults);
             OnPropertyChanged(nameof(SearchResults));
         }
-        
+
         private void ReOrder()
         {
             var orderedResults = Order(SearchResults);
@@ -164,11 +169,14 @@ namespace HashTrack.UI.ViewModels
                     orderedResults = searchResults;
                     break;
             }
-            
+
             return orderedResults;
         }
-#endregion
-#region Properties
+
+        #endregion
+
+        #region Properties
+
         public List<OrderBySearch> OrderByOptions { get; } =
             Enum.GetValues(typeof(OrderBySearch)).Cast<OrderBySearch>().ToList();
 
@@ -193,7 +201,8 @@ namespace HashTrack.UI.ViewModels
             get => _searchResults;
             set => SetField(ref _searchResults, value);
         }
-#endregion
+
+        #endregion
     }
 
     public class SearchFilters : BaseViewModel
@@ -206,6 +215,12 @@ namespace HashTrack.UI.ViewModels
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
 
+        public string SearchText
+        {
+            get => _searchText;
+            set => SetField(ref _searchText, value);
+        }
+
         public SearchTagsQueryOptions GetSearchQuery()
         {
             return new SearchTagsQueryOptions
@@ -215,36 +230,18 @@ namespace HashTrack.UI.ViewModels
                 From = FromDate,
                 To = ToDate,
                 EventTag = Events.DefaultSearchCompleted,
-                ExactMatch = true,
+                ExactMatch = true
             };
-        }
-        
-        public string SearchText
-        {
-            get => _searchText;
-            set => SetField(ref _searchText, value);
         }
 
         public ArtifactTypes EvaluateArtefactsSelection()
         {
             var artefacts = ArtifactTypes.None;
 
-            if (IsEmailChecked)
-            {
-                artefacts |= ArtifactTypes.Email;
-            }
-            if (IsAppointmentsChecked)
-            {
-                artefacts |= ArtifactTypes.Appointment;
-            }
-            if (IsContactsChecked)
-            {
-                artefacts |= ArtifactTypes.Contact;
-            }
-            if (IsTasksChecked)
-            {
-                artefacts |= ArtifactTypes.Task;
-            }
+            if (IsEmailChecked) artefacts |= ArtifactTypes.Email;
+            if (IsAppointmentsChecked) artefacts |= ArtifactTypes.Appointment;
+            if (IsContactsChecked) artefacts |= ArtifactTypes.Contact;
+            if (IsTasksChecked) artefacts |= ArtifactTypes.Task;
             /*
             if (artefacts == ArtifactTypes.None)
             {

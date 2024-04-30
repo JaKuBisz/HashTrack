@@ -6,8 +6,10 @@ namespace HashTrack.Enums
     {
         [DisplayName("Date")]
         Date,
+
         [DisplayName("Title")]
         Title,
+
         [DisplayName("Sender")]
         Sender
     }

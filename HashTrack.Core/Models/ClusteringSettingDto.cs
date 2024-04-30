@@ -6,6 +6,5 @@ namespace HashTrack.Clustering.DTOs
     {
         public List<string> MergedTags { get; set; }
         public List<string> ExceptionTags { get; set; }
-        
     }
 }

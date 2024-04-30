@@ -11,7 +11,7 @@ namespace HashTrack.Persistence.Contexts
     {
         public DbSet<HashTagEntity> HashTagEntities { get; set; }
         //public DbSet<ArtefactEntity> Artefacts { get; set; }
-        
+
         public HashTrackDbContext() : base("name=DefaultHashTrackSqlLiteConnection")
         {
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<HashTrackDbContext, Configuration>());
@@ -50,28 +50,27 @@ namespace HashTrack.Persistence.Contexts
                     m.MapRightKey("ArtefactId");
                 });*/
         }
-            /*
-            protected override void OnModelCreating(DbModelBuilder modelBuilder)
-            {
-                base.OnModelCreating(modelBuilder);
-                //public DbSet<MyEntity> MyEntities { get; set; }
-                //public DbSet<Class1> MyEntities { get; set; }
+        /*
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            //public DbSet<MyEntity> MyEntities { get; set; }
+            //public DbSet<Class1> MyEntities { get; set; }
 
-                // Dynamically register entities
-                //RegisterEntities(modelBuilder, Assembly.GetExecutingAssembly());
-            }
+            // Dynamically register entities
+            //RegisterEntities(modelBuilder, Assembly.GetExecutingAssembly());
+        }
 /*
-            private void RegisterEntities(DbModelBuilder modelBuilder, Assembly assembly)
+        private void RegisterEntities(DbModelBuilder modelBuilder, Assembly assembly)
+        {
+            var entityTypes = assembly.GetTypes()
+                .Where(t => t.GetCustomAttribute<RegisterEntityAttribute>() != null && !t.IsAbstract);
+
+            foreach (var type in entityTypes)
             {
-                var entityTypes = assembly.GetTypes()
-                    .Where(t => t.GetCustomAttribute<RegisterEntityAttribute>() != null && !t.IsAbstract);
-
-                foreach (var type in entityTypes)
-                {
-                    modelBuilder.Model.AddEntityType(type);
-                }
+                modelBuilder.Model.AddEntityType(type);
             }
-        }*/
-
+        }
+    }*/
     }
 }

@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls.Primitives;
+using System.Windows.Controls;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using HashTrack.Core;
@@ -13,7 +12,6 @@ using HashTrack.Core.Enums;
 using HashTrack.Core.Extensions;
 using HashTrack.Core.Interfaces;
 using HashTrack.Core.Models.Search;
-using HashTrack.Extensions;
 
 namespace HashTrack.UI.ViewModels
 {
@@ -22,19 +20,10 @@ namespace HashTrack.UI.ViewModels
     {
         private readonly ICache _cache;
         private readonly IPersistenceHashTagService _persistenceHashTagService;
-        private PopupViewModel _popupVm;
         private HashTagModel _hashTag;
-        private TagSettingsViewModel _tagSettingsVM;
-        
-        public ICommand UnmergeCommand { get; private set; }
-        public ICommand RemoveExceptionCommand { get; private set; }
-        public ICommand MergeCommand { get; private set; }
-        public ICommand OpenSettingCommand { get; private set; }
-        public ICommand OpenPopupCommand { get; private set; }
-        public ICommand ClosePopupCommand { get; private set; }
-        public ICommand ConfirmPopupCommand { get; private set; }
-        public ICommand AddTagCommand { get; private set; }
-        
+        private PopupViewModel _popupVm;
+        private readonly TagSettingsViewModel _tagSettingsVM;
+
 
         public HashTagDetailViewModel(ICache cache, IEventAggregator eventAggregator,
             TagSettingsViewModel tagSettingsVM, IPersistenceHashTagService persistenceHashTagService)
@@ -46,15 +35,22 @@ namespace HashTrack.UI.ViewModels
             eventAggregator.Subscribe(Events.UI.ChangeSelectedTab, ExecuteTabChange);
             InitializeCommands();
         }
-        
+
+        public ICommand UnmergeCommand { get; private set; }
+        public ICommand RemoveExceptionCommand { get; private set; }
+        public ICommand MergeCommand { get; private set; }
+        public ICommand OpenSettingCommand { get; private set; }
+        public ICommand OpenPopupCommand { get; private set; }
+        public ICommand ClosePopupCommand { get; }
+        public ICommand ConfirmPopupCommand { get; }
+        public ICommand AddTagCommand { get; private set; }
+
         public ObservableCollection<HashTagModel> MergedHashTags
         {
             get
             {
                 if (_hashTag == null || _hashTag.MergedHashTags == null)
-                {
                     return new ObservableCollection<HashTagModel>();
-                }
                 return new ObservableCollection<HashTagModel>(_hashTag.MergedHashTags);
             }
         }
@@ -64,9 +60,7 @@ namespace HashTrack.UI.ViewModels
             get
             {
                 if (_hashTag == null || _hashTag.ExcludedHashTags == null)
-                {
                     return new ObservableCollection<HashTagModel>();
-                }
                 return new ObservableCollection<HashTagModel>(_hashTag.ExcludedHashTags);
             }
         }
@@ -84,15 +78,12 @@ namespace HashTrack.UI.ViewModels
                 OnPropertyChanged(nameof(IsEnabled));
             }
         }
-        
+
         public string CategoryFolderName
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(HashTag?.CategoryName))
-                {
-                    return "Not enabled";
-                }
+                if (string.IsNullOrWhiteSpace(HashTag?.CategoryName)) return "Not enabled";
                 return HashTag?.CategoryName;
             }
         }
@@ -119,7 +110,7 @@ namespace HashTrack.UI.ViewModels
             OpenPopupCommand = new RelayCommand<object>(ExecuteOpenPopup);
             OpenSettingCommand = new RelayCommand(ExecuteOpenSetting);
             AddTagCommand = new RelayCommand(AddTag_Click);
-            
+
             /*
             ClosePopupCommand = new RelayCommand<object>(param => IsPopupOpen = false);
             AddTagCommand = new RelayCommand<object>(param =>
@@ -128,31 +119,29 @@ namespace HashTrack.UI.ViewModels
                 IsPopupOpen = false;
             });*/
         }
-        
+
         private void ExecuteTabChange(object obj)
         {
-            if (!(obj is ChangeTabEvent evt) || evt.TagModel is null || evt.Target != ChangeTabEventTarget.TagDetailsTab)
-            {
-                return;
-            }
-            
+            if (!(obj is ChangeTabEvent evt) || evt.TagModel is null ||
+                evt.Target != ChangeTabEventTarget.TagDetailsTab) return;
+
             HashTag = evt.TagModel;
         }
-        
+
         private void ExecuteOpenSetting()
         {
             _tagSettingsVM.ShowSettings(HashTag);
         }
-        
+
         private void ExecuteOpenPopup(object parameter)
         {
             //Merged tags
-            bool isMerged = Convert.ToBoolean(parameter);
+            var isMerged = Convert.ToBoolean(parameter);
 
             var tags = _cache.GetHashTags().ToHashSet();
             var exceptTags = isMerged ? _hashTag.TotalMergedHashTags() : _hashTag.TotalExcludedHashTags();
             exceptTags.Add(HashTag);
-            
+
             var resultTags = tags.Except(exceptTags);
 
             PopupVM.Open(isMerged, new ObservableCollection<HashTagModel>(resultTags));
@@ -163,7 +152,6 @@ namespace HashTrack.UI.ViewModels
             _hashTag.UnMergeHashTag(hashtag);
             HashTag = HashTag;
             _persistenceHashTagService.SaveHashTag(HashTag);
-
         }
 
         private void ExecuteRemoveException(HashTagModel hashtag)
@@ -175,50 +163,19 @@ namespace HashTrack.UI.ViewModels
 
         private void ExecuteMerge(HashTagModel hashtag)
         {
-            
             _hashTag.MergeHashTag(hashtag);
             HashTag = HashTag;
             _persistenceHashTagService.SaveHashTag(HashTag);
         }
 
-        #region Events
-
-        
-        
-        private void AddTag_Click()
-        {
-            //Excluded or Merged?
-            /*
-            var newTag = new HashTagModel { Tag = SearchTagTextBox.Text };
-            HashTagDetailVM.MergedHashTags.Add(newTag);*/
-            //AddTagPopup.IsOpen = false;
-        }
-
-        private void ContextMenu_SeeDetails_Click(object sender, RoutedEventArgs e)
-        {
-
-            var menuItem = sender as System.Windows.Controls.MenuItem;
-            /*SelectedHashTag = (HashTagModel)menuItem.DataContext;
-            HashTagDetailVM.HashTag = SelectedHashTag;
-            mainTabControl.SelectedIndex = 2;*/
-        }
-
-        #endregion
-
         public class PopupViewModel : BaseViewModel
         {
             private readonly HashTagDetailViewModel _parent;
-            private ObservableCollection<HashTagModel> _popupTags;
-            private List<HashTagModel> _selectedTags;
-            private string _searchTag;
-            private bool _isPopupOpen;
             private bool _isMergeMode;
-
-            public ICommand ClosePopupCommand { get; private set; }
-            public ICommand ConfirmPopupCommand { get; private set; }
-            
-            public ICommand AddTagCommand { get; private set; }
-            public ICommand UpdateSelectionCommand { get; private set; }
+            private bool _isPopupOpen;
+            private ObservableCollection<HashTagModel> _popupTags;
+            private string _searchTag;
+            private List<HashTagModel> _selectedTags;
 
 
             public PopupViewModel(HashTagDetailViewModel parent)
@@ -227,30 +184,12 @@ namespace HashTrack.UI.ViewModels
                 _popupTags = new ObservableCollection<HashTagModel>();
                 InitializeCommands();
             }
-            
-            private void InitializeCommands()
-            {
-                ClosePopupCommand = new RelayCommand(ClosePopup);
-                ConfirmPopupCommand = new RelayCommand(ConfirmPopup);
-                //AddTagCommand = new RelayCommand(AddTag_Click);
-                UpdateSelectionCommand = new RelayCommand<List<HashTagModel>>(UpdateSelection);
-            }
 
-            private void UpdateSelection(List<HashTagModel> obj)
-            {
-                if (obj == null)
-                {
-                    return;
-                }
-                SelectedTags = obj;
-            }
+            public ICommand ClosePopupCommand { get; private set; }
+            public ICommand ConfirmPopupCommand { get; private set; }
 
-            public void Open(bool isMergeMode, ObservableCollection<HashTagModel> tags)
-            {
-                IsMergeMode = isMergeMode;
-                PopupTags = tags;
-                IsPopupOpen = true;
-            }
+            public ICommand AddTagCommand { get; }
+            public ICommand UpdateSelectionCommand { get; private set; }
 
             public string SearchTag
             {
@@ -265,10 +204,7 @@ namespace HashTrack.UI.ViewModels
             public ObservableCollection<HashTagModel> PopupTags
             {
                 get => FilterTags(_popupTags);
-                set
-                {
-                    SetField(ref _popupTags, value);
-                }
+                set => SetField(ref _popupTags, value);
             }
 
             public List<HashTagModel> SelectedTags
@@ -276,6 +212,7 @@ namespace HashTrack.UI.ViewModels
                 get => _selectedTags;
                 set => SetField(ref _selectedTags, value);
             }
+
             //TODO: Fix keeps getting set to false
             public bool IsPopupOpen
             {
@@ -288,13 +225,31 @@ namespace HashTrack.UI.ViewModels
                 get => _isMergeMode;
                 set => SetField(ref _isMergeMode, value);
             }
-            
+
+            private void InitializeCommands()
+            {
+                ClosePopupCommand = new RelayCommand(ClosePopup);
+                ConfirmPopupCommand = new RelayCommand(ConfirmPopup);
+                //AddTagCommand = new RelayCommand(AddTag_Click);
+                UpdateSelectionCommand = new RelayCommand<List<HashTagModel>>(UpdateSelection);
+            }
+
+            private void UpdateSelection(List<HashTagModel> obj)
+            {
+                if (obj == null) return;
+                SelectedTags = obj;
+            }
+
+            public void Open(bool isMergeMode, ObservableCollection<HashTagModel> tags)
+            {
+                IsMergeMode = isMergeMode;
+                PopupTags = tags;
+                IsPopupOpen = true;
+            }
+
             private ObservableCollection<HashTagModel> FilterTags(ObservableCollection<HashTagModel> tags)
             {
-                if (string.IsNullOrWhiteSpace(SearchTag))
-                {
-                    return tags;
-                }
+                if (string.IsNullOrWhiteSpace(SearchTag)) return tags;
 
                 var result = tags.Where(x => x.Id.Contains(SearchTag));
                 return new ObservableCollection<HashTagModel>(result);
@@ -309,24 +264,42 @@ namespace HashTrack.UI.ViewModels
             {
                 //TODO: do in parent via command or event
                 if (IsMergeMode)
-                {
                     foreach (var tag in SelectedTags)
                     {
                         _parent._hashTag.MergeHashTag(tag);
                         _parent.HashTag = _parent.HashTag; // Ensure UI update
                     }
-                }
                 else
-                {
                     foreach (var tag in SelectedTags)
                     {
                         _parent._hashTag.UnMergeHashTag(tag);
                         _parent.HashTag = _parent.HashTag;
                     }
-                }
+
                 _parent._persistenceHashTagService.SaveHashTag(_parent.HashTag);
                 IsPopupOpen = false;
             }
         }
+
+        #region Events
+
+        private void AddTag_Click()
+        {
+            //Excluded or Merged?
+            /*
+            var newTag = new HashTagModel { Tag = SearchTagTextBox.Text };
+            HashTagDetailVM.MergedHashTags.Add(newTag);*/
+            //AddTagPopup.IsOpen = false;
+        }
+
+        private void ContextMenu_SeeDetails_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            /*SelectedHashTag = (HashTagModel)menuItem.DataContext;
+            HashTagDetailVM.HashTag = SelectedHashTag;
+            mainTabControl.SelectedIndex = 2;*/
+        }
+
+        #endregion
     }
 }

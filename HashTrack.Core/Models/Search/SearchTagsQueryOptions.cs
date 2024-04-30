@@ -1,7 +1,6 @@
-﻿using HashTrack.Core.Enums;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
+using HashTrack.Core.Enums;
 
 namespace HashTrack.Core.Models.Search
 {

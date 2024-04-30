@@ -1,19 +1,15 @@
 using System;
 using HashTrack.Core;
 using HashTrack.Core.Models.Search;
-using HashTrack.DTOs;
-using HashTrack.Exception;
-using Outlook = Microsoft.Office.Interop.Outlook;
 using Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack.Helpers
 {
     public static class ArtefactItemHelper
-    { 
+    {
         public static ArtefactModel MapSearchResultViewItem(object result)
         {
-            if(result is Outlook._MailItem mailItem)
-            {
+            if (result is _MailItem mailItem)
                 return new ArtefactModel
                 {
                     Title = mailItem.Subject,
@@ -21,12 +17,10 @@ namespace HashTrack.Helpers
                     Date = mailItem.ReceivedTime,
                     Type = "Email",
                     OriginalItem = mailItem,
-                    Id = GetGuid(mailItem.UserProperties),
+                    Id = GetGuid(mailItem.UserProperties)
                 };
-            }
-            
-            if(result is Outlook._ContactItem contactItem)
-            {
+
+            if (result is _ContactItem contactItem)
                 return new ArtefactModel
                 {
                     Title = contactItem.FullName,
@@ -34,12 +28,10 @@ namespace HashTrack.Helpers
                     Date = DateTime.Now,
                     Type = "Contact",
                     OriginalItem = contactItem,
-                    Id = GetGuid(contactItem.UserProperties),
+                    Id = GetGuid(contactItem.UserProperties)
                 };
-            }
-            
-            if(result is Outlook._AppointmentItem appointmentItem)
-            {
+
+            if (result is _AppointmentItem appointmentItem)
                 return new ArtefactModel
                 {
                     Title = appointmentItem.Subject,
@@ -47,12 +39,10 @@ namespace HashTrack.Helpers
                     Date = appointmentItem.Start,
                     Type = "Appointment",
                     OriginalItem = appointmentItem,
-                    Id = GetGuid(appointmentItem.UserProperties),
+                    Id = GetGuid(appointmentItem.UserProperties)
                 };
-            }
-            
-            if(result is Outlook._TaskItem taskItem)
-            {
+
+            if (result is _TaskItem taskItem)
                 return new ArtefactModel
                 {
                     Title = taskItem.Subject,
@@ -60,14 +50,13 @@ namespace HashTrack.Helpers
                     Date = taskItem.CreationTime,
                     Type = "Task",
                     OriginalItem = taskItem,
-                    Id = GetGuid(taskItem.UserProperties),
+                    Id = GetGuid(taskItem.UserProperties)
                 };
-            }
 
             return null;
             //throw new UnknownResultItemTypeException($"The result is not of any known type for result: '{result}'");
-            
-            Guid GetGuid(Outlook.UserProperties property)
+
+            Guid GetGuid(UserProperties property)
             {
                 return Guid.TryParse(property
                     .Find(Constants.CustomProperties.artefactID)?.Value?.ToString(), out var id)
@@ -75,7 +64,7 @@ namespace HashTrack.Helpers
                     : Guid.Empty;
             }
         }
-        
+
         public static string GetBody(object item)
         {
             switch (item)
