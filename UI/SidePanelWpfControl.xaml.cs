@@ -6,7 +6,6 @@ using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
 using HashTrack.Core.Models.Search;
 using HashTrack.UI.ViewModels;
-using ComboBox = System.Windows.Controls.ComboBox;
 using ListBox = System.Windows.Controls.ListBox;
 
 namespace HashTrack
@@ -60,11 +59,6 @@ namespace HashTrack
 
         #region HashTagOverviewTab
 
-        private void index_cb_order_by_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (sender is ComboBox comboBox)
-                ExecuteCommand(MainViewModel.HashTagOverviewVM.OrderByChangedCommand, comboBox.SelectedIndex);
-        }
 
         private void list_Hashtags_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {

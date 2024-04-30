@@ -40,25 +40,6 @@ namespace HashTrack.UI.ViewModels
         private void ExecuteTabChange(object obj)
         {
             if (!(obj is ChangeTabEvent evt) || evt.TagModel is null) return;
-            /*
-            switch(evt.Target)
-            {
-                case ChangeTabEventTarget.SearchTab:
-                    //SearchVM
-                    SearchVM.SearchFilters.SearchText = evt.TagModel.Tag;
-                    break;
-                case ChangeTabEventTarget.TagOverviewTab:
-                    //HashTagOverviewVM
-                    return;
-                    break;
-                case ChangeTabEventTarget.TagDetailsTab:
-                    //HashTagDetailVM
-                    HashTagDetailVM.HashTag = evt.TagModel;
-                    break;
-                default:
-                    return;
-            }*/
-
             SelectedTabIndex = (int)evt.Target;
         }
     }

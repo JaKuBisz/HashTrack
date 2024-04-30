@@ -46,7 +46,7 @@ namespace HashTrack.Persistence.Repositories
             _dbSet.Add(entity);
         }
 
-        public void Update(T entity, Func<T, bool> predicate)
+        public void Upsert(T entity, Func<T, bool> predicate)
         {
             var existingEntity = _dbSet.Local.FirstOrDefault(predicate) ?? _dbSet.FirstOrDefault(predicate);
             if (existingEntity != null)
@@ -55,19 +55,6 @@ namespace HashTrack.Persistence.Repositories
             else
                 // Entity is not tracked, so attach and set as modified
                 _dbSet.Add(entity);
-        }
-
-        public void Upsert(T entity, Func<T, bool> predicate)
-        {
-            if (!_dbSet.AsNoTracking().Any(predicate))
-            {
-                _dbSet.Add(entity);
-                return;
-            }
-
-            _dbSet.Attach(entity);
-            _context.Entry(entity).State = EntityState.Modified;
-            //                _context.Entry(existingEntity).CurrentValues.SetValues(entity);
         }
 
         public void Delete(T entity)

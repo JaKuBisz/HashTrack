@@ -226,7 +226,7 @@ namespace HashTrack.UI.ViewModels
             return new SearchTagsQueryOptions
             {
                 Tag = SearchText,
-                Artefacts = EvaluateArtefactsSelection(),
+                Artefacts = GetSelectedArtefactTypes(),
                 From = FromDate,
                 To = ToDate,
                 EventTag = Events.DefaultSearchCompleted,
@@ -234,7 +234,7 @@ namespace HashTrack.UI.ViewModels
             };
         }
 
-        public ArtifactTypes EvaluateArtefactsSelection()
+        private ArtifactTypes GetSelectedArtefactTypes()
         {
             var artefacts = ArtifactTypes.None;
 
@@ -242,11 +242,6 @@ namespace HashTrack.UI.ViewModels
             if (IsAppointmentsChecked) artefacts |= ArtifactTypes.Appointment;
             if (IsContactsChecked) artefacts |= ArtifactTypes.Contact;
             if (IsTasksChecked) artefacts |= ArtifactTypes.Task;
-            /*
-            if (artefacts == ArtifactTypes.None)
-            {
-                throw new SearchQueryException("Please select at least one artefact type to search for.");
-            }*/
             return artefacts;
         }
     }

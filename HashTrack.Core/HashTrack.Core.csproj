@@ -59,7 +59,6 @@
         <Compile Include="Extensions\UniqueEntityExtensions.cs"/>
         <Compile Include="Helpers\ArtefactItemHelper.cs"/>
         <Compile Include="Interfaces\Clustering\IClusteringClassifier.cs"/>
-        <Compile Include="Interfaces\Clustering\IClusteringService.cs"/>
         <Compile Include="Interfaces\Handlers\ISearchCompleteHandler.cs"/>
         <Compile Include="Interfaces\Handlers\ISearchCompleteHandlerFactory.cs"/>
         <Compile Include="Interfaces\ICache.cs"/>
@@ -70,7 +69,6 @@
         <Compile Include="Interfaces\IPersistenceHashTagService.cs"/>
         <Compile Include="Interfaces\Persistence\IStorage.cs"/>
         <Compile Include="Interfaces\Search\ISearchService.cs"/>
-        <Compile Include="Models\ClusteringSettingDto.cs"/>
         <Compile Include="Models\Search\SearchTagsQueryOptions.cs"/>
         <Compile Include="Models\Search\HashTagModel.cs"/>
         <Compile Include="Models\Search\IndexingResultsViewItem.cs"/>

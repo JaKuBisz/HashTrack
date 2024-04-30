@@ -13,7 +13,7 @@ namespace HashTrack.Core.Models.Search
 
         public HashTagModel(string id) : base(id)
         {
-        } //TODO Implement invalidating cache to not recalculate tge Totals each request occurrences 
+        }
 
         public int NumOfOccurrences { get; set; }
         public HashSet<ArtefactModel> SearchResults { get; set; } = new HashSet<ArtefactModel>();

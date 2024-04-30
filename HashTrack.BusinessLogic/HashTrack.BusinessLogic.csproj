@@ -76,7 +76,6 @@
         <Compile Include="Services\SearchService.cs"/>
         <Compile Include="Services\CategoryManagerService.cs"/>
         <Compile Include="Services\Clustering\ClusteringClassifier.cs"/>
-        <Compile Include="Services\Clustering\ClusteringService.cs"/>
         <Compile Include="Services\EventAggregator.cs"/>
         <Compile Include="Services\Handlers\AdvancedSearchCompleteHandler.cs"/>
         <Compile Include="Services\Handlers\IndexingSearchCompleteHandler.cs"/>
@@ -96,9 +95,6 @@
             <Project>{c7fc5c54-a1ed-4f95-9264-c975587e79c5}</Project>
             <Name>HashTrack.IoC</Name>
         </ProjectReference>
-    </ItemGroup>
-    <ItemGroup>
-        <Folder Include="Extensions\"/>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

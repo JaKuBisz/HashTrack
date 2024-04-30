@@ -13,7 +13,6 @@ namespace HashTrack.Core.Models.Search
 
         public DateTime Date { get; set; }
 
-        //TODO: Store just the EntityId (possibly + StoreID)
         public object OriginalItem { get; set; }
     }
 }

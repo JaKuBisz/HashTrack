@@ -18,7 +18,6 @@ namespace HashTrack
             {
                 builder.Register(c => Globals.ThisAddIn.Application).As<Application>().InstancePerLifetimeScope();
                 builder.RegisterType<ThisAddIn>().PropertiesAutowired();
-                //builder.RegisterType<SidePanelWpfControl>().SingleInstance();
             });
         }
 

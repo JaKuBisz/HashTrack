@@ -253,11 +253,6 @@
                                Margin="5" />
                     <TextBlock Text="{Binding CategoryFolderName}" Grid.Column="1" Grid.Row="4"
                                VerticalAlignment="Center" Margin="5" TextAlignment="Center" />
-                    <!--
-                    <TextBlock Text="First Use:" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" Margin="5"/>
-                    <TextBlock Text="{Binding SelectedHashTag.FirstUse}" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
-                    -->
-
 
                 </Grid>
                 <!-- Merged Tags Section -->

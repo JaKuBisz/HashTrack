@@ -16,10 +16,6 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack.BusinessLogic.Services
 {
-    /// <summary>
-    ///     This service serches for all occurences of "#somwWord" in all rtefacts and returns the list of all found hashtags
-    ///     and stATISCITCS OF THEIR USAGE. in the background.
-    /// </summary>
     [RegisterService(LifeCycle.Transient, typeof(IIndexingService))]
     public class IndexingService : IIndexingService
     {
@@ -33,9 +29,8 @@ namespace HashTrack.BusinessLogic.Services
         public IndexingService(
             IPersistenceHashTagService storage, ICache cache, IEventAggregator eventAggregator,
             IClusteringClassifier clusteringClassifier, ICategoryManagerService categoryManager,
-            IMessageService messageService) //SidePanelWpfControl hashTrackSearchWpfControl, IStorage storage)
+            IMessageService messageService)
         {
-            //_hashTrackSearchWpfControl = hashTrackSearchWpfControl;
             _storage = storage;
             _cache = cache;
             _eventAggregator = eventAggregator;
@@ -70,8 +65,6 @@ namespace HashTrack.BusinessLogic.Services
 
         private List<HashTagModel> ExtractTagsAndEnrichArtefacts(Outlook.Search searchResult)
         {
-            // Group and index the search results here
-            //TODO: First load indexed hashtags from storage
             var indexedHashTags = _storage.GetAllHashTags().ToList();
             foreach (var item in searchResult.Results)
             {

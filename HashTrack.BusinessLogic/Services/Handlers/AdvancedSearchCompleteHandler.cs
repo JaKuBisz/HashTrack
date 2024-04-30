@@ -14,15 +14,13 @@ namespace HashTrack.BusinessLogic.Services.Handlers
     [RegisterHandler(Events.DefaultSearchCompleted, typeof(ISearchCompleteHandler))]
     public class AdvancedSearchCompleteHandler : ISearchCompleteHandler
     {
-        private readonly ICache _cache; //TODO: Use events instead of direct call to UI
-
-        //private readonly SidePanelWpfControl _hashTrackSearchWpfControl;
+        private readonly ICache _cache;
         private readonly IEventAggregator _eventAggregator;
         private readonly IIndexingService _indexingService;
 
 
         public AdvancedSearchCompleteHandler(IEventAggregator eventAggregator, ICache cache,
-            IIndexingService indexingService) //SidePanelWpfControl hashTrackSearchWpfControl)
+            IIndexingService indexingService)
         {
             _eventAggregator = eventAggregator;
             _cache = cache;
@@ -44,7 +42,6 @@ namespace HashTrack.BusinessLogic.Services.Handlers
                 .ThenByDescending(x => x.Date)
                 .ToList();
 
-            //_hashTrackSearchWpfControl.SetSearchResults(transformedResults);
             _cache.Set(Constants.Storage.Artefacts, transformedResults);
             _eventAggregator.FireEvent(Events.DefaultSearchProcessed);
         }

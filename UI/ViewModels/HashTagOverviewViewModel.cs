@@ -48,8 +48,6 @@ namespace HashTrack.UI.ViewModels
         private void InitializeCommands()
         {
             StartIndexingCommand = new RelayCommand(StartIndexing);
-            OrderByChangedCommand = new RelayCommand(OrderByChanged);
-
             HashTagItemDoubleClick = new RelayCommand<object>(list_Hashtags_MouseDoubleClick);
             OpenTagDetail = new RelayCommand<object>(ExecuteOpenTagDetail);
             OpenSearchResultsCommand = new RelayCommand<object>(ExecuteOpenSearchResults);
@@ -220,7 +218,6 @@ namespace HashTrack.UI.ViewModels
 
         public ICommand StartIndexingCommand { get; private set; }
         public ICommand HashTagItemDoubleClick { get; private set; }
-        public ICommand OrderByChangedCommand { get; private set; }
         public ICommand OpenTagDetail { get; private set; }
         public ICommand OpenSearchResultsCommand { get; private set; }
         public ICommand MergeTags { get; private set; }
@@ -245,32 +242,6 @@ namespace HashTrack.UI.ViewModels
             Settings.Default.LastIndexingDateTime = DateTime.Now;
             Settings.Default.Save();
         }
-
-        private void OrderByChanged()
-        {
-            //OrderBy(index_cb_order_by.SelectedIndex);
-        }
-
-        private void MenuItem_Merge_Click(object sender, RoutedEventArgs e)
-        {
-            /*
-                Dictionary<string, ClusteringSettingDto> clusteringSettings;
-                var primaryTag = (HashTagModel)sender;
-                var secondaryTags = list_Hashtags.SelectedItems.Cast<HashTagModel>().ToList();
-                //Merge the tags
-    */
-        }
-
-        //Not used
-        private void MenuItem_Details_Click(object sender, RoutedEventArgs e)
-        {
-            var menuItem = sender as MenuItem;
-            var selectedHashTag = (HashTagModel)menuItem.DataContext;
-
-            var evt = new ChangeTabEvent(ChangeTabEventTarget.TagDetailsTab, selectedHashTag);
-            _eventAggregator.FireEvent(ChangeTabEvent.Tag, evt);
-        }
-
         #endregion
     }
 }

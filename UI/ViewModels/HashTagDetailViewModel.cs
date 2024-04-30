@@ -43,7 +43,6 @@ namespace HashTrack.UI.ViewModels
         public ICommand OpenPopupCommand { get; private set; }
         public ICommand ClosePopupCommand { get; }
         public ICommand ConfirmPopupCommand { get; }
-        public ICommand AddTagCommand { get; private set; }
 
         public ObservableCollection<HashTagModel> MergedHashTags
         {
@@ -94,14 +93,6 @@ namespace HashTrack.UI.ViewModels
             set => SetField(ref _popupVm, value);
         }
 
-/*
-    public HashTagDetailViewModel()
-    {
-        MergedHashTags = new ObservableCollection<HashTagModel>();
-        ExcludedHashTags = new ObservableCollection<HashTagModel>();
-        InitializeCommands();
-    }*/
-
         private void InitializeCommands()
         {
             UnmergeCommand = new RelayCommand<HashTagModel>(ExecuteUnmerge);
@@ -109,15 +100,6 @@ namespace HashTrack.UI.ViewModels
             MergeCommand = new RelayCommand<HashTagModel>(ExecuteMerge);
             OpenPopupCommand = new RelayCommand<object>(ExecuteOpenPopup);
             OpenSettingCommand = new RelayCommand(ExecuteOpenSetting);
-            AddTagCommand = new RelayCommand(AddTag_Click);
-
-            /*
-            ClosePopupCommand = new RelayCommand<object>(param => IsPopupOpen = false);
-            AddTagCommand = new RelayCommand<object>(param =>
-            {
-                // Add your tag adding logic here
-                IsPopupOpen = false;
-            });*/
         }
 
         private void ExecuteTabChange(object obj)
@@ -280,26 +262,5 @@ namespace HashTrack.UI.ViewModels
                 IsPopupOpen = false;
             }
         }
-
-        #region Events
-
-        private void AddTag_Click()
-        {
-            //Excluded or Merged?
-            /*
-            var newTag = new HashTagModel { Tag = SearchTagTextBox.Text };
-            HashTagDetailVM.MergedHashTags.Add(newTag);*/
-            //AddTagPopup.IsOpen = false;
-        }
-
-        private void ContextMenu_SeeDetails_Click(object sender, RoutedEventArgs e)
-        {
-            var menuItem = sender as MenuItem;
-            /*SelectedHashTag = (HashTagModel)menuItem.DataContext;
-            HashTagDetailVM.HashTag = SelectedHashTag;
-            mainTabControl.SelectedIndex = 2;*/
-        }
-
-        #endregion
     }
 }

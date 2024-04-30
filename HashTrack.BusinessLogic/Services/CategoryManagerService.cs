@@ -25,11 +25,9 @@ namespace HashTrack.BusinessLogic.Services
 
         public void AssignHashTagItems(HashTagModel hashTagModel)
         {
-            //TODO: Create new eventHandler for this; would need to hack this to await in synchronous method
             _searchService.SearchAllItemsForTag(hashTagModel);
             _eventAggregator.Unsubscribe(Events.CategoryManagerSearch, HandleSearchComplete);
             _eventAggregator.Subscribe(Events.CategoryManagerSearch, HandleSearchComplete);
-
 
             void HandleSearchComplete(object obj)
             {

@@ -6,17 +6,14 @@ using Newtonsoft.Json;
 
 namespace HashTrack.Persistence.Entities
 {
-    public class HashTagEntity //: BaseEntity
+    public class HashTagEntity
     {
         public HashTagEntity()
         {
             MergedHashTags = new HashSet<string>();
             ExcludedHashTags = new HashSet<string>();
-        } //TODO: Fix collections either add reference to self or make a table for the strings
+        }
 
-        // remember i count on it being referenced in HashTagModel in case of change of one hashtag i dont have to propage to all other hashtags
-        //maybe its not acctualy a proble as in indexing i load all the hashtags and then edit them and then add references to themselves save at once before; but again i should load them from db fist to not load all and we are back to the same problem
-        //maybe load all hashtags every time in indexing???
         [Key]
         [Required]
         [StringLength(512)]

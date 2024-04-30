@@ -70,20 +70,15 @@ namespace HashTrack.Helpers
             switch (item)
             {
                 case MailItem mailItem:
-                    // For emails, you might prefer the Body property
                     return mailItem.Body;
                 case AppointmentItem appointmentItem:
-                    // Combine relevant fields for appointments
                     return appointmentItem.Body;
                 case ContactItem contactItem:
-                    // Perhaps concatenate relevant contact information
                     return contactItem.Body;
                 case TaskItem taskItem:
-                    // Task subject and body might be relevant
                     return taskItem.Body;
-                // Add more cases for other item types as needed
                 default:
-                    return null; // or some indication that the type isn't handled
+                    return null;
             }
         }
     }

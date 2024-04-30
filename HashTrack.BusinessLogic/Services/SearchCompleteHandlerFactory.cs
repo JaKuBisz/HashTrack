@@ -8,7 +8,6 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace HashTrack.BusinessLogic.Services
 {
-    //TODO: Reowrk this as handler caller that will resolve handler for specific tag
     [RegisterService(LifeCycle.Transient, typeof(ISearchCompleteHandlerFactory))]
     public class SearchCompleteHandlerFactory : ISearchCompleteHandlerFactory
     {

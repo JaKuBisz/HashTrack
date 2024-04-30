@@ -11,7 +11,6 @@ namespace HashTrack.Persistence.Interfaces
         IEnumerable<T> GetAll();
         T GetById(int id);
         void Insert(T entity);
-        void Update(T entity, Func<T, bool> predicate);
         void Upsert(T entity, Func<T, bool> predicate);
         void Delete(T entity);
         void Save();
