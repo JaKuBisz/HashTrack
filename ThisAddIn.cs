@@ -41,6 +41,7 @@ namespace HashTrack
 
             // Create and initiate the custom task pane
             InicializeUI();
+            SetIndexingTimer();
         }
 
         private void InicializeUI()

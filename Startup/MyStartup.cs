@@ -1,4 +1,6 @@
-﻿using Autofac;
+﻿using System;
+using System.Collections.Generic;
+using Autofac;
 using HashTrack.BusinessLogic.Services;
 using HashTrack.Core;
 using HashTrack.IoC;
@@ -23,10 +25,11 @@ namespace HashTrack
         private static void ForceLoadAssemblies()
         {
             // Force load assemblies
-            var _ = typeof(HashTrackDbContext); // HashTrack.Persistence
-            _ = typeof(SearchService); // HashTrack.BusinessLogic
-            _ = typeof(Constants); // HashTrack.Core
-            _ = typeof(ServiceLocator); // HashTrack.IoC
+            var types = new List<Type>();
+            types.Add(typeof(HashTrackDbContext)); // HashTrack.Persistence
+            types.Add(typeof(SearchService)); // HashTrack.BusinessLogic
+            types.Add(typeof(Constants)); // HashTrack.Core
+            types.Add(typeof(ServiceLocator)); // HashTrack.IoC
         }
     }
 }
