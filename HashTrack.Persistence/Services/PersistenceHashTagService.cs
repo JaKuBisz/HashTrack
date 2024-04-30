@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;

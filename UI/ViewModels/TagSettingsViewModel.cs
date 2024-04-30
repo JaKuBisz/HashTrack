@@ -1,15 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
-using Microsoft.Office.Interop.Outlook;
 using CommunityToolkit.Mvvm.Input;
-using HashTrack.BusinessLogic.Services;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
 using HashTrack.Core.Interfaces;
-using HashTrack.Core.Interfaces.Persistence;
 using HashTrack.Core.Models.Search;
 
 namespace HashTrack.UI.ViewModels

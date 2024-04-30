@@ -3,18 +3,10 @@ using HashTrack.Core;
 using HashTrack.Core.Interfaces;
 using HashTrack.Core.Interfaces.Handlers;
 using HashTrack.Core.Interfaces.Search;
-using HashTrack.Core.Models.Search;
-using HashTrack.Interfaces;
 using HashTrack.Interfaces.Indexing;
-using HashTrack.Persistence.Entities;
-using HashTrack.Persistence.Interfaces;
-using Microsoft.Office.Tools.Ribbon;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Timers;
 using HashTrack.Core.Extensions;
-using HashTrack.Extensions;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 

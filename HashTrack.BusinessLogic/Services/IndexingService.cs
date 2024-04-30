@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using HashTrack.BusinessLogic.Extensions;
 using HashTrack.Core.Extensions;
 using HashTrack.Core.Interfaces;
 using HashTrack.Core.Interfaces.Clustering;

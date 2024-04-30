@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
-using HashTrack.BusinessLogic.Extensions;
 using HashTrack.Core;
 using HashTrack.Core.Attributes;
 using HashTrack.Core.Enums;
