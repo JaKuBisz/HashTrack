@@ -19,7 +19,7 @@ namespace HashTrack.UI.ViewModels
     {
         private readonly IPersistenceHashTagService _storage;
         private readonly ICategoryManagerService _categoryManager;
-        private readonly Form1 _popupForm;
+        private Form1 _popupForm;
         private HashTagModel _hashTag;
         private bool _createFolderEnabled;
         private bool _createCategoryEnabled;
@@ -34,16 +34,15 @@ namespace HashTrack.UI.ViewModels
             _storage = storage;
             _categoryManager = categoryManager;
             SaveSettingsCommand = new RelayCommand(SaveSettings);
-            
+        }
+        
+        public void ShowSettings(HashTagModel tag)
+        {
             var tagSettingControl = new HashTagSettings
             {
                 DataContext = this
             };
             _popupForm = new Form1(tagSettingControl);
-        }
-        
-        public void ShowSettings(HashTagModel tag)
-        {
             HashTag = tag;
             _popupForm.Show();
         }
@@ -109,7 +108,7 @@ namespace HashTrack.UI.ViewModels
             _hashTag.CategoryName = CategoryName;
             _hashTag.CategoryColor = CategoryColor;
             
-            _popupForm.Close();
+            _popupForm.Hide();
             
             _storage.SaveHashTag(_hashTag);
             _categoryManager.AssignHashTagItems(_hashTag);

@@ -22,5 +22,10 @@ namespace HashTrack.UI
         {
 
         }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.elementHost1.Child = null;
+        }
     }
 }

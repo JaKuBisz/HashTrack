@@ -214,8 +214,14 @@
                     <TextBlock Text="Number of usages:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" Margin="5"/>
                     <TextBlock Text="{Binding HashTag.NumOfOccurrences}" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
                     
-                    <TextBlock Text="Last Updated:" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" Margin="5"/>
-                    <TextBlock Text="{Binding HashTag.LastUpdated}" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
+                    <TextBlock Text="Number of Merged tags:" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" Margin="5"/>
+                    <TextBlock Text="{Binding HashTag.MergedHashTags.Count}" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
+                    
+                    <TextBlock Text="Number of Excluded tags:" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" Margin="5"/>
+                    <TextBlock Text="{Binding HashTag.ExcludedHashTags.Count}" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
+                    
+                    <TextBlock Text="Category folder:" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center" Margin="5"/>
+                    <TextBlock Text="{Binding CategoryFolderName}" Grid.Column="1" Grid.Row="4" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>
                     <!--
                     <TextBlock Text="First Use:" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" Margin="5"/>
                     <TextBlock Text="{Binding SelectedHashTag.FirstUse}" Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Margin="5" TextAlignment="Center"/>

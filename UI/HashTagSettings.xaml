@@ -33,9 +33,10 @@
 
     <Grid >
         <StackPanel>
+            <!--
             <CheckBox Content="Create search results folder" IsChecked="{Binding CreateFolderEnabled}" />
             <TextBox Text="{Binding FolderName}" IsEnabled="{Binding CreateFolderEnabled}" />
-
+-->
             <CheckBox Content="Create Category for tag" IsChecked="{Binding CreateCategoryEnabled}" />
             <TextBox Text="{Binding CategoryName}" IsEnabled="{Binding CreateCategoryEnabled}" />
 

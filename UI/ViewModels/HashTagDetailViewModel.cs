@@ -85,6 +85,18 @@ namespace HashTrack.UI.ViewModels
                 OnPropertyChanged(nameof(IsEnabled));
             }
         }
+        
+        public string CategoryFolderName
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(HashTag?.CategoryName))
+                {
+                    return "Not enabled";
+                }
+                return HashTag?.CategoryName;
+            }
+        }
 
         public PopupViewModel PopupVM
         {
