@@ -62,8 +62,8 @@ namespace HashTrack.UI.ViewModels
 
             var result = indexingHashtags.Where(x =>
                 (string.IsNullOrWhiteSpace(SearchBar) || x.Id.Contains(SearchBar))
-                && x.NumOfOccurrences >= MinOccurrences
-                && (MaxOccurrences <= 0 || x.NumOfOccurrences <= MaxOccurrences));
+                && x.TotalNumOfOccurences() >= MinOccurrences
+                && (MaxOccurrences <= 0 || x.TotalNumOfOccurences() <= MaxOccurrences));
 
             return new ObservableCollection<HashTagModel>(result);
         }
