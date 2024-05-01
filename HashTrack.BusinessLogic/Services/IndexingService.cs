@@ -52,9 +52,10 @@ namespace HashTrack.BusinessLogic.Services
             {
                 var hashtags = ExtractTagsAndEnrichArtefacts(searchResult);
                 var clusteredResults = ClusterHashTags(hashtags).ToHashSet();
+                var categorized = CreateCategories(clusteredResults);
 
-                _storage.SaveHashTags(clusteredResults);
-                _cache.SetHashTags(clusteredResults.ToList());
+                _storage.SaveHashTags(categorized);
+                _cache.SetHashTags(categorized.ToList());
                 _eventAggregator.FireEvent(Events.HashTagsUpdated);
             }
             catch (System.Exception e)
@@ -197,6 +198,19 @@ namespace HashTrack.BusinessLogic.Services
                     || (!secondaryHashtag.MergedTagsContain(primaryHashtag) // Prevent merge if in secondary merge list
                         && _clusteringClassifier.Classify(primaryHashtag, secondaryHashtag))) // Classify
                     primaryHashtag.MergeHashTag(secondaryHashtag);
+            }
+
+            return hashtags;
+        }
+        
+        private HashSet<HashTagModel> CreateCategories(HashSet<HashTagModel> hashtags)
+        {
+            foreach (var hashTag in hashtags.Where(x => x.CreateCategory))
+            {
+                foreach (var item in hashTag.TotalSearchResults())
+                {
+                    _categoryManager.AddItemToCategory(hashTag, item.OriginalItem);
+                }
             }
 
             return hashtags;

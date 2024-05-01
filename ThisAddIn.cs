@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Timers;
 using Autofac;
 using HashTrack.Core;
@@ -18,6 +19,7 @@ namespace HashTrack
     {
         private ICache _cache;
         private IEventAggregator _eventAggregator;
+        private ICategoryManagerService _categoryManager;
         private SidePanelWpfControl _hashTrackSearchWpfControl;
         private IIndexingService _indexingService;
         private Timer _indexingTimer;
@@ -41,7 +43,7 @@ namespace HashTrack
 
             // Create and initiate the custom task pane
             InicializeUI();
-            SetIndexingTimer();
+            SetPeriodicTimer();
         }
 
         private void InicializeUI()
@@ -69,11 +71,12 @@ namespace HashTrack
             _indexingService = _resolver.Resolve<IIndexingService>();
             _hashTrackSearchWpfControl = _resolver.Resolve<SidePanelWpfControl>();
             _persistenceHashTagService = _resolver.Resolve<IPersistenceHashTagService>();
+            _categoryManager = _resolver.Resolve<ICategoryManagerService>();
         }
 
         private void StartupServices()
         {
-            RunIndexing();
+            RunPeriodic();
             CacheDataFromStorage();
         }
 
@@ -84,7 +87,7 @@ namespace HashTrack
             _eventAggregator.FireEvent(Events.HashTagsUpdated);
         }
 
-        private void RunIndexing(object sender = null, ElapsedEventArgs e = null)
+        private void RunPeriodic(object sender = null, ElapsedEventArgs e = null)
         {
             var lastIndexingDate = Settings.Default.LastIndexingDateTime;
             _searchService.PerformIndexing(lastIndexingDate);
@@ -92,10 +95,10 @@ namespace HashTrack
             Settings.Default.Save();
         }
 
-        private void SetIndexingTimer()
+        private void SetPeriodicTimer()
         {
             _indexingTimer = new Timer(300000); // 5 minutes;
-            _indexingTimer.Elapsed += RunIndexing;
+            _indexingTimer.Elapsed += RunPeriodic;
             _indexingTimer.AutoReset = true;
             _indexingTimer.Enabled = true;
         }

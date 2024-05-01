@@ -104,7 +104,7 @@ namespace HashTrack.BusinessLogic.Services
             }
 
             var tagsFilter = string.Join(" OR ", filters);
-            var filter = $"{tagsFilter} AND {Filter.Date} >= '{startDate}' AND {Filter.Date} <= '{endDate}'";
+            var filter = $"({tagsFilter}) AND {Filter.Date} >= '{startDate}' AND {Filter.Date} <= '{endDate}'";
             return filter;
         }
 

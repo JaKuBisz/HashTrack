@@ -22,9 +22,12 @@ namespace HashTrack.BusinessLogic.Services
             _eventAggregator = eventAggregator;
             _searchService = searchService;
         }
-
+        
         public void AssignHashTagItems(HashTagModel hashTagModel)
         {
+            if (!hashTagModel.CreateCategory)
+                return;   
+            
             _searchService.SearchAllItemsForTag(hashTagModel);
             _eventAggregator.Unsubscribe(Events.CategoryManagerSearch, HandleSearchComplete);
             _eventAggregator.Subscribe(Events.CategoryManagerSearch, HandleSearchComplete);
@@ -39,6 +42,9 @@ namespace HashTrack.BusinessLogic.Services
 
         public void AddItemToCategory(HashTagModel hashTagModel, object item)
         {
+            if (!hashTagModel.CreateCategory)
+                return;
+            
             var categoryName = string.IsNullOrWhiteSpace(hashTagModel.CategoryName)
                 ? hashTagModel.Id
                 : hashTagModel.CategoryName;
