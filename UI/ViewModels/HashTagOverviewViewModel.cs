@@ -97,7 +97,8 @@ namespace HashTrack.UI.ViewModels
 
         private void SetIndexingResult(List<HashTagModel> result)
         {
-            IndexingHashtags = new ObservableCollection<HashTagModel>(Order(result));
+            _indexingHashtags = new ObservableCollection<HashTagModel>(Order(result));
+            OnPropertyChanged(nameof(IndexingHashtags));
         }
 
         private void UpdateIndexingResults()
@@ -124,7 +125,8 @@ namespace HashTrack.UI.ViewModels
         private void ReOrder()
         {
             var orderedResults = Order(_indexingHashtags);
-            IndexingHashtags = new ObservableCollection<HashTagModel>(orderedResults);
+            _indexingHashtags = new ObservableCollection<HashTagModel>(orderedResults);
+            OnPropertyChanged(nameof(IndexingHashtags));
         }
 
         private IEnumerable<HashTagModel> Order(IEnumerable<HashTagModel> items)
@@ -164,10 +166,9 @@ namespace HashTrack.UI.ViewModels
             }
         }
 
-        public ObservableCollection<HashTagModel> IndexingHashtags
+        public ObservableCollection<HashTagViewModel> IndexingHashtags
         {
-            get => FilterIndexingResults(_indexingHashtags);
-            set => SetField(ref _indexingHashtags, value);
+            get => new ObservableCollection<HashTagViewModel>(FilterIndexingResults(_indexingHashtags).Select(x => new HashTagViewModel(x)));
         }
 
         public DateTime? FromDate

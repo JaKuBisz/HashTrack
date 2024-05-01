@@ -65,24 +65,24 @@ namespace HashTrack
             if (e.ChangedButton != MouseButton.Left) return;
 
             if (sender is ListViewItem listView
-                && listView.Content is HashTagModel content)
-                ExecuteCommand(MainViewModel.HashTagOverviewVM.OpenTagDetail, content);
+                && listView.Content is HashTagViewModel content)
+                ExecuteCommand(MainViewModel.HashTagOverviewVM.OpenTagDetail, content.HashTag);
         }
 
         private void list_Hashtags_contextMenuItem_tagDetails_OnClick(object sender, RoutedEventArgs e)
         {
-            var tag = (HashTagModel)list_Hashtags.SelectedItem;
-            if (tag == null) return;
+            var tagVM = (HashTagViewModel)list_Hashtags.SelectedItem;
+            if (tagVM == null) return;
 
-            ExecuteCommand(MainViewModel.HashTagOverviewVM.OpenTagDetail, tag);
+            ExecuteCommand(MainViewModel.HashTagOverviewVM.OpenTagDetail, tagVM.HashTag);
         }
 
         private void list_Hashtags_contextMenuItem_tagOccurrences_OnClick(object sender, RoutedEventArgs e)
         {
-            var tag = (HashTagModel)list_Hashtags.SelectedItem;
-            if (tag == null) return;
+            var tagVM = (HashTagViewModel)list_Hashtags.SelectedItem;
+            if (tagVM == null) return;
 
-            ExecuteCommand(MainViewModel.HashTagOverviewVM.OpenSearchResultsCommand, tag);
+            ExecuteCommand(MainViewModel.HashTagOverviewVM.OpenSearchResultsCommand, tagVM.HashTag);
         }
 
         #endregion

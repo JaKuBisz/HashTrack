@@ -17,12 +17,12 @@ namespace HashTrack.Persistence.Repositories
 
         public HashTagEntity GetByTag(string tag)
         {
-            return _dbSet.FirstOrDefault(x => x.Tag == tag);
+            return _dbSet.AsNoTracking().FirstOrDefault(x => x.Tag == tag);
         }
 
         public HashSet<HashTagEntity> GetByTags(IEnumerable<string> tags)
         {
-            return _dbSet.Where(x => tags.Contains(x.Tag)).ToHashSet();
+            return _dbSet.AsNoTracking().Where(x => tags.Contains(x.Tag)).ToHashSet();
         }
     }
 }

@@ -183,18 +183,18 @@
                                     </ToolTip>
                                 </Border.ToolTip>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Id}" FontWeight="Bold" />
+                                    <TextBlock Text="{Binding HashTag.Id}" FontWeight="Bold" />
                                     <TextBlock Text=" - " FontWeight="Bold" />
-                                    <TextBlock Text="{Binding NumOfOccurrences}" />
+                                    <TextBlock Text="{Binding TotalNumOfOccurrences}" />
                                     <TextBlock Text=" - " FontWeight="Bold"
-                                               Visibility="{Binding HasMergedTags, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                    <TextBlock Text="{Binding MergedHashTags.Count}"
-                                               Visibility="{Binding HasMergedTags, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                               Visibility="{Binding HashTag.HasMergedTags, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <TextBlock Text="{Binding TotalMergedHashTags.Count}"
+                                               Visibility="{Binding HashTag.HasMergedTags, Converter={StaticResource BooleanToVisibilityConverter}}"
                                                FontWeight="Bold" Foreground="#FF6BC758" />
                                     <TextBlock Text=" - " FontWeight="Bold"
-                                               Visibility="{Binding HasExcludedTags, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                    <TextBlock Text="{Binding ExcludedHashTags.Count}"
-                                               Visibility="{Binding HasExcludedTags, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                               Visibility="{Binding HashTag.HasExcludedTags, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <TextBlock Text="{Binding TotalExcludedHashTags.Count}"
+                                               Visibility="{Binding HashTag.HasExcludedTags, Converter={StaticResource BooleanToVisibilityConverter}}"
                                                FontWeight="Bold" Foreground="#FFD03737" />
                                 </StackPanel>
                             </Border>
@@ -227,31 +227,31 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <TextBlock Text="{Binding HashTag.Id}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center"
+                    <TextBlock Text="{Binding HashTagVM.HashTag.Id}" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center"
                                Margin="8"
                                Grid.Column="0" Grid.Row="0" />
 
                     <Button Content="Settings" Command="{Binding OpenSettingCommand}"
                             Height="25" Width="50" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Right" Margin="5" />
 
-                    <TextBlock Text="Number of usages:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"
+                    <TextBlock Text="Total Number of usages:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"
                                Margin="5" />
-                    <TextBlock Text="{Binding HashTag.NumOfOccurrences}" Grid.Column="1" Grid.Row="1"
+                    <TextBlock Text="{Binding HashTagVM.TotalNumOfOccurrences}" Grid.Column="1" Grid.Row="1"
                                VerticalAlignment="Center" Margin="5" TextAlignment="Center" />
 
-                    <TextBlock Text="Number of Merged tags:" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center"
+                    <TextBlock Text="Total Number of Merged tags:" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center"
                                Margin="5" />
-                    <TextBlock Text="{Binding HashTag.MergedHashTags.Count}" Grid.Column="1" Grid.Row="2"
+                    <TextBlock Text="{Binding HashTagVM.TotalMergedHashTags.Count}" Grid.Column="1" Grid.Row="2"
                                VerticalAlignment="Center" Margin="5" TextAlignment="Center" />
 
-                    <TextBlock Text="Number of Excluded tags:" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center"
+                    <TextBlock Text="Total Number of Excluded tags:" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center"
                                Margin="5" />
-                    <TextBlock Text="{Binding HashTag.ExcludedHashTags.Count}" Grid.Column="1" Grid.Row="3"
+                    <TextBlock Text="{Binding HashTagVM.TotalExcludedHashTags.Count}" Grid.Column="1" Grid.Row="3"
                                VerticalAlignment="Center" Margin="5" TextAlignment="Center" />
 
                     <TextBlock Text="Category folder:" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center"
                                Margin="5" />
-                    <TextBlock Text="{Binding CategoryFolderName}" Grid.Column="1" Grid.Row="4"
+                    <TextBlock Text="{Binding HashTagVM.CategoryFolderName}" Grid.Column="1" Grid.Row="4"
                                VerticalAlignment="Center" Margin="5" TextAlignment="Center" />
 
                 </Grid>
@@ -262,7 +262,7 @@
                             CommandParameter="True" Width="25" Height="25" DockPanel.Dock="Right" />
                 </DockPanel>
 
-                <ListBox Grid.Row="2" ItemsSource="{Binding MergedHashTags}" Margin="0,0">
+                <ListBox Grid.Row="2" ItemsSource="{Binding HashTagVM.MergedHashTags}" Margin="0,0">
                     <ListBox.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Un-merge" Command="{Binding UnmergeCommand}"
@@ -282,7 +282,7 @@
                     <Button Content="+" Command="{Binding OpenPopupCommand}"
                             CommandParameter="False" Width="25" Height="25" DockPanel.Dock="Right" />
                 </DockPanel>
-                <ListBox Grid.Row="4" ItemsSource="{Binding ExcludedHashTags}" Margin="0,0">
+                <ListBox Grid.Row="4" ItemsSource="{Binding HashTagVM.ExcludedHashTags}" Margin="0,0">
                     <ListBox.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Remove Exception" Command="{Binding RemoveExceptionCommand}"

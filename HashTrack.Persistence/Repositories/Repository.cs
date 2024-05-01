@@ -23,17 +23,17 @@ namespace HashTrack.Persistence.Repositories
 
         public IEnumerable<T> Get(Expression<Func<T, bool>> predicate)
         {
-            return _dbSet.Where(predicate);
+            return _dbSet.AsNoTracking().Where(predicate);
         }
 
         public T GetSingle(Expression<Func<T, bool>> predicate)
         {
-            return _dbSet.FirstOrDefault(predicate);
+            return _dbSet.AsNoTracking().FirstOrDefault(predicate);
         }
 
         public IEnumerable<T> GetAll()
         {
-            return _dbSet.ToList();
+            return _dbSet.AsNoTracking().ToList();
         }
 
         public T GetById(int id)

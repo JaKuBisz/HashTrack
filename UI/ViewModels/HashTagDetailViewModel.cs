@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using HashTrack.Core;
@@ -20,18 +18,23 @@ namespace HashTrack.UI.ViewModels
     {
         private readonly ICache _cache;
         private readonly IPersistenceHashTagService _persistenceHashTagService;
-        private HashTagModel _hashTag;
-        private PopupViewModel _popupVm;
         private readonly TagSettingsViewModel _tagSettingsVM;
+        private readonly IEventAggregator _eventAggregator;
+        
+        private HashTagViewModel _hashTagVM;
+        private PopupViewModel _popupVm;
 
 
         public HashTagDetailViewModel(ICache cache, IEventAggregator eventAggregator,
-            TagSettingsViewModel tagSettingsVM, IPersistenceHashTagService persistenceHashTagService)
+            TagSettingsViewModel tagSettingsVM, HashTagViewModel hashTagVM,
+            IPersistenceHashTagService persistenceHashTagService)
         {
             PopupVM = new PopupViewModel(this);
             _cache = cache;
             _tagSettingsVM = tagSettingsVM;
+            _hashTagVM = hashTagVM;
             _persistenceHashTagService = persistenceHashTagService;
+            _eventAggregator = eventAggregator;
             eventAggregator.Subscribe(Events.UI.ChangeSelectedTab, ExecuteTabChange);
             InitializeCommands();
         }
@@ -41,39 +44,15 @@ namespace HashTrack.UI.ViewModels
         public ICommand MergeCommand { get; private set; }
         public ICommand OpenSettingCommand { get; private set; }
         public ICommand OpenPopupCommand { get; private set; }
-        public ICommand ClosePopupCommand { get; }
-        public ICommand ConfirmPopupCommand { get; }
 
-        public ObservableCollection<HashTagModel> MergedHashTags
+        public bool IsEnabled => _hashTagVM.HashTag != null;
+
+        public HashTagViewModel HashTagVM
         {
-            get
-            {
-                if (_hashTag == null || _hashTag.MergedHashTags == null)
-                    return new ObservableCollection<HashTagModel>();
-                return new ObservableCollection<HashTagModel>(_hashTag.MergedHashTags);
-            }
-        }
-
-        public ObservableCollection<HashTagModel> ExcludedHashTags
-        {
-            get
-            {
-                if (_hashTag == null || _hashTag.ExcludedHashTags == null)
-                    return new ObservableCollection<HashTagModel>();
-                return new ObservableCollection<HashTagModel>(_hashTag.ExcludedHashTags);
-            }
-        }
-
-        public bool IsEnabled => HashTag != null;
-
-        public HashTagModel HashTag
-        {
-            get => _hashTag;
+            get => _hashTagVM;
             set
             {
-                SetField(ref _hashTag, value);
-                OnPropertyChanged(nameof(MergedHashTags));
-                OnPropertyChanged(nameof(ExcludedHashTags));
+                SetField(ref _hashTagVM, value);
                 OnPropertyChanged(nameof(IsEnabled));
             }
         }
@@ -82,8 +61,8 @@ namespace HashTrack.UI.ViewModels
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(HashTag?.CategoryName)) return "Not enabled";
-                return HashTag?.CategoryName;
+                if (string.IsNullOrWhiteSpace(HashTagVM.HashTag?.CategoryName)) return "Not enabled";
+                return HashTagVM.HashTag?.CategoryName;
             }
         }
 
@@ -107,12 +86,13 @@ namespace HashTrack.UI.ViewModels
             if (!(obj is ChangeTabEvent evt) || evt.TagModel is null ||
                 evt.Target != ChangeTabEventTarget.TagDetailsTab) return;
 
-            HashTag = evt.TagModel;
+            HashTagVM.HashTag = evt.TagModel;
+            HashTagVM = HashTagVM;
         }
 
         private void ExecuteOpenSetting()
         {
-            _tagSettingsVM.ShowSettings(HashTag);
+            _tagSettingsVM.ShowSettings(HashTagVM.HashTag);
         }
 
         private void ExecuteOpenPopup(object parameter)
@@ -121,33 +101,37 @@ namespace HashTrack.UI.ViewModels
             var isMerged = Convert.ToBoolean(parameter);
 
             var tags = _cache.GetHashTags().ToHashSet();
-            var exceptTags = isMerged ? _hashTag.TotalMergedHashTags() : _hashTag.TotalExcludedHashTags();
-            exceptTags.Add(HashTag);
+            var exceptTags = isMerged ? HashTagVM.HashTag.TotalMergedHashTags() : HashTagVM.HashTag.TotalExcludedHashTags();
+            exceptTags.Add(HashTagVM.HashTag);
 
             var resultTags = tags.Except(exceptTags);
 
             PopupVM.Open(isMerged, new ObservableCollection<HashTagModel>(resultTags));
         }
+        
+        private void SaveHashTag(HashTagModel hashtag)
+        {
+            HashTagVM.HashTag = HashTagVM.HashTag;
+            _persistenceHashTagService.SaveHashTag(hashtag);
+            _eventAggregator.FireEvent(Events.HashTagsUpdated);
+        }
 
         private void ExecuteUnmerge(HashTagModel hashtag)
         {
-            _hashTag.UnMergeHashTag(hashtag);
-            HashTag = HashTag;
-            _persistenceHashTagService.SaveHashTag(HashTag);
+            HashTagVM.HashTag.UnMergeHashTag(hashtag);
+            SaveHashTag(HashTagVM.HashTag);
         }
 
         private void ExecuteRemoveException(HashTagModel hashtag)
         {
-            _hashTag.RemoveExcluded(hashtag);
-            HashTag = HashTag;
-            _persistenceHashTagService.SaveHashTag(HashTag);
+            HashTagVM.HashTag.RemoveExcluded(hashtag);
+            SaveHashTag(HashTagVM.HashTag);
         }
 
         private void ExecuteMerge(HashTagModel hashtag)
         {
-            _hashTag.MergeHashTag(hashtag);
-            HashTag = HashTag;
-            _persistenceHashTagService.SaveHashTag(HashTag);
+            HashTagVM.HashTag.MergeHashTag(hashtag);
+            SaveHashTag(HashTagVM.HashTag);
         }
 
         public class PopupViewModel : BaseViewModel
@@ -212,7 +196,6 @@ namespace HashTrack.UI.ViewModels
             {
                 ClosePopupCommand = new RelayCommand(ClosePopup);
                 ConfirmPopupCommand = new RelayCommand(ConfirmPopup);
-                //AddTagCommand = new RelayCommand(AddTag_Click);
                 UpdateSelectionCommand = new RelayCommand<List<HashTagModel>>(UpdateSelection);
             }
 
@@ -248,17 +231,15 @@ namespace HashTrack.UI.ViewModels
                 if (IsMergeMode)
                     foreach (var tag in SelectedTags)
                     {
-                        _parent._hashTag.MergeHashTag(tag);
-                        _parent.HashTag = _parent.HashTag; // Ensure UI update
+                        _parent.HashTagVM.HashTag.MergeHashTag(tag);
                     }
                 else
                     foreach (var tag in SelectedTags)
                     {
-                        _parent._hashTag.UnMergeHashTag(tag);
-                        _parent.HashTag = _parent.HashTag;
+                        _parent.HashTagVM.HashTag.UnMergeHashTag(tag);
                     }
-
-                _parent._persistenceHashTagService.SaveHashTag(_parent.HashTag);
+                
+                _parent.SaveHashTag(_parent.HashTagVM.HashTag);
                 IsPopupOpen = false;
             }
         }
