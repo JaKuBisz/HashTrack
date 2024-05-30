@@ -13,7 +13,11 @@ namespace HashTrack
     {
         public static void ConfigureContainer()
         {
-            ForceLoadAssemblies();
+            var res = ForceLoadAssemblies();
+            if (res.Count > 0)
+            {
+                Console.WriteLine($"Loaded {res.Count} assemblies");
+            }
             Startup.ConfigureContainer(builder =>
             {
                 builder.Register(c => Globals.ThisAddIn.Application).As<Application>().InstancePerLifetimeScope();
@@ -21,7 +25,7 @@ namespace HashTrack
             });
         }
 
-        private static void ForceLoadAssemblies()
+        private static List<Type> ForceLoadAssemblies()
         {
             // Force load assemblies
             var types = new List<Type>();
@@ -29,6 +33,7 @@ namespace HashTrack
             types.Add(typeof(SearchService)); // HashTrack.BusinessLogic
             types.Add(typeof(Constants)); // HashTrack.Core
             types.Add(typeof(ServiceLocator)); // HashTrack.IoC
+            return types;
         }
     }
 }
