@@ -36,26 +36,24 @@ namespace HashTrack.BusinessLogic.Services
             {
                 if (!(obj is Outlook.Search searchResult)) return;
 
-                foreach (var item in searchResult.Results) AddItemToCategory(hashTagModel, item);
+                foreach (var item in searchResult.Results) AddArtefactToCategory(hashTagModel, item);
             }
         }
 
-        public void AddItemToCategory(HashTagModel hashTagModel, object item)
+        public void AddArtefactToCategory(HashTagModel hashTagModel, object artefact)
         {
             if (!hashTagModel.CreateCategory)
                 return;
-            
+            var session = _application.Session;
+
             var categoryName = string.IsNullOrWhiteSpace(hashTagModel.CategoryName)
                 ? hashTagModel.Id
                 : hashTagModel.CategoryName;
-            var categoryColor = hashTagModel.CategoryColor;
-            var session = _application.Session;
 
-            var category = session.Categories[categoryName];
-            if (category == null)
-                category = session.Categories.Add(categoryName, (Outlook.OlCategoryColor)(int)categoryColor);
+            var category = session.Categories[categoryName] ??
+                           session.Categories.Add(categoryName, (Outlook.OlCategoryColor)hashTagModel.CategoryColor);
 
-            AssignCategoryToItem(item, category);
+            AssignCategoryToItem(artefact, category);
         }
 
 

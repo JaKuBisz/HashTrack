@@ -5,6 +5,6 @@ namespace HashTrack.Core.Interfaces
     public interface ICategoryManagerService
     {
         void AssignHashTagItems(HashTagModel hashTagModel);
-        void AddItemToCategory(HashTagModel hashTagModel, object item);
+        void AddArtefactToCategory(HashTagModel hashTagModel, object artefact);
     }
 }

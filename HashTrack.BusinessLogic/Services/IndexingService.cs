@@ -88,7 +88,7 @@ namespace HashTrack.BusinessLogic.Services
                     hashTagModel.AddNewSearchResult(searchResultViewItem);
 
 
-                    if (hashTagModel.CreateCategory) _categoryManager.AddItemToCategory(hashTagModel, item);
+                    if (hashTagModel.CreateCategory) _categoryManager.AddArtefactToCategory(hashTagModel, item);
                 }
             }
 
@@ -136,9 +136,9 @@ namespace HashTrack.BusinessLogic.Services
             return Guid.TryParse(property.Value.ToString(), out var id) ? id : Guid.Empty;
         }
 
-        private Outlook.UserProperties GetArtefactUserProperties(object item)
+        private Outlook.UserProperties GetArtefactUserProperties(object artefact)
         {
-            switch (item)
+            switch (artefact)
             {
                 case Outlook._MailItem mailItem:
                     return mailItem.UserProperties;
@@ -184,20 +184,23 @@ namespace HashTrack.BusinessLogic.Services
             var orderedHashtags = hashtags.OrderByDescending(x => x.NumOfOccurrences).ToList();
             //TODO: Improve O(n^2) complexity, see notes
             foreach (var primaryHashtag in orderedHashtags)
-            foreach (var secondaryHashtag in orderedHashtags)
             {
-                if (primaryHashtag.Equals(secondaryHashtag)) continue;
+                foreach (var secondaryHashtag in orderedHashtags)
+                {
+                    if (primaryHashtag.Equals(secondaryHashtag)) continue;
 
-                if (primaryHashtag.ExcludedTagsContain(secondaryHashtag) ||
-                    secondaryHashtag.ExcludedTagsContain(primaryHashtag))
-                    // Ensure mutual exclusion from exception tags;
-                    continue;
+                    if (primaryHashtag.ExcludedTagsContain(secondaryHashtag) ||
+                        secondaryHashtag.ExcludedTagsContain(primaryHashtag))
+                        // Ensure mutual exclusion from exception tags;
+                        continue;
 
-                //Prevents tag with less usages to be absorbed by tag with more usages automatically
-                if (primaryHashtag.MergedTagsContain(secondaryHashtag) // Merge if in merge list
-                    || (!secondaryHashtag.MergedTagsContain(primaryHashtag) // Prevent merge if in secondary merge list
-                        && _clusteringClassifier.Classify(primaryHashtag, secondaryHashtag))) // Classify
-                    primaryHashtag.MergeHashTag(secondaryHashtag);
+                    //Prevents tag with less usages to be absorbed by tag with more usages automatically
+                    if (primaryHashtag.MergedTagsContain(secondaryHashtag) // Merge if in merge list
+                        || (!secondaryHashtag
+                                .MergedTagsContain(primaryHashtag) // Prevent merge if in secondary merge list
+                            && _clusteringClassifier.Classify(primaryHashtag, secondaryHashtag))) // Classify
+                        primaryHashtag.MergeHashTag(secondaryHashtag);
+                }
             }
 
             return hashtags;
@@ -209,7 +212,7 @@ namespace HashTrack.BusinessLogic.Services
             {
                 foreach (var item in hashTag.TotalSearchResults())
                 {
-                    _categoryManager.AddItemToCategory(hashTag, item.OriginalItem);
+                    _categoryManager.AddArtefactToCategory(hashTag, item.OriginalItem);
                 }
             }
 
