@@ -12,11 +12,7 @@ A Visual Studio Tools for Office (VSTO) add-in for Microsoft Outlook that lets y
 Outlook items with hashtags and retrieve them later with a fast, indexed search. Built as
 my bachelor thesis at VŠB – Technical University of Ostrava.
 
-<!--
-THESIS PDF: export from Overleaf to docs/thesis.pdf, then uncomment.
-Check the embedded assignment page first for a handwritten signature / student login.
-📄 **Bachelor thesis:** [Hashtag Plugin for MS Outlook](docs/thesis.pdf) (Czech, VŠB-TUO 2024)
--->
+📄 **Bachelor thesis:** [Hashtag Plugin for MS Outlook](docs/thesis.pdf) (Czech, with English abstract, VŠB-TUO 2024) · [Defense slides](docs/thesis-defense-slides.pdf)
 
 **If you're here to look at the code**, the parts worth your time are the
 [convention-based DI container](#convention-based-dependency-injection), which registers
@@ -287,11 +283,8 @@ Third-party dependencies and their licenses are listed in
 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). All are permissive (MIT, Apache-2.0 or
 public domain).
 
-<!--
-When docs/thesis.pdf is added, extend this section:
 The thesis text in `docs/thesis.pdf` is licensed
 [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/).
--->
 
 ## Acknowledgements
 
