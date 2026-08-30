@@ -283,6 +283,16 @@ receive a fast response.
 
 [MIT](LICENSE) © Jakub Kubisz
 
+Third-party dependencies and their licenses are listed in
+[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). All are permissive (MIT, Apache-2.0 or
+public domain).
+
+<!--
+When docs/thesis.pdf is added, extend this section:
+The thesis text in `docs/thesis.pdf` is licensed
+[CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/).
+-->
+
 ## Acknowledgements
 
 Submitted as a bachelor thesis at **VŠB – Technical University of Ostrava**, Faculty of
