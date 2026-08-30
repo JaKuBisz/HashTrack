@@ -20,10 +20,10 @@ services by scanning for attributes instead of maintaining a composition file, a
 [tag-clustering algorithm](#algorithms), which handles the case plain string similarity gets
 wrong.
 
-<!--
-SCREENSHOT: add one of the sidebar in Outlook to docs/screenshots/sidebar.png and uncomment:
-<p align="center"><img src="docs/screenshots/sidebar.png" width="70%" alt="HashTrack sidebar in Outlook"></p>
--->
+<p align="center">
+  <img src="docs/screenshots/search.png" width="45%" alt="HashTrack search tab in Outlook">
+  <img src="docs/screenshots/hashtags-overview.png" width="45%" alt="Hashtag overview with usage and clustering counts">
+</p>
 
 ## Features
 
