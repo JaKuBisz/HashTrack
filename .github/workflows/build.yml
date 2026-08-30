@@ -19,4 +19,4 @@ jobs:
       - uses: microsoft/setup-msbuild@v2
 
       - name: Build solution
-        run: msbuild HashTrack.sln /p:Configuration=Release /m /v:m
+        run: msbuild HashTrack.sln /p:Configuration=Release /p:SignManifests=false /m /v:m
